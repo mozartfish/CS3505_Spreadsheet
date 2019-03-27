@@ -18,6 +18,7 @@ class socket_connections {
   socket_connections(){};
 
  public:
+  // The port both clients and servers connect with
   const static int PORT_NUM = 2112;
   
   // Server functions to allow client connection
