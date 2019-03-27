@@ -12,9 +12,10 @@
 #ifndef CONNECT_H
 #define CONNECT_H
 
-public static class socket_connections {
+class socket_connections {
 
-
+ private:
+  socket_connections(){};
 
  public:
   const static int PORT_NUM = 2112;
