@@ -37,7 +37,7 @@ class socket_connections {
   // Functions to get and process data
   static void WaitForData();
   static void OnDataReceived();
-  static void SendData(int socket_fd);
+  static void SendData(int socket_fd, const char * data, int bytes);
 
 };
 

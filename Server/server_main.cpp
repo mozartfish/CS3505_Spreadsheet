@@ -32,6 +32,7 @@ int main(int argc, char ** argv)
        if (connections.new_socket_connected)
       	{
       	  std::cout << "A new client has connected" << std::endl;
+	  socket_connections::SendData(connections.sockets[1], "Hello\n", 6);
 
 	  //Should lock here?
 	  connections.new_socket_connected = false;

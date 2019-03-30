@@ -10,8 +10,9 @@
 #include <sys/types.h> 
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include "socket_connections.h"
 #include <iostream>
+#include <unistd.h>
+#include "socket_connections.h"
 
   /*
    * Takes in an array pointer of socket IDs and waits for incoming connections 
@@ -97,7 +98,17 @@
 
   /*
    * Sends the provided data to the socket associated with the socket_fd parameter
+   * where bytes is the amount of data from data to send
    */
-  void socket_connections::SendData(int socket_fd)
+void socket_connections::SendData(int socket_fd, const char *data, int bytes)
   {
+
+    int bytes_written = write(socket_fd, data, bytes);
+      
+      // If not all data was sent, try to send the rest
+      if (bytes_written < bytes)
+	{
+	  data += bytes_written;
+	  SendData(socket_fd, data, bytes - bytes_written);
+	}
   }
