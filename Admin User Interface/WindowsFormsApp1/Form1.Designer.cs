@@ -47,6 +47,7 @@
             this.button1.TabIndex = 0;
             this.button1.Text = "Account Manegment";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.AccountManagemenButton);
             // 
             // button3
             // 
@@ -116,6 +117,7 @@
             this.button5.TabIndex = 10;
             this.button5.Text = "SHUT\r\nDOWN";
             this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.ShutDown);
             // 
             // Form1
             // 
@@ -131,7 +133,7 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button1);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "d";
             this.ResumeLayout(false);

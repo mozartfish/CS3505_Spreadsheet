@@ -16,5 +16,23 @@ namespace WindowsFormsApp1
         {
             InitializeComponent();
         }
+
+        private void ShutDown(object sender, EventArgs e)
+        {
+            string title = "WARNING";
+            string text = "YOU ARE ABOUT TO SHUTDOWN THE SERVER,\nCLICK OK TO SHUT DOWN";
+
+            DialogResult result = MessageBox.Show(text, title, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (result == DialogResult.Yes)
+            {
+
+            }
+        }
+
+        private void AccountManagemenButton(object sender, EventArgs e)
+        {
+            ManageUsers form = new ManageUsers();
+            form.Show();
+        }
     }
 }
