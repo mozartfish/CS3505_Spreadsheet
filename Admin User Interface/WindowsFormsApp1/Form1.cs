@@ -12,6 +12,7 @@ namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
+
         public Form1()
         {
             InitializeComponent();
@@ -31,13 +32,19 @@ namespace WindowsFormsApp1
             DialogResult result = MessageBox.Show(text, title, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
             if (result == DialogResult.Yes)
             {
-
+                //Send message to the server telling it to shut down 
             }
         }
 
-        private void AccountManagemenButton(object sender, EventArgs e)
+        private void AccountManagementButton(object sender, EventArgs e)
         {
             ManageUsers form = new ManageUsers();
+            form.Show();
+        }
+
+        private void SpreadsheetManagmentButton(object sender, EventArgs e)
+        {
+            SpreadsheetManagement form = new SpreadsheetManagement();
             form.Show();
         }
 

@@ -8,6 +8,8 @@ namespace WindowsFormsApp1
 {
     static class Program
     {
+        static int AccountManageWindows = 0, SpreadsheetManageWindows = 0;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
