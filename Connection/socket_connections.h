@@ -12,6 +12,12 @@
 #ifndef CONNECT_H
 #define CONNECT_H
 
+// A struct containing a list of sockets and a size of the list
+struct socks {
+    int* sockets;
+    int size;
+  };
+
 class socket_connections {
 
  private:
@@ -22,7 +28,7 @@ class socket_connections {
   const static int PORT_NUM = 2112;
   
   // Server functions to allow client connection
-  static void WaitForClientConnections();
+  static void WaitForClientConnections(socks * sock_list);
   static void ClientConnected();
 
   // Client functions to allow server connections
@@ -33,8 +39,6 @@ class socket_connections {
   static void WaitForData();
   static void OnDataReceived();
   static void SendData();
-
-  
 
 };
 
