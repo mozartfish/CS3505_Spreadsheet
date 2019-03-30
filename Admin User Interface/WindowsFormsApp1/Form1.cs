@@ -15,6 +15,12 @@ namespace WindowsFormsApp1
         public Form1()
         {
             InitializeComponent();
+
+            // Test Scrolling Function - CurrentStatusList
+            for (int i = 0; i < 1000; i++)
+            {
+                currentStatusList.Items.Add(i.ToString());
+            }
         }
 
         private void ShutDown(object sender, EventArgs e)
@@ -33,6 +39,31 @@ namespace WindowsFormsApp1
         {
             ManageUsers form = new ManageUsers();
             form.Show();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void textBox1_TextChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void listBox2_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

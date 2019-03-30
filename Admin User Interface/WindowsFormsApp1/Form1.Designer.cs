@@ -31,12 +31,11 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.button5 = new System.Windows.Forms.Button();
+            this.currentStatusList = new System.Windows.Forms.ListBox();
+            this.updateList = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // button1
@@ -68,47 +67,6 @@
             this.button2.Text = "SS management";
             this.button2.UseVisualStyleBackColor = true;
             // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(12, 106);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(956, 498);
-            this.button4.TabIndex = 4;
-            this.button4.UseVisualStyleBackColor = true;
-            // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(482, 106);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(13, 498);
-            this.button6.TabIndex = 6;
-            this.button6.UseVisualStyleBackColor = true;
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(159, 332);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 7;
-            this.textBox1.Text = "Connections";
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(705, 332);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
-            this.textBox2.TabIndex = 8;
-            this.textBox2.Text = "Updates";
-            // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(85, 136);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(720, 20);
-            this.textBox3.TabIndex = 9;
-            this.textBox3.Text = "                          CURRENT STATUS\r\n";
-            this.textBox3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
             // button5
             // 
             this.button5.Location = new System.Drawing.Point(681, 25);
@@ -119,17 +77,54 @@
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.ShutDown);
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(12, 96);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(625, 20);
+            this.textBox1.TabIndex = 11;
+            this.textBox1.Text = "Current Status";
+            this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged_1);
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(643, 96);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(325, 20);
+            this.textBox2.TabIndex = 12;
+            this.textBox2.Text = "Update";
+            this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
+            // 
+            // currentStatusList
+            // 
+            this.currentStatusList.FormattingEnabled = true;
+            this.currentStatusList.Location = new System.Drawing.Point(12, 132);
+            this.currentStatusList.Name = "currentStatusList";
+            this.currentStatusList.Size = new System.Drawing.Size(625, 472);
+            this.currentStatusList.TabIndex = 13;
+            this.currentStatusList.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+            // 
+            // updateList
+            // 
+            this.updateList.FormattingEnabled = true;
+            this.updateList.Location = new System.Drawing.Point(643, 132);
+            this.updateList.Name = "updateList";
+            this.updateList.Size = new System.Drawing.Size(325, 472);
+            this.updateList.TabIndex = 14;
+            this.updateList.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged_1);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(980, 616);
-            this.Controls.Add(this.button5);
-            this.Controls.Add(this.textBox3);
+            this.Controls.Add(this.updateList);
+            this.Controls.Add(this.currentStatusList);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.button6);
-            this.Controls.Add(this.button4);
+            this.Controls.Add(this.button5);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button1);
@@ -146,12 +141,11 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button button5;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.ListBox currentStatusList;
+        private System.Windows.Forms.ListBox updateList;
     }
 }
 
