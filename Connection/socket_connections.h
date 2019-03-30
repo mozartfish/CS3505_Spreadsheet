@@ -33,16 +33,11 @@ class socket_connections {
   
   // Server functions to allow client connection
   static void WaitForClientConnections(socks * sock_list);
-  static void ClientConnected();
-
-  // Client functions to allow server connections
-  static void AttemptServerConnection();
-  static void OnServerConnect();
   
-  // Functions for both Server and CLient to get and process data
+  // Functions to get and process data
   static void WaitForData();
   static void OnDataReceived();
-  static void SendData();
+  static void SendData(int socket_fd);
 
 };
 

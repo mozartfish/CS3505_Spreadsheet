@@ -21,6 +21,7 @@
    */
   void socket_connections::WaitForClientConnections(socks * sock_list)
   {
+
     // Make the socket listening for clients
     int * socket_list = sock_list->sockets;
     socket_list[0] = socket(AF_INET, SOCK_STREAM, 0);
@@ -48,15 +49,17 @@
 	return;
       }
 
+    // Listen for incoming connections
+    if (listen(socket_list[0], 5000) < 0)
+      {
+	std::cout << "ERR: Could not listen for incoming connections" << std::endl;
+	return;
+      }
+
+    
     // Infinitely listen for incoming connections
     while(true)
     {
-    // Listen for incoming connections
-      if (listen(socket_list[0], 5000) < 0)
-	{
-	  std::cout << "ERR: Could not listen for incoming connections" << std::endl;
-	  return;
-	}
       
       // Setting up the sockaddr and socklen from http://www.linuxhowtos.org/data/6/server.c
       struct sockaddr_in cli_addr;
@@ -70,35 +73,13 @@
 	  continue;
 	}
 
-      // Increment size for new socket
+      //Should lock here
+      // Increment size for new socket, set new connection
       ++(sock_list->size);
-      
-      //Notify callee that a connection has happened
       sock_list->new_socket_connected = true;
     }
   }
-
-  /*
-   * The response function for when a client connects to the server,
-   * sends a connected message
-   */
-  void socket_connections::ClientConnected()
-  {
-  }
   
-  /*
-   *
-   */
-  void socket_connections::AttemptServerConnection()
-  {
-  }
-
-  /*
-   *
-   */
-  void socket_connections::OnServerConnect()
-  {
-  }
   
   /*
    *
@@ -115,8 +96,8 @@
   }
 
   /*
-   *
+   * Sends the provided data to the socket associated with the socket_fd parameter
    */
-  void socket_connections::SendData()
+  void socket_connections::SendData(int socket_fd)
   {
   }
