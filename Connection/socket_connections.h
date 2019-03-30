@@ -14,8 +14,12 @@
 
 // A struct containing a list of sockets and a size of the list
 struct socks {
-    int* sockets;
-    int size;
+  int* sockets;
+  int size;
+  
+  // Fields to let any user of this struct know it has been modified
+  int size_before_update;
+  bool new_socket_connected;
   };
 
 class socket_connections {
