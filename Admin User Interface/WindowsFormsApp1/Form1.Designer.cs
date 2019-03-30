@@ -47,7 +47,7 @@
             this.button1.TabIndex = 0;
             this.button1.Text = "Account Manegment";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.AccountManagemenButton);
+            this.button1.Click += new System.EventHandler(this.AccountManagementButton);
             // 
             // button3
             // 
@@ -67,6 +67,7 @@
             this.button2.TabIndex = 3;
             this.button2.Text = "SS management";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.SpreadsheetManagmentButton);
             // 
             // button4
             // 

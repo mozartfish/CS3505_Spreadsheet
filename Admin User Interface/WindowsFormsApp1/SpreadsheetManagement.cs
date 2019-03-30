@@ -10,21 +10,11 @@ using System.Windows.Forms;
 
 namespace WindowsFormsApp1
 {
-    public partial class ManageUsers : Form
+    public partial class SpreadsheetManagement : Form
     {
-        public ManageUsers()
+        public SpreadsheetManagement()
         {
             InitializeComponent();
-        }
-
-        private void ManageUsers_FormClosing(object sender, FormClosingEventArgs e)
-        {
-
-        }
-
-        private void Close_ManageUserButton_Click(object sender, EventArgs e)
-        {
-            this.Close();
         }
     }
 }
