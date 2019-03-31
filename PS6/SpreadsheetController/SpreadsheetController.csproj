@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\SpreadsheetController.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -48,10 +49,6 @@
     <ProjectReference Include="..\..\..\..\..\Dropbox\School- Sophmore 2018-19\CS 3500\Partner\SpaceWars\NetworkController\NetworkController.csproj">
       <Project>{521ef6e4-11c2-42ee-be02-0eaa5023527e}</Project>
       <Name>NetworkController</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Resources\Resources.csproj">
-      <Project>{42e8590b-816b-4546-be50-2369acbb1f85}</Project>
-      <Name>Resources</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
