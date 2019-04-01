@@ -1,12 +1,14 @@
 /*
  * Authors: Thomas Ady, Pranav Rajan
- * Last revision: 3/27/19
+ * Last revision: 3/30/19
  *
  * Contains all function definitions for networking code
  * to be used with server client connections
  */
 
 #include <strings.h>
+#include <vector>
+#include <mutex>
 #include <sys/types.h> 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -20,20 +22,20 @@
    * ID for the socket that waits on client connections. overwrites any
    * numbers currently in the list.
    */
-  void socket_connections::WaitForClientConnections(socks * sock_list)
+void socket_connections::WaitForClientConnections(socks * sock_list, std::mutex* lock)
   {
 
     // Make the socket listening for clients
-    int * socket_list = sock_list->sockets;
-    socket_list[0] = socket(AF_INET, SOCK_STREAM, 0);
-    if (socket_list < 0)
+    std::vector<int>* socket_list = sock_list->sockets;
+    socket_list->push_back(socket(AF_INET, SOCK_STREAM, 0));
+    
+    if ((*socket_list)[0] < 0)
       {
 	std::cout << "ERR: Client Connection socket failed" << std::endl;
 	return;
       }
 
     // Initial increments for the waiting socket
-    ++(sock_list->size);
     ++(sock_list->size_before_update);
 
     // Setting up the sockaddr from: http://www.linuxhowtos.org/C_C++/socket.htm
@@ -44,14 +46,15 @@
     serv_addr.sin_port = htons(PORT_NUM);
 
     // Bind the socket to an address
-    if (bind(socket_list[0], (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
+    if (bind((*socket_list)[0], (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
       {
 	std::cout << "Failed to bind socket" << std::endl;
 	return;
+	// TODO End program
       }
 
     // Listen for incoming connections
-    if (listen(socket_list[0], 5000) < 0)
+    if (listen((*socket_list)[0], 100) < 0)
       {
 	std::cout << "ERR: Could not listen for incoming connections" << std::endl;
 	return;
@@ -65,35 +68,35 @@
       // Setting up the sockaddr and socklen from http://www.linuxhowtos.org/data/6/server.c
       struct sockaddr_in cli_addr;
       socklen_t clilen = sizeof(cli_addr);
-      socket_list[sock_list->size] = accept(socket_list[0], 
-					    (struct sockaddr *) &cli_addr, &clilen);
+      int fd = accept((*socket_list)[0], (struct sockaddr *) &cli_addr, &clilen);
+
+      lock->lock();
+      socket_list->push_back(fd);
+
       // In case could not connect
-      if (socket_list[sock_list->size] < 0)
+      if ((*socket_list)[socket_list->size()] < 0)
 	{
 	  std::cout << "ERR: Failed connection to client, continuing waiting for connections" << std::endl;
 	  continue;
 	}
 
-      //Should lock here
-      // Increment size for new socket, set new connection
-      ++(sock_list->size);
+      // set new connection
       sock_list->new_socket_connected = true;
+      lock->unlock();
     }
   }
   
   
   /*
-   *
+   * Reads in data from the socket fd provided, into the given buffer
+   * of most bytes amount of data
    */
-  void socket_connections::WaitForData()
+  void socket_connections::WaitForData(int socket_fd, char* buf, int bytes)
   {
-  }
+    if (read(socket_fd, buf, bytes) < 0)
+      std::cout << "Error reading data from socket" << std::endl;
 
-  /*
-   *
-   */
-  void socket_connections::OnDataReceived()
-  {
+    std::cout << buf << std::endl;
   }
 
   /*
