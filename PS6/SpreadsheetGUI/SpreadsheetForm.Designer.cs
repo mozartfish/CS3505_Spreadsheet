@@ -57,7 +57,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.spreadsheetPanel1.Location = new System.Drawing.Point(8, 85);
             this.spreadsheetPanel1.Name = "spreadsheetPanel1";
-            this.spreadsheetPanel1.Size = new System.Drawing.Size(1496, 1167);
+            this.spreadsheetPanel1.Size = new System.Drawing.Size(1496, 961);
             this.spreadsheetPanel1.TabIndex = 0;
             // 
             // contentTextBox
@@ -230,7 +230,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1516, 1261);
+            this.ClientSize = new System.Drawing.Size(1516, 1055);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.valueText);
             this.Controls.Add(this.contentLabel);

@@ -1,6 +1,6 @@
 /*
  * Authors: Thomas Ady, Pranav Rajan
- * Last Revision: 3/27/19
+ * Last Revision: 3/30/19
  *
  * This header encompasses all declarations for socket based connection code
  * and static functions for connecting, sending, and receiving on TCP based
@@ -8,14 +8,23 @@
  */
 
 #include <sys/socket.h>
+#include <vector>
+#include <mutex>
 
 #ifndef CONNECT_H
 #define CONNECT_H
 
+#define BUF_SIZE 1024 //Buffer size default of 1kB
+
 // A struct containing a list of sockets and a size of the list
 struct socks {
-    int* sockets;
-    int size;
+  std::vector<int>* sockets;
+  
+  // Fields to let any user of this struct know it has been modified
+  int size_before_update;
+  bool new_socket_connected;
+
+  std::vector<char*>* buffers;
   };
 
 class socket_connections {
@@ -28,17 +37,11 @@ class socket_connections {
   const static int PORT_NUM = 2112;
   
   // Server functions to allow client connection
-  static void WaitForClientConnections(socks * sock_list);
-  static void ClientConnected();
-
-  // Client functions to allow server connections
-  static void AttemptServerConnection();
-  static void OnServerConnect();
+  static void WaitForClientConnections(socks * sock_list, std::mutex* lock);
   
-  // Functions for both Server and CLient to get and process data
-  static void WaitForData();
-  static void OnDataReceived();
-  static void SendData();
+  // Functions to get and process data
+  static void WaitForData(int socket_fd, char* buf, int bytes);
+  static void SendData(int socket_fd, const char * data, int bytes);
 
 };
 

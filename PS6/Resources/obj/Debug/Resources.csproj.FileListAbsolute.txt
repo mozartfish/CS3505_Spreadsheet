@@ -1,1 +1,3 @@
 C:\Users\Aaron Carlisle\source\repos\u0711523\PS6\Resources\obj\Debug\Resources.csproj.CoreCompileInputs.cache
+C:\Users\Joanna Lowry\Source\Repos\CS3505_Spreadsheet\PS6\Resources\obj\Debug\Resources.csprojAssemblyReference.cache
+C:\Users\Joanna Lowry\Source\Repos\CS3505_Spreadsheet\PS6\Resources\obj\Debug\Resources.csproj.CoreCompileInputs.cache
