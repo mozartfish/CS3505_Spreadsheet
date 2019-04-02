@@ -2,11 +2,9 @@
   "ExpandedNodes": [
     "",
     "\\Admin User Interface",
-    "\\Admin User Interface\\AdminModel",
+    "\\Admin User Interface\\AdminModel\\Connected Services",
     "\\Admin User Interface\\UnitTests",
-    "\\Admin User Interface\\WindowsFormsApp1",
-    "\\PS6"
+    "\\Admin User Interface\\WindowsFormsApp1"
   ],
-  "SelectedNode": "\\PS6\\SpreadsheetGUI",
   "PreviewInSolutionExplorer": false
 }
