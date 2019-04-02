@@ -13,7 +13,9 @@ namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
-        //AdminLogic logic;
+        public delegate void NameEventHandle();
+        public event NameEventHandle OpenNewAcctMan;
+
         public Form1()
         {
             InitializeComponent();
@@ -33,12 +35,8 @@ namespace WindowsFormsApp1
 
         private void AccountManagementButton(object sender, EventArgs e)
         {
-            //if (logic.GetAcctWindowsCount() == 0)
-            {
-                ManageUsers form = new ManageUsers();
-                form.Show();
-                //logic.SetAcctWindowsCount(1);
-            }
+            OpenNewAcctMan();
+            
         }
 
         private void SpreadsheetManagmentButton(object sender, EventArgs e)
