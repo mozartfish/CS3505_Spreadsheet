@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\Admin User Interface\\WindowsFormsApp1",
+    "\\Admin User Interface\\WindowsFormsApp1\\Properties"
   ],
-  "SelectedNode": "\\Connection",
+  "SelectedNode": "\\Admin User Interface",
   "PreviewInSolutionExplorer": false
 }
