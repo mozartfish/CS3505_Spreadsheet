@@ -13,10 +13,7 @@ CLIENT:
 
 
 ADMIN:
-- Rough draft of GUI (4 hrs)
 - Skeleton of Events (2 hrs)
-- Design top protocol, for messages to server (1 hr)
-- Use document (1 hr)
 
 
 DONE
@@ -27,3 +24,8 @@ Pranav - Set up Discord and the github repository for the assignment
 Aaron - Decide on the 3500 spreadsheet project that we are going to use for the multi-client spreadsheet
 - Decide who is going to work on which part of the spreadsheet SERVER: Tom & Pranav CLIENT: Cole & Joanna ADMIN: Aaron & Bruce
 - Using what we know about the Protocol begin thinking about design for the client and the server
+
+April 1:
+- Rough draft of GUI (4 hrs)
+- Design top protocol, for messages to server (1 hr)
+- Use document (1 hr)

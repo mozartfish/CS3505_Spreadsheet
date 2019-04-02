@@ -1,7 +1,11 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\Admin User Interface",
+    "\\Admin User Interface\\AdminModel",
+    "\\Admin User Interface\\UnitTests",
+    "\\Admin User Interface\\WindowsFormsApp1"
   ],
-  "SelectedNode": "\\Connection",
+  "SelectedNode": "\\TopLayerCommunicationProtocol",
   "PreviewInSolutionExplorer": false
 }
