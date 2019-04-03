@@ -9,6 +9,12 @@ SERVER:
 - send messages("hello") (2.5 hrs)
 
 CLIENT:
+(Current Sprint)
+- Sending fully formed messages
+- Receiving fully formed messages
+- Update GUI’s with listview and switching to spreadsheet view
+- Update GUI with add spreadsheet functionality
+
 
 
 ADMIN:
