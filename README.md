@@ -4,6 +4,12 @@ Authors: Tom Ady, Aaron Carlisle, Cole Jacobs, Joanna Lowry, Pranav Rajan, Bruce
 
 TO DO (Current Sprint)
 SERVER:
+-How to JSON serialize and deserialize in C++
+-Port Dependency Graph
+-Complete spreadsheet objects
+-Read in spreadsheet and settings from files
+
+Done:
 - Handshake (4 hrs)
 - Accept messages("recieved message ") (3 hrs)
 - send messages("hello") (2.5 hrs)
