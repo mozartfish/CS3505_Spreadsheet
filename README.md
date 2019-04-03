@@ -12,7 +12,14 @@ CLIENT:
 
 
 ADMIN:
-- Rough draft of GUI (4 hrs)
-- Skeleton of Events (2 hrs)
-- Design top protocol, for messages to server (1 hr)
-- Use document (1 hr)
+  Next Sprint:
+  - parsing json
+  - incorporating the clients networking code into front end
+  - work with server to make admin - server messages possible
+
+
+  DONE:
+  - Rough draft of GUI (4 hrs)
+  - Skeleton of Events (2 hrs)
+  - Design top protocol, for messages to server (1 hr)
+  - Use document (1 hr)
