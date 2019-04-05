@@ -267,7 +267,7 @@ void Dependency_Graph::Replace_Dependees(std::string s, std::unordered_set<std::
     
     std::unordered_set<std::string> addNewDependeesSet = new_Dependees;
   
-    for (std::string t : addNewDependentsSet)
+    for (std::string t : addNewDependeesSet)
     {
       this->Add_Dependency(t, s);
     }
