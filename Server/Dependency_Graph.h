@@ -17,6 +17,7 @@ class DependencyGraph
 
   // An integer used to keep track of the number of ordered pairs in the Dependency Graph
   int numPairs;
+
   //Key: String that the value set depends on
   //Value: A set of strings that depend on the Key
   std::unordered_map<std::string, std::unordered_set<std::string>> dependentsMap;
@@ -27,13 +28,13 @@ class DependencyGraph
 
  public:
   DependencyGraph(); // constructor
-  ~DependencyGraph(); // destructor
+  // ~DependencyGraph(); // destructor
   int Size(); // function that returns the number of ordered pairs in the dependency graph
   int Dependees_Size(std::string s); // returns the size of the dependees
   bool Has_Dependents(std::string s); // reports whether dependents is non-empty
   bool Has_Dependees(std::string s); // reports whether dependees is non-empty
-  std::unordered_set<std::string> Get_Dependents(std::string); // enumerates dependents
-  std::unordered_set<std::string>Get_Dependees(std::string); // enumerates dependees
+  std::unordered_set<std::string> &Get_Dependents(std::string s); // enumerates dependents
+  std::unordered_set<std::string> &Get_Dependees(std::string s); // enumerates dependees
   void Add_Dependency(std::string s, std::string t); // function that adds the ordered pair (s, t) if it doesn't exist
   void Remove_Dependency(std::string s, std::string t); // removes the ordered pair (s, t) if it exists
   void Replace_Dependents(std::string s, std::unordered_set<std::string> new_Dependents); // function that removes all ordered pairs of the form (s, r). Then, for each t in new_Dependents, adds the ordered pair (s, t)
