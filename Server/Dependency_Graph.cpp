@@ -1,5 +1,6 @@
 /*
  *Authors: Thomas Ady, Pranav Rajan, Professor Daniel Kopta, Professor Joe Zachary
+ *Last update: April 5, 2019
  *
  *(s1, t1) is an ordered pair of strings
  *t1 depends on s1; s1 must be evaluated before t1
@@ -125,19 +126,152 @@ void Add_Dependency (std::string s, std::string t)
     return;
   }
 
-  //CASE 2: S akreadyexists in the dependentsMap but t is not in the set mapped to s
+  //CASE 2: S already exists in the dependentsMap but t is not in the set mapped to s
   else if (got_dependees == dependeesMap.end())
   {
-    got->insert(t);
+    got_dependents->insert(t);
     
     std::unordered_set<std::string> newDependeesSet = std::unordered_set<std::string>();
     
-    new DependeesSet.insert(s);
+    newDependeesSet.insert(s);
     
     dependeesMap.insert(t, newDependeesSet);
-    dependentsMap.insert(t);
-  } 
+    
+    got_dependents->insert(t);
+    
+    this->numPairs++;
+    
+    return;
+  }
 
-  
+  //CASE 3: T ALREADY EXISTS IN THE dependeesMap but is is not in the set mapped to t
+  else if (got_dependents == dependentsMap.end())
+  {
+    got_dependeesMap.insert(s);
+    
+    std::unordered_set<std::string> newDependentsSet = std::unordered_set<std::string>();
+      
+    newDependentsSet.insert(t);
+      
+    dependentsMap.insert(t, newDependentsSet);
+    
+    got_dependeesMap.insert(s);
+    
+    this->numPairs++;
+    
+    return;
+  }
+
+  //CASE 4: S AND T ALREADY EXIST IN THE dependeesMap and dependentsMap
+  else
+  {
+    std::unordered_set<std::string>::const_iterator got_dependees_set = got_dependees.find(s); // create a new iterator to find the string
+    std::unordered_set<std::string>::const_iterator got_dependents_set = got_dependents.find(t); // create a new iterator to find the string
+    
+    if (got_dependees_set == got_dependees.end() && got_dependents_set == got_dependents.end())
+    {
+      got_dependents.insert(t);
+      got_dependees.insert(s);
+      
+      this->numPairs++;
+      
+      return;
+    }
+    else
+      return;
+  } 
 }
 
+void Dependency_Graph::Remove_Dependency(std::string s, std::string t)
+{
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator got_dependees = dependeesMap.find(t); // create a new iterator to find the string
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator got_dependents = dependentsMap.find(s); // create a new iterator to find the string
+  std::unordered_set<std::string>::const_iterator got_dependees_set = got_dependees.find(s); // create a new iterator to find the string
+  std::unordered_set<std::string>::const_iterator got_dependents_set = got_dependents.find(t); // create a new iterator to find the string
+
+  if ((got_dependents == dependentsMap.end() && got_dependents_set == got_dependents.end()) && (got_dependees == dependeesMap.end() && got_dependees_set == got_dependees.end()))
+    return;
+  else
+  {
+    got_dependents.erase(t);
+    got_dependees.erase(s);
+    
+    this->numPairs--;
+    
+    return;
+  } 
+}
+
+
+void Dependency_Graph::Replace_Dependents(std::string s, std::unordered_set<std::string> new_Dependents)
+{
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator got_dependents = dependentsMap.find(s); // create a new iterator to find the string
+  
+  if (got_dependents == dependentsMap.end())
+  {
+    std::unordered_set<std::string> addNewDependentsSet = new_Dependents;
+  
+    for (std::string t : addNewDependentsSet)
+    {
+      this->Add_Dependency(s, t);
+    }
+  
+    return; 
+  }
+  
+  else
+  {
+    std::unordered_set<std::string> removeOldDependentsSet = this->Get_Dependents(s);
+    
+    for (std::string r : removeOldDependentsSet)
+    {
+      this->Remove_Dependency(s, r);
+    }
+    
+    std::unordered_set<std::string> addNewDependentsSet = new_Dependents;
+  
+    for (std::string t : addNewDependentsSet)
+    {
+      this->Add_Dependency(s, t);
+    }
+  
+    return; 
+  }
+}
+
+
+void Dependency_Graph::Replace_Dependees(std::string s, std::unordered_set<std::string> new_Dependees)
+{
+   std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator got_dependees = dependeesMap.find(s); // create a new iterator to find the string
+
+  if (got_dependees == dependeesMap.end())
+  {
+    std::unordered_set<std::string> addNewDependeesSet = new_Dependees;
+  
+    for (std::string t : addNewDependeesSet)
+    {
+      this->Add_Dependency(t, s);
+    }
+  
+    return; 
+  }
+  
+  else
+  {
+    std::unordered_set<std::string> removeOldDependeesSet = this->Get_Dependees(s);
+    
+    for (std::string r : removeOldDependeesSet)
+    {
+      this->Remove_Dependency(r, s);
+    }
+    
+    std::unordered_set<std::string> addNewDependeesSet = new_Dependees;
+  
+    for (std::string t : addNewDependentsSet)
+    {
+      this->Add_Dependency(t, s);
+    }
+
+    return; 
+  }
+}
