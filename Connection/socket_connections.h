@@ -14,7 +14,7 @@
 #ifndef CONNECT_H
 #define CONNECT_H
 
-#define BUF_SIZE 1024
+#define BUF_SIZE 1024 //Buffer size default of 1kB
 
 // A struct containing a list of sockets and a size of the list
 struct socks {
