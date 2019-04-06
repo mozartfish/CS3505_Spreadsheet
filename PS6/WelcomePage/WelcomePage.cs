@@ -55,6 +55,9 @@ namespace WelcomePage
             controller.Password = Password.Text;
             controller.Username = Username.Text;
             ConnectToServer(ServerAddress.Text);
+
+            //TODO: disable button
+
         }
 
 
@@ -69,11 +72,15 @@ namespace WelcomePage
             string currSpreadsheet = spreadsheetList.SelectedItem.ToString();
             if (currSpreadsheet != null)  // make sure a spreadsheet has been selected
             {
-                MessageBox.Show(currSpreadsheet);
+                //MessageBox.Show(currSpreadsheet);
+                SpreadsheetGUI.SpreadsheetForm ssForm = new SpreadsheetGUI.SpreadsheetForm();
+                SpreadsheetGUI.SpreadsheetApplicationContext appContext = 
+                    SpreadsheetGUI.SpreadsheetApplicationContext.getAppContext();
+                appContext.RunForm(ssForm);
+                
             }
-
-
-            this.Close();
+            //this.Hide();
+            //this.Close();
         }
 
         private void NewSpreadsheet_Click(object sender, EventArgs e)
