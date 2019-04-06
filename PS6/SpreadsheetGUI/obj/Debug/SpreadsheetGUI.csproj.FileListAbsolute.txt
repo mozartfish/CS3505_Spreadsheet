@@ -37,3 +37,4 @@ C:\Users\Joanna Lowry\Source\Repos\CS3505_Spreadsheet\PS6\SpreadsheetGUI\obj\Deb
 C:\Users\Joanna Lowry\Source\Repos\CS3505_Spreadsheet\PS6\SpreadsheetGUI\obj\Debug\SpreadsheetGUI.csproj.CopyComplete
 C:\Users\Joanna Lowry\Source\Repos\CS3505_Spreadsheet\PS6\SpreadsheetGUI\obj\Debug\SpreadsheetGUI.exe
 C:\Users\Joanna Lowry\Source\Repos\CS3505_Spreadsheet\PS6\SpreadsheetGUI\obj\Debug\SpreadsheetGUI.pdb
+C:\Users\Joanna Lowry\Source\Repos\CS3505_Spreadsheet\PS6\SpreadsheetGUI\obj\Debug\SpreadsheetGUI.csprojAssemblyReference.cache
