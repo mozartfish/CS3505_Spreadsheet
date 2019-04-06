@@ -1,8 +1,10 @@
 {
   "ExpandedNodes": [
+    "",
     "\\Connection",
-    "\\PS6"
+    "\\PS6",
+    "\\Server"
   ],
-  "SelectedNode": "\\Connection",
+  "SelectedNode": "\\Server\\Server_Exec",
   "PreviewInSolutionExplorer": false
 }
