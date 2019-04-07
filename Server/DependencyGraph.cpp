@@ -98,7 +98,7 @@ std::unordered_set<std::string> DependencyGraph::GetDependents(std::string s)
 //Enumerates dependees(s)
 std::unordered_set<std::string> DependencyGraph::GetDependees(std::string s)
 {
-  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator get_dependees = this->dependees_map.find(s);
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator get_dependees = this->dependees_map.find(s); // create a new iterator to find key in map
   if (get_dependees == this->dependees_map.end())
   {
     std::unordered_set<std::string> empty_set = std::unordered_set<std::string>();
@@ -109,4 +109,86 @@ std::unordered_set<std::string> DependencyGraph::GetDependees(std::string s)
     std::unordered_set<std::string> get_dependees_set = get_dependees->second;
     return get_dependees_set;
   }
+}
+
+//Adds the ordered pair (s,t) if it doesn't exist
+void DependencyGraph::AddDependency(std::string s, std::string t)
+{
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator dependents_find = this->dependents_map.find(s);
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator dependees_find = this->dependees_map.find(t);
+  
+  //CASE 1: the dependency graph does not contain s or t
+  if ((dependents_find == this->dependents_map.end()) && (dependees_find == this->dependees_map.end()))
+  {
+    std::unordered_set<std::string> dependents_set = std::unordered_set<std::string>();
+    std::unordered_set<std::string> dependees_set = std::unordered_set<std::string>();
+    
+    dependents_set.insert(t);
+    dependees_set.insert(s);
+    
+    this->dependents_map.insert({s, dependents_set});
+    this->dependees_map.insert({t, dependees_set});
+    
+    this->num_pairs++;
+    
+    return;
+  }
+
+  //CASE 2: s already exists in the dependentsMap but t is not in the set mapped to s
+  else if ((this->dependents_map.count(s) > 0) && (this->dependees_map.count(t) == 0))
+  {
+    std::unordered_set<std::string> dependents_set =  dependents_find->second;
+    dependents_set.insert(t);
+    this->dependents_map.insert({s, dependents_set});
+    
+    std::unordered_set<std::string> new_dependees_set = std::unordered_set<std::string>();
+    new_dependees_set.insert(s);
+    this->dependees_map.insert({t, new_dependees_set});
+        
+    this->num_pairs++;
+    
+    return;
+  }
+  
+  //CASE 3: t already exists in the dependeesMap but s is not in the set mapped to t
+  else if ((this->dependents_map.count(s) == 0) && (this->dependees_map.count(t) == 1))
+  {
+    std::unordered_set<std::string> dependees_set = dependees_find->second;
+    dependees_set.insert(s);
+    this->dependees_map.insert({t, dependees_set});
+    
+    std::unordered_set<std::string> new_dependents_set = std::unordered_set<std::string>();
+    new_dependents_set.insert(t);
+    this->dependents_map.insert({s, new_dependents_set});
+    
+    this->num_pairs++;
+    
+    return;
+  }
+  
+  //CASE 4: s and t already exist in the dependeesMap and dependentsMap
+  else
+  {
+    if ((this->dependents_map.count(s) == 1) && (this->dependees_map.count(t) == 1))
+    {
+      std::unordered_set<std::string> dependents_set = dependents_find->second;
+      std::unordered_set<std::string> dependees_set = dependees_find->second;
+      
+      if ((dependents_set.count(t) == 1) && (dependees_set.count(s) == 1))
+	return;
+      else
+      {
+	dependents_set.insert(t);
+	dependees_set.insert(s);
+	
+	this->dependents_map.insert({s, dependents_set});
+	this->dependees_map.insert({t, dependees_set});
+	
+	this->num_pairs++;
+	
+	return;
+      }
+    }
+  }
+
 }

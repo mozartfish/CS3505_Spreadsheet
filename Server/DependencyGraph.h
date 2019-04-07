@@ -36,6 +36,7 @@ class DependencyGraph
   bool HasDependees(std::string s);
   std::unordered_set<std::string> GetDependents(std::string s);
   std::unordered_set<std::string> GetDependees(std::string s);
+  void AddDependency(std::string s, std::string t);
   
 };
 #endif
