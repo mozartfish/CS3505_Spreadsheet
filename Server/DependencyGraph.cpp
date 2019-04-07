@@ -190,5 +190,34 @@ void DependencyGraph::AddDependency(std::string s, std::string t)
       }
     }
   }
+}
 
+//Removes the ordered pair (s, t) if it exists
+void DependencyGraph::RemoveDependency(std::string s, std::string t)
+{
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator remove_dependents = this->dependents_map.find(s);
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator remove_dependees = this->dependees_map.find(t);
+  
+  if ((this->dependents_map.count(s)  == 1) && (this->dependees_map.count(t) == 1))
+  {
+    std::unordered_set<std::string> remove_dependents_set = remove_dependents->second;
+    std::unordered_set<std::string> remove_dependees_set = remove_dependees->second;
+    
+    if ((remove_dependents_set.count(t) == 1) && (remove_dependees_set.count(s) == 1))
+    {
+      remove_dependents_set.erase(t);
+      remove_dependees_set.erase(s);
+      
+      this->dependents_map.insert({s, remove_dependents_set});
+      this->dependees_map.insert({t, remove_dependees_set});
+      
+      this->num_pairs--;
+      
+      return;
+    }
+    else
+      return;
+  }
+  else
+    return;
 }
