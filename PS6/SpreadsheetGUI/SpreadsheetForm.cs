@@ -588,7 +588,7 @@ namespace SpreadsheetGUI
                         selectedCellValue = value;
                     }
 
-                    // TODO: remove -- we should only display what the server sends to us
+                    // TODO: remove -- we should only display what the server sends to us(?)
                     DisplayCellPanelValue(newCellName, value);
                 }
 
