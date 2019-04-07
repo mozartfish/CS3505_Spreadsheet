@@ -33,6 +33,7 @@ class DependencyGraph
   int Size();
   int DependeesSize(std::string s);
   bool HasDependents(std::string s);
+  bool HasDependees(std::string s);
   
 };
 #endif
