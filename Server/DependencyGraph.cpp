@@ -17,6 +17,7 @@
 #include <iostream> // for debugging purposes
 #include <unordered_set> // C++ implementation of a hash set
 #include <unordered_map> // C++ implementation of a hash map
+#include <string>
 
 //constructor
 DependencyGraph::DependencyGraph()
@@ -40,7 +41,7 @@ int DependencyGraph::Size()
 //The size of dependees(s)
 int DependencyGraph::DependeesSize(std::string s)
 {
-  std::unordered_map<std::string, std::unordered_set<std::string>>const_iterator got_dependees = this->dependees_map.find(s);
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator got_dependees = this->dependees_map.find(s);
   if (got_dependees == this->dependees_map.end())
     return 0;
   else
@@ -50,7 +51,7 @@ int DependencyGraph::DependeesSize(std::string s)
 //Reports whether dependents(s) is non-empty
 bool DependencyGraph::HasDependents(std::string s)
 {
-  std::unordered_map<std::string, std::unordered_set<std::string>> const_iterator got_dependents = this->dependents_map.find(s);
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator got_dependents = this->dependents_map.find(s);
   if (got_dependents == this->dependents_map.end())
     return false;
   else
@@ -65,7 +66,7 @@ bool DependencyGraph::HasDependents(std::string s)
 //Reports whether dependees(s) is non-empty
 bool DependencyGraph::HasDependees(std::string s)
 {
-  std::unordered_map<std::string, std::unordered_set<std::string>> const_iterator got_dependees = this->dependees_map.find(s);
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator got_dependees = this->dependees_map.find(s);
   if (got_dependees == this->dependees_map.end())
     return false;
   else
@@ -78,22 +79,22 @@ bool DependencyGraph::HasDependees(std::string s)
 }
 
 //Enumerates dependents(s)
-std::unordered_set<std::string> &DependencyGraph::GetDependents(std::string s)
+std::unordered_set<std::string> & DependencyGraph::GetDependents(std::string s)
 {
-  std::unordered_map<std::string, std::unordered_set<std::string>> const_iterator got_dependents = this->dependents_map.find(s);
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator got_dependents = this->dependents_map.find(s);
   if (got_dependents == this->dependents_map.end())
-    return std::unordered_set<std::string>();
+    return new std::unordered_set<std::string>();
   else
   {
-    std::unordered_set<std::string> get_dependents = got_dependents->second;
-    return get_dependents;
+    std::unordered_set<std::string> * get_dependents = &got_dependents->second;
+    return &get_dependents;
   }
 }
 
 //Enumerates dependees(s)
 std::unordered_set<std::string> &DependencyGraph::GetDependees(std::string s)
 {
-  std::unordered_map<std::string, std::unordered_set<std::string>> const_iterator got_dependees = this->dependees_map.find(s);
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator got_dependees = this->dependees_map.find(s);
   if (got_dependees == this->dependees_map.end())
     return std::unordered_set<std::string>();
   else
@@ -106,8 +107,8 @@ std::unordered_set<std::string> &DependencyGraph::GetDependees(std::string s)
 //Adds the ordered pair (s, t), if it doesn't exist
 void DependencyGraph::AddDependency(std::string s, std::string t)
 {
-  std::unordered_map<std::string, std::unordered_set<std::string>> const_iterator got_dependents = this->dependents_map.find(s);
-  std::unordered_map<std::string, std::unordered_set<std::string>> const_iterator got_dependees = this->dependees_map.find(t);
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator got_dependents = this->dependents_map.find(s);
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator got_dependees = this->dependees_map.find(t);
   
   //CASE 1: the dependency graph does not contain s or t
   if ((got_dependents == this->dependents_map.end()) && (got_dependees == this->dependees_map.end()))
@@ -183,8 +184,8 @@ void DependencyGraph::AddDependency(std::string s, std::string t)
 
 void DependencyGraph::RemoveDependency(std::string s, std::string t)
 {
-  std::unordered_map<std::string, std::unordered_set<std::string>> const_iterator got_dependents = this->dependents_map.find(s);
-  std::unordered_map<std::string, std::unordered_set<std::string>> const_iterator got_dependees = this->dependees_map.find(t);
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator got_dependents = this->dependents_map.find(s);
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator got_dependees = this->dependees_map.find(t);
   std::unordered_set<std::string>::const_iterator got_dependents_set = got_dependents->second.find(t);
   std::unordered_set<std::string>::const_iterator got_dependees_set = got_dependees->second.find(s);
   
@@ -204,7 +205,7 @@ void DependencyGraph::RemoveDependency(std::string s, std::string t)
 
 void DependencyGraph::ReplaceDependents(std::string s, std::unordered_set<std::string> new_dependents)
 {
-  std::unordered_map<std::string, std::unordered_set<std::string>> const_iterator got_dependents = this->dependents_map.find(s);
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator got_dependents = this->dependents_map.find(s);
   
   //CASE 1: check if s is not a key in the dependentsMap
   if (got_dependents == this->dependents_map.end())
@@ -241,7 +242,7 @@ void DependencyGraph::ReplaceDependents(std::string s, std::unordered_set<std::s
 
 void DependencyGraph::ReplaceDependees(std::string s, std::unordered_set<std::string> new_dependees)
 {
-  std::unordered_map<std::string, std::unordered_set<std::string>> const_iterator got_dependees = this->dependees_map.find(s);
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator got_dependees = this->dependees_map.find(s);
   
   //CASE 1: check if s is not a key in the dependeesMap
   if (got_dependees = this->dependees_map.end())
