@@ -79,7 +79,7 @@ bool DependencyGraph::HasDependees(std::string s)
   }
 }
 
-//Enumerates the dependents(s)
+//Enumerates dependents(s)
 std::unordered_set<std::string> DependencyGraph::GetDependents(std::string s)
 {
   std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator get_dependents = this->dependents_map.find(s);
@@ -92,5 +92,21 @@ std::unordered_set<std::string> DependencyGraph::GetDependents(std::string s)
   {
     std::unordered_set<std::string> get_dependents_set = get_dependents->second;
     return get_dependents_set;
+  }
+}
+
+//Enumerates dependees(s)
+std::unordered_set<std::string> DependencyGraph::GetDependees(std::string s)
+{
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator get_dependees = this->dependees_map.find(s);
+  if (get_dependees == this->dependees_map.end())
+  {
+    std::unordered_set<std::string> empty_set = std::unordered_set<std::string>();
+    return empty_set;
+  }
+  else
+  {
+    std::unordered_set<std::string> get_dependees_set = get_dependees->second;
+    return get_dependees_set;
   }
 }
