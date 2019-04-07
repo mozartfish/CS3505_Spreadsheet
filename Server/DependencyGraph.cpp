@@ -31,3 +31,9 @@ DependencyGraph::DependencyGraph()
 //DependencyGraph::~DependencyGraph()
 //{
 //}
+
+//The number of ordered pairs in the dependency graph
+int DependencyGraph::Size()
+{
+  return this->num_pairs;
+}

@@ -30,5 +30,7 @@ class DependencyGraph
  public:
   DependencyGraph();
   //~DependencyGraph();
+  int Size();
+  
 };
 #endif
