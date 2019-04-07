@@ -48,3 +48,18 @@ int DependencyGraph::DependeesSize(std::string s)
   else
     return dependees_size->second.size();
 }
+
+//Reports whether dependents(s) is non-empty
+bool DependencyGraph::HasDependents(std::string s)
+{
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator has_dependents = this->dependents_map.find(s); // create a new iterator to find key in map
+  if (has_dependents == this->dependents_map.end())
+    return false;
+  else
+  {
+    if (has_dependents->second.size() > 0)
+      return true;
+    else
+      return false;
+  }
+}
