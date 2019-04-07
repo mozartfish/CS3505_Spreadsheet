@@ -70,6 +70,11 @@ namespace SpreadsheetGUI
         public SpreadsheetForm()
         {
             InitializeComponent();
+            //Added for server based spreadsheet
+            controller = new Controller.SpreadsheetController();
+            controller.RegisterSpreadsheetUpdateHandler(UpdateSpreadsheet);
+
+
             spreadsheetPanel1.SelectionChanged += DisplaySelection;
             spreadsheet = new Spreadsheet(s => controller.IsValid(s), s => controller.Normalize(s), "ps6");
 
@@ -86,9 +91,7 @@ namespace SpreadsheetGUI
             }
 
 
-            //Added for server based spreadsheet
-            controller = new Controller.SpreadsheetController();
-            controller.RegisterSpreadsheetUpdateHandler(UpdateSpreadsheet);
+           
         }
 
 

@@ -69,9 +69,10 @@ namespace WelcomePage
 
         private void spreadsheetList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string currSpreadsheet = spreadsheetList.SelectedItem.ToString();
-            if (currSpreadsheet != null)  // make sure a spreadsheet has been selected
-            {
+            if(spreadsheetList.SelectedItem != null) // make sure a spreadsheet has been selected
+            { 
+                string currSpreadsheet = spreadsheetList.SelectedItem.ToString();
+            
                 //MessageBox.Show(currSpreadsheet);
                 SpreadsheetGUI.SpreadsheetForm ssForm = new SpreadsheetGUI.SpreadsheetForm();
                 SpreadsheetGUI.SpreadsheetApplicationContext appContext = 
