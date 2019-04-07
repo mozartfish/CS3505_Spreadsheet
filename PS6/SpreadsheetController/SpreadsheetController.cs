@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Controller
@@ -11,18 +12,20 @@ namespace Controller
     {
         public delegate void ListUpdate(List<string> list);
         private event ListUpdate ListArrived;
-        public delegate void SpreadsheetUpdate();
+        public delegate void SpreadsheetUpdate(SS.Spreadsheet ss);
         private event SpreadsheetUpdate SpreadsheetArrived;
         private Socket server;
         private string username;
         private string password;
         private List<string> spreadsheets;  // A list of spreadsheets available on the server
+        private SS.Spreadsheet spreadsheet;
 
         public SpreadsheetController()
         {
             server = null;
             username = "";
             spreadsheets = new List<string>();
+            spreadsheet = new SS.Spreadsheet();
         }
 
         public List<string> Spreadsheets
@@ -52,6 +55,8 @@ namespace Controller
             this.SpreadsheetArrived += handler;
         }
 
+
+        #region networking
         public void Connect(string hostName)
         {
             server = Networking.ConnectToServer(hostName, FirstContact);
@@ -89,18 +94,55 @@ namespace Controller
         public void ReceiveSpreadsheet(SocketState ss)
         {
             // Parse the message and update the spreadsheet
+            //add cells to the spreadsheet
 
             //continues the receiving loop
+           
 
             //trigger UpdateSpreadsheetEvent
-            SpreadsheetArrived();
+            SpreadsheetArrived(spreadsheet);
         }
 
         public void Send(string data)
         {
             Networking.Send(server, data);
         }
+        #endregion
 
 
+        /// <summary>
+        /// Sets stricter parameters for a valid variable. A valid variable must now only contain
+        /// one case insensitive letter and one number (1-99). This is based on the parameters of
+        /// the spreadsheet.
+        /// </summary>
+        /// <param name="name">The variable name.</param>
+        /// <returns></returns>
+        public bool IsValid(string name)
+        {
+            return Regex.IsMatch(name, @"^[a-zA-Z][1-9][0-9]?$");
+        }
+
+        /// <summary>
+        /// A normalization helper method that will convert all user's variable inputs to
+        /// uppercase.
+        /// </summary>
+        /// <param name="name">Variable name</param>
+        /// <returns></returns>
+        public string Normalize(String name)
+        {
+            return name.ToUpper();
+        }
+
+        /// <summary>
+        /// Checks if the updated value is a formula error and displays that if necessary.
+        /// </summary>
+        /// <param name="value">The cell value to check.</param>
+        public void FormulaErrorCheck(ref String value)
+        {
+            if (value.Equals("SpreadsheetUtilities.FormulaError"))
+            {
+                value = "FormulaError";
+            }
+        }
     }
 }

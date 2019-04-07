@@ -127,5 +127,11 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SpreadsheetController\SpreadsheetController.csproj">
+      <Project>{a2c58484-1cfd-45c8-9e05-65e071edafd7}</Project>
+      <Name>SpreadsheetController</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -2,6 +2,11 @@
 // Version 1.0
 // 10/20/2018
 
+//Joanna Lowry  && Cole Jacobs
+//Version 1.1
+//04/07/2019
+//Added functionality for a server based spreadsheet
+
 using SS;
 using System;
 using System.Collections.Generic;
@@ -22,8 +27,8 @@ namespace SpreadsheetGUI
     public partial class SpreadsheetForm : Form
     {
 
-        
-
+        //Added for server-based spreadsheet
+        private Controller.SpreadsheetController controller;
 
 
 
@@ -48,11 +53,6 @@ namespace SpreadsheetGUI
         private string selectedCellValue;
 
         /// <summary>
-        /// Stack to assist with our "Undo" method.
-        /// </summary>
-        private Stack<StackObject> cellStack;
-
-        /// <summary>
         /// Used for the background worker to prevent other work from happening.
         /// </summary>
         private Boolean currentlyWorking = false;
@@ -71,12 +71,7 @@ namespace SpreadsheetGUI
         {
             InitializeComponent();
             spreadsheetPanel1.SelectionChanged += DisplaySelection;
-            spreadsheet = new Spreadsheet(s => IsValid(s), s => Normalize(s), "ps6");
-
-            // Allows for undo functionality.
-            cellStack = new Stack<StackObject>();
-            StackObject initialCell = new StackObject("A1", "");
-            cellStack.Push(initialCell);
+            spreadsheet = new Spreadsheet(s => controller.IsValid(s), s => controller.Normalize(s), "ps6");
 
             spreadsheetPanel1.SetSelection(0, 0);
             contentTextBox.Select();
@@ -89,9 +84,22 @@ namespace SpreadsheetGUI
                 char uppercharshouldbestring = (char)(i + 65);
                 LetterToNumber.Add(uppercharshouldbestring.ToString(), i);
             }
+
+
+            //Added for server based spreadsheet
+            controller = new Controller.SpreadsheetController();
+            controller.RegisterSpreadsheetUpdateHandler(UpdateSpreadsheet);
         }
 
-        
+
+
+
+        public void UpdateSpreadsheet(Spreadsheet ss)
+        {
+
+        }
+
+
         /// <summary>
         /// This references the arrow key handing.
         /// </summary>
@@ -117,6 +125,8 @@ namespace SpreadsheetGUI
             PressEnter(e);
         }
 
+
+        //TODO: remove from form and properties menu
         /// <summary>
         /// Handles the event triggered by clicking "new" within the menu bar.
         /// </summary>
@@ -127,6 +137,7 @@ namespace SpreadsheetGUI
             ClickNew();
         }
 
+        
         /// <summary>
         /// Handles closing the spreadsheet from the menu bar.
         /// </summary>
@@ -137,6 +148,7 @@ namespace SpreadsheetGUI
             Close();
         }
 
+        //TODO: remove from form and properties menu
         /// <summary>
         /// Handles opening a new spreadsheet from the menu bar.
         /// </summary>
@@ -147,6 +159,8 @@ namespace SpreadsheetGUI
             ClickOpen();
         }
 
+
+        //TODO: remove from form and properties menu
         /// <summary>
         /// Handles saving the current spreadsheet and its data.
         /// </summary>
@@ -157,6 +171,7 @@ namespace SpreadsheetGUI
             ClickSave();
         }
 
+        //TODO: Fix the help information
         /// <summary>
         /// Handles the clicking the "help" option from the menu.
         /// </summary>
@@ -167,6 +182,8 @@ namespace SpreadsheetGUI
             ClickHelp();
         }
 
+
+        //TODO: remove from form and properties menu
         /// <summary>
         /// Handles selecting the visualize option from the menu.
         /// </summary>
@@ -177,6 +194,7 @@ namespace SpreadsheetGUI
             RandomColor();
         }
 
+        //TODO: remove from form and properties menu
         /// <summary>
         /// Handles selecting the clear option from the menu.
         /// </summary>
@@ -203,17 +221,9 @@ namespace SpreadsheetGUI
 
         #region Spreadsheet Helpers
 
-        /// <summary>
-        /// Sets stricter parameters for a valid variable. A valid variable must now only contain
-        /// one case insensitive letter and one number (1-99). This is based on the parameters of
-        /// the spreadsheet.
-        /// </summary>
-        /// <param name="name">The variable name.</param>
-        /// <returns></returns>
-        private bool IsValid(string name)
-        {
-            return Regex.IsMatch(name, @"^[a-zA-Z][1-9][0-9]?$");
-        }
+
+        //TODO: Move to Spreadsheet controller
+        
 
         /// <summary>
         /// This converts the index of the row and column to a string representation
@@ -222,21 +232,10 @@ namespace SpreadsheetGUI
         /// <param name="col">column index</param>
         /// <param name="row">Row index</param>
         /// <returns></returns>
-        private string ColTowToCellName(int col, int row)
+        private string ColRowToCellName(int col, int row)
         {
             Char letter = (char)(col + 65);
             return letter.ToString() + (row + 1);
-        }
-
-        /// <summary>
-        /// A normalization helper method that will convert all user's variable inputs to
-        /// uppercase.
-        /// </summary>
-        /// <param name="name">Variable name</param>
-        /// <returns></returns>
-        private string Normalize(String name)
-        {
-            return name.ToUpper();
         }
 
         /// <summary>
@@ -258,7 +257,7 @@ namespace SpreadsheetGUI
         {
             ss.GetSelection(out int col, out int row);
 
-            string name = ColTowToCellName(col, row);
+            string name = ColRowToCellName(col, row);
             string content = spreadsheet.GetCellContents(name).ToString();
             string value = spreadsheet.GetCellValue(name).ToString();
             
@@ -270,6 +269,7 @@ namespace SpreadsheetGUI
             contentTextBox.SelectionStart = contentTextBox.Text.Length;
         }
 
+        // TODO: Not needed
         /// <summary>
         /// Handles opening a previously saved spreadsheet. The user will be prompted to select a spreadsheet from 
         /// their directories. The newly opened spreadsheet will replace the current spreadsheet on the panelZ
@@ -289,7 +289,7 @@ namespace SpreadsheetGUI
                     if (openFile.ShowDialog() == DialogResult.OK)
                     {
                         path = openFile.FileName;
-                        spreadsheet = new Spreadsheet(path, s => IsValid(s), s => Normalize(s), "ps6");
+                        spreadsheet = new Spreadsheet(path, s => controller.IsValid(s), s => controller.Normalize(s), "ps6");
                         spreadsheetPanel1.Clear();
 
                         //this loops through the spreadsheet and populates the spreadsheetpanel with the values
@@ -323,7 +323,8 @@ namespace SpreadsheetGUI
             // Match the regular expression pattern against a text string.
             Match m = r.Match(name);
 
-            //in this loop each of the 2 groups that should be matched to are called for their values. Those values are then used to populate the spreadsheetpanel
+            //in this loop each of the 2 groups that should be matched to are called for their values. 
+            //Those values are then used to populate the spreadsheetpanel
             while (m.Success)
             {
                 string letter = m.Groups[1].ToString();
@@ -333,17 +334,6 @@ namespace SpreadsheetGUI
             }
         }
 
-        /// <summary>
-        /// Checks if the updated value is a formula error and displays that if necessary.
-        /// </summary>
-        /// <param name="value">The cell value to check.</param>
-        private void FormulaErrorCheck(ref String value)
-        {
-            if (value.Equals("SpreadsheetUtilities.FormulaError"))
-            {
-                value = "FormulaError";
-            }
-        }
         #endregion
 
         #region event helpers
@@ -450,6 +440,7 @@ namespace SpreadsheetGUI
             help.Show();
         }
 
+        //TODO: delete
         /// <summary>
         /// This event helper will display the user's directory and allow them to save a new file or overwrite an
         /// existing one. Default extension for saving are .sprd files, but the user may save under a different 
@@ -486,6 +477,8 @@ namespace SpreadsheetGUI
             return false;
         }
         
+
+        //TODO: Delete
         /// <summary>
         /// This event helper opens a different spreadsheet while also making sure the user knows if they are about to lose data.
         /// If data is about to be lost, the user has the oppertunity to save, and then open, open and lose the work or cancel.
@@ -517,6 +510,8 @@ namespace SpreadsheetGUI
             }
         }
 
+
+        //TODO: delete
         /// <summary>
         /// When the New option in the file dialog has been pressed this helper opens a new thread to handle the new spreadsheet
         /// </summary>
@@ -532,6 +527,7 @@ namespace SpreadsheetGUI
         /// <param name="e"></param>
         private void PressEnter(KeyEventArgs e)
         {
+            // TODO: what happens here if currentlyWorking? Why have a background worker??
             //if there is an available background worker
             if (!currentlyWorking)
             {
@@ -546,6 +542,7 @@ namespace SpreadsheetGUI
 
         #endregion
 
+        //TODO: figure out what goes in controller and what goes in form
         /// <summary>
         /// This private method is called when enter is pressed allowing for updates to take place while
         /// the user still has access to the spreadsheet.
@@ -559,15 +556,9 @@ namespace SpreadsheetGUI
             string cellName;
             
             spreadsheetPanel1.GetSelection(out col, out row);
-            cellName = ColTowToCellName(col, row);
-
-            //this makes it so the first cell on the stack is always the selected cell
-            if (cellStack.Count == 1)
-            {
-                cellStack.Pop();
-                StackObject addCell = new StackObject(cellName, "");
-                cellStack.Push(addCell);
-            }
+            cellName = ColRowToCellName(col, row);
+            
+  
 
             //this allows the selection to be checked after the work is done so the text boxes are not updated if the selection changes
             startWorkCellName = cellName;
@@ -577,34 +568,44 @@ namespace SpreadsheetGUI
             //this updates the spreadsheet panel and spreadsheet values of all the dependent cells
             try
             {
+                // spreadsheet.GetDirectDependents 
+                // spreadsheet.SetContentsOfCell(cellName, contentTextBox.Text) updates the backing spreadsheet and returns set of changed cells
+                // We want the return value of this method, but we don't want it to actually change the backing spreadsheet
+                // We only want the backing spreadsheet to change when the server tells us to change it
+                // send those changes to the server
+
+                // (might) need this foreach
+                //Should we be keeping a local copy of the spreadsheet that the server does not have?
                 foreach (string newCellName in spreadsheet.SetContentsOfCell(cellName, contentTextBox.Text))
                 {
                     currentCellEvaluating = newCellName;
                     string value = spreadsheet.GetCellValue(newCellName).ToString();
-                    FormulaErrorCheck(ref value);
+                    controller.FormulaErrorCheck(ref value);
 
                     //first cell
                     if (cellName.Equals(newCellName))
                     {
                         selectedCellValue = value;
                     }
+
+                    // TODO: remove -- we should only display what the server sends to us
                     DisplayCellPanelValue(newCellName, value);
                 }
 
-                //add the origional cell to the stack to allow for undoing
-                StackObject cellToAddToStack = new StackObject(cellName, content);
-                cellStack.Push(cellToAddToStack);
+                
             }
+            // TODO: let server detect circular dependency
             catch (CircularException)
             {
                 WarningDialogBox("The formula entered would cause a circular dependency at cell " + cellName, "CircularException at cell: " + cellName);
             }
             catch (SpreadsheetUtilities.FormulaFormatException)
             {
-                WarningDialogBox("The forula at " + cellName + " entered was not formatted correctly", "FormulaFormatException at cell: " + cellName);
+                WarningDialogBox("The formula at " + cellName + " entered was not formatted correctly", "FormulaFormatException at cell: " + cellName);
             }
         }
 
+        // TODO: this is used for display
         /// <summary>
         /// this background worker does all the work required for async evaluating
         /// </summary>
@@ -614,7 +615,7 @@ namespace SpreadsheetGUI
         {
             //get the col and row of the selected cell
             spreadsheetPanel1.GetSelection(out int col, out int row);
-            finishWorkCellName = ColTowToCellName(col, row);
+            finishWorkCellName = ColRowToCellName(col, row);
 
             //if the selection has not changed since the start of the work
             if (startWorkCellName.Equals(finishWorkCellName))
@@ -638,6 +639,7 @@ namespace SpreadsheetGUI
             currentlyWorking = false;
         }
 
+        //TODO: Get rid of colors
         /// <summary>
         /// This method will redraw and save the spreadsheet based on user input. Cells clicked
         /// will be filled in with a random color for a fun art exercise.
@@ -662,19 +664,7 @@ namespace SpreadsheetGUI
             DisplaySelection(spreadsheetPanel1);
         }
 
-        /// <summary>
-        /// this struct is used to hold the cell name and content, so you can undo to previous cell change
-        /// </summary>
-        private struct StackObject
-        {
-            public string Name { get; set; }
-            public string Content { get; set; }
-            public StackObject(string name, string content)
-            {
-                Name = name;
-                Content = content;
-            }
-        }
+        //TODO: Add revert button
 
         /// <summary>
         /// this event is fired when the 
@@ -683,62 +673,9 @@ namespace SpreadsheetGUI
         /// <param name="e"></param>
         private void UndoButton_Click(object sender, EventArgs e)
         {
-            //checks to make sure there is 2 states at least, because the method pops the current state and loads the base state
-            if (cellStack.Count >= 2)
-            {
-                //gets where teh selection in now
-                spreadsheetPanel1.GetSelection(out int col, out int row);
-                string currentSelectedCell = ColTowToCellName(col, row);
+            //TODO: Fix to send "undo" message to the server
 
-                //gets the first cell changed, and the base selection 
-                StackObject cellToRemove = cellStack.Pop();
-                StackObject previousCell = cellStack.Peek();
 
-                //removes the current state from the spreadsheet
-                spreadsheet.SetContentsOfCell(cellToRemove.Name, "");
-                {
-                    DisplayCellPanelValue(cellToRemove.Name, "");
-                    contentTextBox.Text = "";
-                    valueTextBox.Text = "";
-                }
-
-                //get the cell name and contents that will be reverted to
-                string cellName = previousCell.Name;
-                string content = previousCell.Content;
-                
-                //all dependent cells of previous cell must be updated to make sure they are all in the correct value
-                try
-                {
-                    foreach (string newCellName in spreadsheet.SetContentsOfCell(cellName, content))
-                    {
-                        string value = spreadsheet.GetCellValue(newCellName).ToString();
-
-                        //this method will write the spreadsheet panel value to be "FormulaError" rather than SpreadsheetUtilities.FormulaError if is form error
-                        FormulaErrorCheck(ref value);
-
-                        //only change the value and content text boxes if the selected cell requires updating
-                        if (cellName.Equals(newCellName) && currentSelectedCell.Equals(cellName))
-                        {
-                            valueTextBox.Text = value;
-                            contentTextBox.Clear();
-                            contentTextBox.Text = spreadsheet.GetCellContents(cellName).ToString();
-                        }
-
-                        //this writes the spreadsheetpanel value
-                        DisplayCellPanelValue(newCellName, value);
-                    }
-                }
-                catch (CircularException)
-                {
-                    WarningDialogBox("The formula entered would cause a circular dependency at cell " + cellName, "CircularException at cell: " + cellName);
-                }
-                catch (SpreadsheetUtilities.FormulaFormatException)
-                {
-                    WarningDialogBox("The forula at " + cellName + " entered was not formatted correctly", "FormulaFormatException at cell: " + cellName);
-                }
-            }
-            //this sets the focus to content box, so you can auto type in it, rather than navigate to the content box with the mouse
-            contentTextBox.Focus();
         }
     }
 }

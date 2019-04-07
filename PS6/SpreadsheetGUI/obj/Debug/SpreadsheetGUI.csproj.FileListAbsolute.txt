@@ -38,3 +38,8 @@ C:\Users\Joanna Lowry\Source\Repos\CS3505_Spreadsheet\PS6\SpreadsheetGUI\obj\Deb
 C:\Users\Joanna Lowry\Source\Repos\CS3505_Spreadsheet\PS6\SpreadsheetGUI\obj\Debug\SpreadsheetGUI.exe
 C:\Users\Joanna Lowry\Source\Repos\CS3505_Spreadsheet\PS6\SpreadsheetGUI\obj\Debug\SpreadsheetGUI.pdb
 C:\Users\Joanna Lowry\Source\Repos\CS3505_Spreadsheet\PS6\SpreadsheetGUI\obj\Debug\SpreadsheetGUI.csprojAssemblyReference.cache
+C:\Users\Joanna Lowry\Source\Repos\CS3505_Spreadsheet\PS6\SpreadsheetGUI\bin\Debug\SpreadsheetController.dll
+C:\Users\Joanna Lowry\Source\Repos\CS3505_Spreadsheet\PS6\SpreadsheetGUI\bin\Debug\NetworkController.dll
+C:\Users\Joanna Lowry\Source\Repos\CS3505_Spreadsheet\PS6\SpreadsheetGUI\bin\Debug\SpreadsheetController.pdb
+C:\Users\Joanna Lowry\Source\Repos\CS3505_Spreadsheet\PS6\SpreadsheetGUI\bin\Debug\SpreadsheetController.xml
+C:\Users\Joanna Lowry\Source\Repos\CS3505_Spreadsheet\PS6\SpreadsheetGUI\bin\Debug\NetworkController.pdb
