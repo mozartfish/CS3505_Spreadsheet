@@ -257,3 +257,42 @@ void DependencyGraph::ReplaceDependents(std::string s, std::unordered_set<std::s
     return;
   }
 }
+
+//Removes all existing ordered pairs of the form (r, s). Then for each t in new_dependees, adds the ordered pair (t, s)
+void DependencyGraph::ReplaceDependees(std::string s, std::unordered_set<std::string> new_dependees)
+{
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator replace_dependees = this->dependees_map.find(s);
+  //CASE 1: check if s is not a key in the dependeesMap
+  if (this->dependees_map.count(s) == 0)
+  {
+    std::unordered_set<std::string> add_new_dependees_set = new_dependees;
+    for (std::string t : add_new_dependees_set)
+    {
+      this->AddDependency(t, s);
+    }
+    
+    return;
+  }
+  
+  //CASE 2: s is a key in the dependeesMap
+  else
+  {
+    std::unordered_set<std::string> remove_old_dependees_set = this->GetDependees(s);
+    for (std::string r : remove_old_dependees_set)
+    {
+      this->RemoveDependency(r, s);
+    }
+    
+    std::unordered_set<std::string> add_new_dependees_set = new_dependees;
+    
+    for (std::string t : add_new_dependees_set)
+    {
+      this->AddDependency(t, s);
+    }
+    
+    return;
+  }
+  
+}
+
+
