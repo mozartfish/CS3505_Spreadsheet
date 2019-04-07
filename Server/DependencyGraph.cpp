@@ -37,3 +37,14 @@ int DependencyGraph::Size()
 {
   return this->num_pairs;
 }
+
+//The size of dependees(s)
+int DependencyGraph::DependeesSize(std::string s)
+{
+  std::unordered_map<std::string, std::unordered_set<std::string>>::const_iterator dependees_size = this->dependees_map.find(s); // create a new iterator to find key in map
+  
+  if (dependees_size == this->dependees_map.end())
+    return 0;
+  else
+    return dependees_size->second.size();
+}
