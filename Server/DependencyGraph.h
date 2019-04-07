@@ -38,6 +38,7 @@ class DependencyGraph
   std::unordered_set<std::string> GetDependees(std::string s);
   void AddDependency(std::string s, std::string t);
   void RemoveDependency(std::string s, std::string t);
-  
+  void ReplaceDependents(std::string s, std::unordered_set<std::string> new_dependents);
+  void ReplaceDependees(std::string s, std::unordered_set<std::string> new_dependees);
 };
 #endif

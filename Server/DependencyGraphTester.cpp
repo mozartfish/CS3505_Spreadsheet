@@ -15,5 +15,18 @@ using namespace std;
 int main()
 {
   
+  {
+    DependencyGraph *t = new DependencyGraph();
+    cout << "called the dependency graph constructor" << endl;
+    t->AddDependency("x", "y");
+    cout << "called the add dependency function" << endl;
+    
+    int x = t->Size();
+    
+    cout << x << endl;
+  }
+  
+  
+  return 0;
   
 }
