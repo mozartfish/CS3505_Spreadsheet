@@ -22,7 +22,7 @@
    * ID for the socket that waits on client connections. overwrites any
    * numbers currently in the list.
    */
-void socket_connections::WaitForClientConnections(socks * sock_list, std::mutex* lock)
+void socket_connections::WaitForClientConnections(volatile socks * sock_list, std::mutex* lock)
   {
 
     // Make the socket listening for clients

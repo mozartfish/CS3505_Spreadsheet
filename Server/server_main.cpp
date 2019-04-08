@@ -14,11 +14,14 @@
 #include <queue>
 #include <strings.h>
 #include "spreadsheet.h"
+#include "message.h"
+#include "helpers.h"
 #include "../Connection/socket_connections.h"
 
 using namespace std;
 
 unordered_map<string, spreadsheet*> * sheets;
+vector<string> * sheet_names;
 unordered_map<int, string> * socket_usermap;
 unordered_map<int, string> * socket_sprdmap;
 queue<string> * updates;
@@ -31,6 +34,14 @@ queue<string> * updates;
 void close()
 {
 
+  //Delete all pointers, and all spreadsheets in the list
+  for (unordered_map<string, spreadsheet*>::iterator it = sheets->begin(); it != sheets->end(); it++)
+    delete it->second;
+  delete sheets;
+  delete sheet_names;
+  delete socket_usermap;
+  delete socket_sprdmap;
+  delete updates;
 }
 
 /*
@@ -51,22 +62,23 @@ int process_spreadsheets_from_file()
  */
 bool check_sprd(string spread_name, string user, string pass)
 {
-  //Create new spreadsheet
+  //Create new spreadsheet if nonexistant
   if (sheets->find(spread_name) == sheets->end())
     {
-      sheets[spread_name] = new spreadsheet(spread_name);
-      sheets[spread_name]->add_user(user, pass);
+      sheet_names->push_back(spread_name);
+      (*sheets)[spread_name] = new spreadsheet(spread_name);
+      (*sheets)[spread_name]->add_user(user, pass);
       return true;
     }
   // Access spreadsheet
   else
     {
-      unordered_map<string,string> sprd_users = get_users();
+      unordered_map<string,string> sprd_users = (*sheets)[spread_name]->get_users();
       
-      
+      // User didn't exist
       if (sprd_users.find(user) == sprd_users.end())
 	{
-	  sheets[spread_name]->add_user(user, pass);
+	  (*sheets)[spread_name]->add_user(user, pass);
 	  return true;
 	}
       else
@@ -82,7 +94,7 @@ int main(int argc, char ** argv)
   std::cout << "Launching server" << std::endl;
   
   // Initialize the struct of sockets
-  volatile socks connections;
+  volatile  socks connections;
   connections.sockets = new std::vector<int>();
   connections.size_before_update = 0;
   connections.new_socket_connected = false;
@@ -91,6 +103,13 @@ int main(int argc, char ** argv)
   // Initialize a lock that gets passed around for when updating 
   // the socks struct or accessing its members
   std::mutex lock;
+
+  // Initialize all fields needed for running the server
+  sheets = new unordered_map<string, spreadsheet*> ();
+  sheet_names = new vector<string>();
+  socket_usermap = new unordered_map<int, string>();
+  socket_sprdmap = new unordered_map<int, string>();
+  updates = new queue<string>();
 
   //TODO Read in all information files for startup and have placed
   // in their proper objects
@@ -108,6 +127,10 @@ int main(int argc, char ** argv)
       	{
 
       	  std::cout << "A new client has connected" << std::endl;
+	  
+	  message name_mess("list");
+	  name_mess.spreadsheets = sheet_names;
+	  string json_message = server_helpers::message_to_json(name_mess);
 
 	  // Iterate over each new client, and send required start data, and wait for data from them
 	  for (int idx = connections.size_before_update; idx < connections.sockets->size(); idx++)
@@ -115,7 +138,9 @@ int main(int argc, char ** argv)
               connections.buffers->push_back(new char[BUF_SIZE]);
 	      bzero((*connections.buffers)[idx - 1], BUF_SIZE);
 
-	      socket_connections::SendData((*connections.sockets)[idx], "Hello\n", 6);
+	      
+	      // Send list of spreadsheet names
+	      socket_connections::SendData((*connections.sockets)[idx], json_message.c_str(), (int)json_message.size());
 
 	      std::async(std::launch::async, socket_connections::WaitForData,
 			 (*connections.sockets)[idx],  (*connections.buffers)[idx - 1], BUF_SIZE);

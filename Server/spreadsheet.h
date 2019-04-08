@@ -36,7 +36,7 @@ class spreadsheet {
   bool change_cell(std::string cell, std::string contents);
   std::string undo();
   std::string revert(std::string cell);
-  std::unordered_map<string, string> get_users();
+  std::unordered_map<std::string, std::string> & get_users();
 };
 
 #endif

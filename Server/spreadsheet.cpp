@@ -56,22 +56,22 @@ bool spreadsheet::add_user(std::string user, std::string pass)
  * Returns whether or not the specified user could be removed from
  * the list of users
  */
-bool remove_user(std::string user)
+bool spreadsheet::remove_user(std::string user)
 {
   // If user is not already in map
-  if (this->users->find(user) == this->users->end())
+  if (users->find(user) == users->end())
     return false;
 
-  this->users->erase(user);
+  users->erase(user);
   return true;
 }
 
 /*
  * Returns a map of users and passwords for this spreadsheet
  */
-std::unordered_map<string, string> get_users()
+std::unordered_map<std::string, std::string> & spreadsheet::get_users()
 {
-  return this->users;
+  return (*users);
 }
 
 /*
@@ -115,7 +115,7 @@ std::string spreadsheet::revert(std::string cell)
   if (cell_idx < 0 || cell_idx >= DEFAULT_CELL_COUNT)
     return NULL;
 
-  std::stack<std::string> * cell_stk = cell_history[cell_idx][0];
+  std::stack<std::string> * cell_stk = cell_history[cell_idx];
   
   //TODO use dependency graph to make sure circ dep won't exist
   std::string curr_cont = cell_stk->top();
@@ -151,7 +151,7 @@ int spreadsheet::cell_to_index(std::string cell)
       else if (curr >= 48 && curr <= 57 && i > 0)
 	{
 	  in_nums = true;
-	  mult.push_back(cell[i];
+	  mult.push_back(cell[i]);
 	}
 
 	    // Undefined cell
