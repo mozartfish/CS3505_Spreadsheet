@@ -17,13 +17,42 @@ int main()
   
   {
     DependencyGraph *t = new DependencyGraph();
-    cout << "called the dependency graph constructor" << endl;
-    t->AddDependency("x", "y");
-    cout << "called the add dependency function" << endl;
+    bool b;
     
-    int x = t->Size();
+    b = (t->Size() == 0);
     
-    cout << x << endl;
+    if (b)
+    {
+      cout << "Test zero size passed" << endl;
+    }
+    else
+      cout << "Test zero size failed" << endl;
+  }
+  
+  {
+    DependencyGraph *t = new DependencyGraph();
+    bool b;
+    bool c;
+    
+    b = (t->HasDependees("x"));
+    c = (t->HasDependents("x"));
+
+    if (b == 0)
+      cout << "HasDependees function works" << endl;
+    else
+      cout << "HasDependents function fails"<< endl;
+    
+    if (c == 0)
+      cout << "HasDependents function works" << endl;
+    else
+      cout << "HasDependents function fails" << endl;
+    
+  }
+  
+  {
+    DependencyGraph *t = new DependencyGraph();
+    t->RemoveDependency("x", "y");
+    cout << "called the remove function on an empty set" << endl;
   }
   
   
