@@ -8,6 +8,11 @@ using WindowsFormsApp1;
 
 namespace AdminModel
 {
+
+    
+        
+
+
     public class AdminLogic
     {
         private int countAcctManWindows, countSSManWindows;
@@ -15,6 +20,7 @@ namespace AdminModel
         private string[] users;//TODO:
         private string[] passwords;
 
+        ManageUsers man;
 
         public AdminLogic()
         {
@@ -22,10 +28,25 @@ namespace AdminModel
             users = new string[100];//TODO: dont hard code this!!
             passwords = new string[100];//
 
+            
+            //Form1 form = Program.form;
+            man = new ManageUsers();
 
-            ManageUsers man = new ManageUsers();
-            man.createUser += CreateUser;
+            //pass the form from main to the logic to start the logic block
+            Program.FormPass += OpenAcctManPage;
+
+
+            //man.createUser += CreateUser;
         }
+
+
+        public void OpenAcctManPage(Form1 form)
+        {
+
+            //ManageUsers form = new ManageUsers();
+            //form.Show();
+        }
+
 
 
 

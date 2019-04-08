@@ -4,8 +4,9 @@
     "\\Admin User Interface",
     "\\Admin User Interface\\AdminModel",
     "\\Admin User Interface\\UnitTests",
-    "\\Admin User Interface\\WindowsFormsApp1"
+    "\\Admin User Interface\\WindowsFormsApp1",
+    "\\PS6"
   ],
-  "SelectedNode": "\\TopLayerCommunicationProtocol",
+  "SelectedNode": "\\PS6\\SpreadsheetGUI",
   "PreviewInSolutionExplorer": false
 }
