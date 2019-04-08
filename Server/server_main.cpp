@@ -14,6 +14,7 @@
 #include <queue>
 #include <cstring>
 #include <strings.h>
+#include <fstream>
 #include "spreadsheet.h"
 #include "message.h"
 #include "helpers.h"
@@ -26,6 +27,7 @@ vector<string> * sheet_names;
 unordered_map<int, string> * socket_usermap;
 unordered_map<int, string> * socket_sprdmap;
 queue<string> * updates;
+const string * SHEET_FILEPATH = new String ("./Settings/sheets.txt");
 
 /*
  * Closes the server, sending all necessary goodbyes, processes the rest of
@@ -48,6 +50,7 @@ void close()
   delete socket_usermap;
   delete socket_sprdmap;
   delete updates;
+  delete SHEET_FILEPATH;
 }
 
 /*
@@ -57,6 +60,41 @@ void close()
  */
 int process_spreadsheets_from_file()
 {
+  ifstream file((*SHEET_FILEPATH));
+  string line;
+
+  // Read in spreadsheets
+  if (file.is_open())
+      while (getline(file, line))
+	{
+
+	}
+
+  //error opening file
+  else
+    return -1;
+  
+  file.close();
+  return 0;
+}
+
+/*
+ * Writes the state of all of the current spreadsheets to the specified SHEET_FILEPATH under a .txt file
+ */
+int write_sheets_to_file()
+{
+  ofstream file;
+  file.open((*SHEET_FILEPATH), ofstream::out | ofstream::trunc);
+
+  if (file.is_open())
+    {
+
+    }
+  //error opening file
+  else
+    return -1;
+
+  file.close();
   return 0;
 }
 
