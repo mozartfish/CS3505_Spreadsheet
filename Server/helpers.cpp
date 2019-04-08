@@ -48,7 +48,17 @@ string server_helpers::message_to_json( const message & mess)
   // Cell update message
   else if (mess.updates != NULL)
     {
+      m_json += "\"spreadsheet\": {";
       
+      std::unordered_map<std::string, std::string>::iterator it = mess.updates->begin();
+      for (it; it != mess.updates->end(); it++)
+	{
+	  m_json += "\"" + it->first + "\": ";
+	  m_json += "\"" + it->second + "\"";
+	  m_json += ",";
+	}
+
+      m_json[m_json.length()]  = '}';
     }
   
   m_json += '}';

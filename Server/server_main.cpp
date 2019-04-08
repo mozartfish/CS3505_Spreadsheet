@@ -34,6 +34,11 @@ queue<string> * updates;
  */
 void close()
 {
+  //Send goodbyes
+
+  //Clear queue and process messages
+
+  //Close sockets
 
   //Delete all pointers, and all spreadsheets in the list
   for (unordered_map<string, spreadsheet*>::iterator it = sheets->begin(); it != sheets->end(); it++)
@@ -71,6 +76,7 @@ bool check_sprd(string spread_name, string user, string pass)
       (*sheets)[spread_name]->add_user(user, pass);
       return true;
     }
+  
   // Access spreadsheet
   else
     {
@@ -123,7 +129,9 @@ int main(int argc, char ** argv)
    while(true)
     {
 
-      // In the case there is at least 1 new client
+      /**********************************************************************/
+      /*                         NEW CLIENT BLOCK                           */
+      /**********************************************************************/
       lock.lock();
        if (connections.new_socket_connected)
       	{
@@ -157,9 +165,10 @@ int main(int argc, char ** argv)
       	}
        lock.unlock();
 
-       //TODO Send updates
 
-       // Process any incoming data
+       /**********************************************************************/
+       /*                       DATA RECEIVE BLOCK                           */
+       /**********************************************************************/
        lock.lock();
        
        // Get data from buffers
@@ -178,7 +187,31 @@ int main(int argc, char ** argv)
 			 (*connections.sockets)[idx + 1],  (*connections.buffers)[idx], BUF_SIZE);
 
 	   // Process data
-	   string delemiter = "\n\n";
+	   string delimiter = "\n\n";
+	   int limit = (*connections.partial_data)[idx]->find(delimiter);
+
+	   // If delemiter doesn't exist, data is partial
+	   if (limit < 0)
+	     continue;
+
+	   //Add data to queue to process
+	   string  data = (*connections.partial_data)[idx]->substr(0, limit);
+
+	   
+	 }
+
+       lock.unlock();
+
+
+       /**********************************************************************/
+       /*                         UPDATE PROCESSING                          */
+       /**********************************************************************/
+
+       lock.lock();
+
+       while (updates->size() != 0)
+	 {
+
 	 }
 
        lock.unlock();
