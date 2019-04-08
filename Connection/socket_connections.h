@@ -10,6 +10,7 @@
 #include <sys/socket.h>
 #include <vector>
 #include <mutex>
+#include <string>
 
 #ifndef CONNECT_H
 #define CONNECT_H
@@ -24,7 +25,9 @@ struct socks {
   int size_before_update;
   bool new_socket_connected;
 
+  // Buffer that gets data and buffer that holds data
   std::vector<char*>* buffers;
+  std::vector<std::string *>* partial_data;
   };
 
 class socket_connections {
