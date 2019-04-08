@@ -8,6 +8,7 @@
 #include <string>
 #include <stack>
 #include <unordered_map>
+#include <sstream>
 #include "spreadsheet.h"
 
 /*
@@ -163,4 +164,27 @@ int spreadsheet::cell_to_index(std::string cell)
       // Multiply alphabetical index by numerical index
       ret_idx *= std::stoi(mult);
       return ret_idx;
+}
+
+bool spreadsheet::CircularDependency(std::string cell, std::string Formula)
+{
+  //https://stackoverflow.com/questions/16029324/c-splitting-a-string-into-an-array
+  
+  std::string string_tokens[Formula.length()];
+  int j = 0;
+  std:: stringstream read_tokens(Formula);
+  while (read_tokens.good() && j < Formula.length())
+  {
+    read_tokens >> string_tokens[j];
+    j++;
+  }
+  
+  for (std::string s : string_tokens)
+  {
+    if (s.compare(cell) == 0)
+      return true;
+  }
+  
+  return false;
+  
 }

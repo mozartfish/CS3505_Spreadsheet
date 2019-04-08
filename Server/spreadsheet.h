@@ -7,6 +7,7 @@
 
 #include <stack>
 #include <string>
+#include <sstream>
 #include <unordered_map>
 #include "DependencyGraph.h"
 
@@ -37,6 +38,7 @@ class spreadsheet {
   std::string undo();
   std::string revert(std::string cell);
   std::unordered_map<std::string, std::string> & get_users();
+  bool CircularDependency(std::string cell, std::string formula);
 };
 
 #endif
