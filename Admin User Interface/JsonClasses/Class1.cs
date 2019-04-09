@@ -16,7 +16,7 @@ namespace JsonClasses
 
         public string ToString()
         {
-            string returning = "type : " + Type +"\nname : " + Name + "\nusername : " + Username + "\npassword : " + Password;
+            string returning = "type : " + Type +"\nname : " + Name + "\nusername : " + Username + "\npassword : " + Password + "\n";
             return returning;
         }
     }
@@ -27,10 +27,39 @@ namespace JsonClasses
         public string Cell { get; set; }
         public string Value { get; set; }
         public string Dependencies { get; set; }
+        public Edit()
+        {
+            Type = "edit";
+        }
     }
 
     public class Undo
     {
+        public string Type { get; set; }
+        public Undo()
+        {
+            Type = "undo";
+        }
+    }
 
+    public class Revert
+    {
+        public string Type { get; set; }
+        public string Cell { get; set; }
+        public Revert()
+        {
+            Type = "revert";
+        }
+    }
+
+    public class Error
+    {
+        public string Type { get; set; }
+        public string Code { get; set; }
+        public string Source { get; set; }
+        public Error()
+        {
+            Type = "error";
+        }
     }
 }

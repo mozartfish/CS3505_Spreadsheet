@@ -21,7 +21,7 @@ namespace WindowsFormsApp1
             // Test Scrolling Function - CurrentStatusList
             for (int i = 0; i < 1000; i++)
             {
-                currentStatusList.Items.Add(i.ToString());
+                //currentStatusList.Items.Add(i.ToString());
             }
         }
 
@@ -32,7 +32,9 @@ namespace WindowsFormsApp1
 
         private void AccountManagementButton(object sender, EventArgs e)
         {
-            OpenNewAcctMan();
+            //OpenNewAcctMan();
+            ManageUsers man = new ManageUsers();
+            man.Show();
 
         }
 
@@ -78,44 +80,107 @@ namespace WindowsFormsApp1
         /// <param name="e"></param>
         private void PretendSendToServer(object sender, EventArgs e)
         {
+            string json = OpenMessageToJson("cool.sprd", "pajensen", "Doofus");
+            string nonJason = JsonToString(json);
+
+            Console.WriteLine(nonJason);
+
+
+            //old version made strings, but they were dropping the last thing added to the string somehow 
+
+            //string jsonString = ConvertStringToJson("\"type\": \"open\",   \"name\": \"cool.sprd\",   \"username\": \"pajensen\",   \"password\": \"Doofus\"");
+            //jsonData = JsonConvert.SerializeObject(jsonBuilder);
+            //ConvertJsonToString("");
+        }
+
+        private string[] ParseString(string input)
+        {
+            return new string[0];
+            //input 
+        }
+
+
+        private string OpenMessageToJson(string name, string username, string password)
+        {
             Open message = new Open()
             {
-                Type = "open",
-                Name = "cool.sprd",
-                Username = "pajensen",
-                Password = "Doofus"
+                Name = name,
+                Username = username,
+                Password = password
             };
-            string jsonOpen =  JsonConvert.SerializeObject(message);
-
-
-
-
-
-
-
-
-            string jsonString = ConvertStringToJson("\"type\": \"open\",   \"name\": \"cool.sprd\",   \"username\": \"pajensen\",   \"password\": \"Doofus\"");
-            //jsonData = JsonConvert.SerializeObject(jsonBuilder);
-            ConvertJsonToString("");
+            string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
+            return jsonOpen;
         }
 
-        private string ConvertStringToJson(string input)
+        private string EditMessageToJson(string cell, string value, string dep)
         {
-            StringBuilder jsonBuilder = new StringBuilder();
-            jsonBuilder.Append(input);
-
-            return JsonConvert.SerializeObject(jsonBuilder);
+            Edit message = new Edit()
+            {
+                Cell = cell,
+                Value = value,
+                Dependencies = dep
+            };
+            string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
+            return jsonOpen;
         }
 
-
-        private string[] ConvertJsonToString(string json)
+        private string UndoMessageToJson()
         {
-            string[] stuff1 = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-            return stuff1;
-           //StringBuilder jsonBuilder = new StringBuilder();
-            //jsonBuilder.Append(input);
-
-           // return JsonConvert.SerializeObject(jsonBuilder);
+            Undo message = new Undo();
+            string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
+            return jsonOpen;
         }
+
+        private string RevertMessageToJson(string cell)
+        {
+            Revert message = new Revert()
+            {
+                Cell = cell
+            };
+            string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
+            return jsonOpen;
+        }
+
+        private string ErrorMessageToJson(string code, string source)
+        {
+            Error message = new Error()
+            {
+                Code = code,
+                Source = source,
+            };
+            string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
+            return jsonOpen;
+        }
+
+        /// <summary>
+        /// Very general, returns the json in the form that the client is expecting
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        private string JsonToString(string json)
+        {
+            object WriteIntoStudent = JsonConvert.DeserializeObject(json);
+            string result = WriteIntoStudent.ToString();
+            return result;
+        }
+
+
+        //private string ConvertStringToJson(string input)
+        //{
+        //    StringBuilder jsonBuilder = new StringBuilder();
+        //    jsonBuilder.Append(input);
+
+        //    return JsonConvert.SerializeObject(jsonBuilder);
+        //}
+
+        //private void ConvertJsonToString(string json)
+        //{
+        //    //string[] stuff1 = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+        //    //return stuff1;
+        //   //StringBuilder jsonBuilder = new StringBuilder();
+        //    //jsonBuilder.Append(input);
+
+        //   // return JsonConvert.SerializeObject(jsonBuilder);
+        //}
     }
 }
