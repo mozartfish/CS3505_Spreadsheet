@@ -81,9 +81,15 @@ namespace WindowsFormsApp1
         private void PretendSendToServer(object sender, EventArgs e)
         {
             string json = OpenMessageToJson("cool.sprd", "pajensen", "Doofus");
-            string nonJason = JsonToString(json);
+            string nonJson = JsonToString(json);
 
-            Console.WriteLine(nonJason);
+            //parsing attempt
+
+            //dynamic WriteIntoStudent = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+            //Console.WriteLine(WriteIntoStudent[0].Type[0]);
+            //json[0]
+
+            Console.WriteLine(ParseString(nonJson));
 
 
             //old version made strings, but they were dropping the last thing added to the string somehow 
@@ -95,8 +101,20 @@ namespace WindowsFormsApp1
 
         private string[] ParseString(string input)
         {
-            return new string[0];
-            //input 
+            string[] line_array = input.Split('"');
+            string[] keeper = new string[8]; //8 because thats the max number of feilds there could be
+            int count = 0;
+
+            for (int i = 0; i < line_array.Length; i++)
+            {
+                //all the important bits
+                if (line_array[i] != "\r\n}" || line_array[i] != ",\r\n  " || line_array[i] != "{\r\n  " || line_array[i] != ": ")
+                {
+                    keeper[count] = line_array[i];
+                    count++;
+                }
+            }
+            return keeper;
         }
 
 
@@ -104,6 +122,7 @@ namespace WindowsFormsApp1
         {
             Open message = new Open()
             {
+                Type = "open",
                 Name = name,
                 Username = username,
                 Password = password
@@ -116,6 +135,7 @@ namespace WindowsFormsApp1
         {
             Edit message = new Edit()
             {
+                Type = "edit",
                 Cell = cell,
                 Value = value,
                 Dependencies = dep
@@ -126,6 +146,7 @@ namespace WindowsFormsApp1
 
         private string UndoMessageToJson()
         {
+            //may need a Type = "undo"
             Undo message = new Undo();
             string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
             return jsonOpen;
@@ -135,6 +156,7 @@ namespace WindowsFormsApp1
         {
             Revert message = new Revert()
             {
+                Type = "revert",
                 Cell = cell
             };
             string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
@@ -145,6 +167,7 @@ namespace WindowsFormsApp1
         {
             Error message = new Error()
             {
+                Type = "error",
                 Code = code,
                 Source = source,
             };
