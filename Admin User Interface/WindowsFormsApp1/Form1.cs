@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using JsonClasses;
+using Newtonsoft.Json;
 using System;
 using System.Text;
 using System.Windows.Forms;
@@ -70,8 +71,29 @@ namespace WindowsFormsApp1
 
         }
 
+        /// <summary>
+        /// This test is to try to send an open Json
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PretendSendToServer(object sender, EventArgs e)
         {
+            Open message = new Open()
+            {
+                Type = "open",
+                Name = "cool.sprd",
+                Username = "pajensen",
+                Password = "Doofus"
+            };
+            string jsonOpen =  JsonConvert.SerializeObject(message);
+
+
+
+
+
+
+
+
             string jsonString = ConvertStringToJson("\"type\": \"open\",   \"name\": \"cool.sprd\",   \"username\": \"pajensen\",   \"password\": \"Doofus\"");
             //jsonData = JsonConvert.SerializeObject(jsonBuilder);
             ConvertJsonToString("");

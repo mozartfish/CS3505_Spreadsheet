@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminModel", "AdminModel\Ad
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{E0A7B0A3-0556-490A-BD0C-9B65D80DFB5E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "JsonClasses", "JsonClasses", "{D0BF8D67-8E0C-43E5-8D3A-2B57AAD629FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonClasses", "JsonClasses\JsonClasses.csproj", "{40487D0E-AE12-4EF6-B1C4-FD8EE02D1E5D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,9 +31,16 @@ Global
 		{E0A7B0A3-0556-490A-BD0C-9B65D80DFB5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0A7B0A3-0556-490A-BD0C-9B65D80DFB5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0A7B0A3-0556-490A-BD0C-9B65D80DFB5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40487D0E-AE12-4EF6-B1C4-FD8EE02D1E5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40487D0E-AE12-4EF6-B1C4-FD8EE02D1E5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40487D0E-AE12-4EF6-B1C4-FD8EE02D1E5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40487D0E-AE12-4EF6-B1C4-FD8EE02D1E5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{40487D0E-AE12-4EF6-B1C4-FD8EE02D1E5D} = {D0BF8D67-8E0C-43E5-8D3A-2B57AAD629FB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {943564B1-37AB-46D4-90F9-9C46D32AAD58}

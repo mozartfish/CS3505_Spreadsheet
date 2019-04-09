@@ -101,5 +101,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JsonClasses\JsonClasses.csproj">
+      <Project>{40487d0e-ae12-4ef6-b1c4-fd8ee02d1e5d}</Project>
+      <Name>JsonClasses</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
