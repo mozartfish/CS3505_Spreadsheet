@@ -22,7 +22,7 @@ namespace WindowsFormsApp1
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             form = new Form1();
-            FormPass(form);
+            //FormPass(form);
             Application.Run(form);
         }
     }

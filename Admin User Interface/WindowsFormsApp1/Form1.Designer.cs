@@ -36,13 +36,15 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.currentStatusList = new System.Windows.Forms.ListBox();
             this.updateList = new System.Windows.Forms.ListBox();
+            this.button4 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 12);
+            this.button1.Location = new System.Drawing.Point(24, 23);
+            this.button1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(625, 36);
+            this.button1.Size = new System.Drawing.Size(1250, 69);
             this.button1.TabIndex = 0;
             this.button1.Text = "Account Manegment";
             this.button1.UseVisualStyleBackColor = true;
@@ -51,18 +53,20 @@
             // button3
             // 
             this.button3.BackColor = System.Drawing.SystemColors.MenuText;
-            this.button3.Location = new System.Drawing.Point(643, 12);
+            this.button3.Location = new System.Drawing.Point(1286, 23);
+            this.button3.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(325, 78);
+            this.button3.Size = new System.Drawing.Size(650, 150);
             this.button3.TabIndex = 2;
             this.button3.Text = "SHUT\r\nDOWN";
             this.button3.UseVisualStyleBackColor = false;
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(12, 54);
+            this.button2.Location = new System.Drawing.Point(24, 104);
+            this.button2.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(625, 36);
+            this.button2.Size = new System.Drawing.Size(1250, 69);
             this.button2.TabIndex = 3;
             this.button2.Text = "SS management";
             this.button2.UseVisualStyleBackColor = true;
@@ -70,9 +74,10 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(681, 25);
+            this.button5.Location = new System.Drawing.Point(1362, 48);
+            this.button5.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(254, 52);
+            this.button5.Size = new System.Drawing.Size(508, 100);
             this.button5.TabIndex = 10;
             this.button5.Text = "SHUT\r\nDOWN";
             this.button5.UseVisualStyleBackColor = true;
@@ -80,9 +85,10 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(12, 96);
+            this.textBox1.Location = new System.Drawing.Point(24, 185);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(625, 20);
+            this.textBox1.Size = new System.Drawing.Size(1246, 31);
             this.textBox1.TabIndex = 11;
             this.textBox1.Text = "Current Status";
             this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -90,9 +96,10 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(643, 96);
+            this.textBox2.Location = new System.Drawing.Point(1286, 185);
+            this.textBox2.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(325, 20);
+            this.textBox2.Size = new System.Drawing.Size(646, 31);
             this.textBox2.TabIndex = 12;
             this.textBox2.Text = "Update";
             this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -101,26 +108,42 @@
             // currentStatusList
             // 
             this.currentStatusList.FormattingEnabled = true;
-            this.currentStatusList.Location = new System.Drawing.Point(12, 132);
+            this.currentStatusList.ItemHeight = 25;
+            this.currentStatusList.Location = new System.Drawing.Point(24, 254);
+            this.currentStatusList.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.currentStatusList.Name = "currentStatusList";
-            this.currentStatusList.Size = new System.Drawing.Size(625, 472);
+            this.currentStatusList.Size = new System.Drawing.Size(1246, 904);
             this.currentStatusList.TabIndex = 13;
             this.currentStatusList.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
             // updateList
             // 
             this.updateList.FormattingEnabled = true;
-            this.updateList.Location = new System.Drawing.Point(643, 132);
+            this.updateList.ItemHeight = 25;
+            this.updateList.Location = new System.Drawing.Point(1286, 254);
+            this.updateList.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.updateList.Name = "updateList";
-            this.updateList.Size = new System.Drawing.Size(325, 472);
+            this.updateList.Size = new System.Drawing.Size(646, 904);
             this.updateList.TabIndex = 14;
             this.updateList.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged_1);
             // 
+            // button4
+            // 
+            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button4.Location = new System.Drawing.Point(930, 351);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(320, 134);
+            this.button4.TabIndex = 15;
+            this.button4.Text = "Pretend Send To Server";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.PretendSendToServer);
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(980, 616);
+            this.ClientSize = new System.Drawing.Size(1960, 1185);
+            this.Controls.Add(this.button4);
             this.Controls.Add(this.updateList);
             this.Controls.Add(this.currentStatusList);
             this.Controls.Add(this.textBox2);
@@ -129,7 +152,7 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button1);
-            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Form1";
             this.Text = "d";
             this.ResumeLayout(false);
@@ -147,6 +170,7 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.ListBox currentStatusList;
         private System.Windows.Forms.ListBox updateList;
+        private System.Windows.Forms.Button button4;
     }
 }
 

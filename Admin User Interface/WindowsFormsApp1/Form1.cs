@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
+﻿using Newtonsoft.Json;
+using System;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+
 //using AdminModel;
 
 namespace WindowsFormsApp1
@@ -72,6 +68,20 @@ namespace WindowsFormsApp1
         private void listBox2_SelectedIndexChanged_1(object sender, EventArgs e)
         {
 
+        }
+
+        private void PretendSendToServer(object sender, EventArgs e)
+        {
+            
+            //jsonData = JsonConvert.SerializeObject(jsonBuilder);
+        }
+
+        private string ConvertStringToJson(string input)
+        {
+            StringBuilder jsonBuilder = new StringBuilder();
+            jsonBuilder.Append(input);
+
+            return JsonConvert.SerializeObject(jsonBuilder);
         }
     }
 }
