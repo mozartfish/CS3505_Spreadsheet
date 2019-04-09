@@ -32,7 +32,7 @@ namespace WindowsFormsApp1
         private void AccountManagementButton(object sender, EventArgs e)
         {
             OpenNewAcctMan();
-            
+
         }
 
         private void SpreadsheetManagmentButton(object sender, EventArgs e)
@@ -47,7 +47,7 @@ namespace WindowsFormsApp1
 
         private void button4_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void textBox1_TextChanged_1(object sender, EventArgs e)
@@ -72,8 +72,9 @@ namespace WindowsFormsApp1
 
         private void PretendSendToServer(object sender, EventArgs e)
         {
-            
+            string jsonString = ConvertStringToJson("\"type\": \"open\",   \"name\": \"cool.sprd\",   \"username\": \"pajensen\",   \"password\": \"Doofus\"");
             //jsonData = JsonConvert.SerializeObject(jsonBuilder);
+            ConvertJsonToString("");
         }
 
         private string ConvertStringToJson(string input)
@@ -82,6 +83,17 @@ namespace WindowsFormsApp1
             jsonBuilder.Append(input);
 
             return JsonConvert.SerializeObject(jsonBuilder);
+        }
+
+
+        private string[] ConvertJsonToString(string json)
+        {
+            string[] stuff1 = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+            return stuff1;
+           //StringBuilder jsonBuilder = new StringBuilder();
+            //jsonBuilder.Append(input);
+
+           // return JsonConvert.SerializeObject(jsonBuilder);
         }
     }
 }
