@@ -83,16 +83,10 @@ namespace WindowsFormsApp1
             string json = OpenMessageToJson("cool.sprd", "pajensen", "Doofus");
             string nonJson = JsonToString(json);
 
-            //parsing attempt
-
-            //dynamic WriteIntoStudent = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-            //Console.WriteLine(WriteIntoStudent[0].Type[0]);
-            //json[0]
-
             Console.WriteLine(ParseString(nonJson));
 
 
-            //old version made strings, but they were dropping the last thing added to the string somehow 
+            //old version made strings, but they were dropping the last thing added to the string somehow, may still be used later 
 
             //string jsonString = ConvertStringToJson("\"type\": \"open\",   \"name\": \"cool.sprd\",   \"username\": \"pajensen\",   \"password\": \"Doofus\"");
             //jsonData = JsonConvert.SerializeObject(jsonBuilder);
@@ -205,5 +199,20 @@ namespace WindowsFormsApp1
 
         //   // return JsonConvert.SerializeObject(jsonBuilder);
         //}
+
+
+
+
+
+
+
+
+
+
+        //NETWORKING
+        private void Network()
+        {
+
+        }
     }
 }
