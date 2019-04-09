@@ -81,6 +81,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="SpreadsheetManagement.resx">
+      <DependentUpon>SpreadsheetManagement.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -93,6 +96,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AdminLogic\AdminLogic.csproj">
+      <Project>{6aa5855b-31c2-438b-9f75-66bdf6c029fe}</Project>
+      <Name>AdminLogic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UserPassPair\UserPassPair.csproj">
+      <Project>{d85d00dd-bc70-466c-9d29-6e6a8f87db18}</Project>
+      <Name>UserPassPair</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

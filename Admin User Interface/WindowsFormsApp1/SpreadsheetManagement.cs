@@ -15,6 +15,10 @@ namespace WindowsFormsApp1
         public SpreadsheetManagement()
         {
             InitializeComponent();
+            for (int i = 0; i < 100; i++)
+            {
+                listBox1.Items.Add("SpreadSheet");
+            }
         }
     }
 }

@@ -32,7 +32,7 @@
             this.ChangeUser_newPass = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.CreateUser_pass = new System.Windows.Forms.TextBox();
+            this.ChangeUser_Pass = new System.Windows.Forms.TextBox();
             this.CreateUser_User = new System.Windows.Forms.TextBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
@@ -91,11 +91,11 @@
             // 
             // CreateUser_pass
             // 
-            this.CreateUser_pass.Location = new System.Drawing.Point(495, 67);
-            this.CreateUser_pass.Margin = new System.Windows.Forms.Padding(2);
-            this.CreateUser_pass.Name = "CreateUser_pass";
-            this.CreateUser_pass.Size = new System.Drawing.Size(192, 20);
-            this.CreateUser_pass.TabIndex = 47;
+            this.ChangeUser_Pass.Location = new System.Drawing.Point(495, 67);
+            this.ChangeUser_Pass.Margin = new System.Windows.Forms.Padding(2);
+            this.ChangeUser_Pass.Name = "CreateUser_pass";
+            this.ChangeUser_Pass.Size = new System.Drawing.Size(192, 20);
+            this.ChangeUser_Pass.TabIndex = 47;
             // 
             // CreateUser_User
             // 
@@ -163,6 +163,7 @@
             // 
             // richTextBox3
             // 
+            this.richTextBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.richTextBox3.Location = new System.Drawing.Point(447, 111);
             this.richTextBox3.Margin = new System.Windows.Forms.Padding(2);
             this.richTextBox3.Name = "richTextBox3";
@@ -173,6 +174,7 @@
             // 
             // richTextBox2
             // 
+            this.richTextBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.richTextBox2.Location = new System.Drawing.Point(447, 234);
             this.richTextBox2.Margin = new System.Windows.Forms.Padding(2);
             this.richTextBox2.Name = "richTextBox2";
@@ -183,13 +185,14 @@
             // 
             // richTextBox1
             // 
+            this.richTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.richTextBox1.Location = new System.Drawing.Point(447, 11);
             this.richTextBox1.Margin = new System.Windows.Forms.Padding(2);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.ReadOnly = true;
             this.richTextBox1.Size = new System.Drawing.Size(348, 33);
             this.richTextBox1.TabIndex = 37;
-            this.richTextBox1.Text = "Create User";
+            this.richTextBox1.Text = "              Create User";
             // 
             // DeleteUser_Pass
             // 
@@ -209,53 +212,62 @@
             // 
             // button3
             // 
+            this.button3.BackColor = System.Drawing.Color.Cornsilk;
             this.button3.Location = new System.Drawing.Point(688, 269);
             this.button3.Margin = new System.Windows.Forms.Padding(2);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(105, 40);
             this.button3.TabIndex = 34;
             this.button3.Text = "DELETE";
-            this.button3.UseVisualStyleBackColor = true;
+            this.button3.UseVisualStyleBackColor = false;
+            this.button3.Click += new System.EventHandler(this.DeleteButton);
             // 
             // button2
             // 
+            this.button2.BackColor = System.Drawing.Color.Cornsilk;
             this.button2.Location = new System.Drawing.Point(688, 152);
             this.button2.Margin = new System.Windows.Forms.Padding(2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(105, 40);
             this.button2.TabIndex = 33;
             this.button2.Text = "CHANGE";
-            this.button2.UseVisualStyleBackColor = true;
+            this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.ChangeButton);
             // 
             // button4
             // 
+            this.button4.BackColor = System.Drawing.Color.Cornsilk;
             this.button4.Location = new System.Drawing.Point(688, 48);
             this.button4.Margin = new System.Windows.Forms.Padding(2);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(105, 40);
             this.button4.TabIndex = 32;
             this.button4.Text = "CREATE";
-            this.button4.UseVisualStyleBackColor = true;
+            this.button4.UseVisualStyleBackColor = false;
+            this.button4.Click += new System.EventHandler(this.CreateButton);
             // 
             // listBox1
             // 
+            this.listBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listBox1.FormattingEnabled = true;
+            this.listBox1.ItemHeight = 16;
             this.listBox1.Location = new System.Drawing.Point(5, 9);
             this.listBox1.Margin = new System.Windows.Forms.Padding(2);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(432, 433);
+            this.listBox1.Size = new System.Drawing.Size(432, 420);
             this.listBox1.TabIndex = 31;
             // 
             // ManageUsers
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.ControlDark;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.textBox13);
             this.Controls.Add(this.ChangeUser_newPass);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.CreateUser_pass);
+            this.Controls.Add(this.ChangeUser_Pass);
             this.Controls.Add(this.CreateUser_User);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.textBox4);
@@ -286,7 +298,7 @@
         private System.Windows.Forms.TextBox ChangeUser_newPass;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox CreateUser_pass;
+        private System.Windows.Forms.TextBox ChangeUser_Pass;
         private System.Windows.Forms.TextBox CreateUser_User;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.TextBox textBox4;

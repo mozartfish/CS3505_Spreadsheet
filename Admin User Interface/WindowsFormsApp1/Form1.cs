@@ -12,7 +12,7 @@ namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
-
+        ManageUsers man;
         public Form1()
         {
             InitializeComponent();
@@ -20,8 +20,16 @@ namespace WindowsFormsApp1
             // Test Scrolling Function - CurrentStatusList
             for (int i = 0; i < 1000; i++)
             {
-                currentStatusList.Items.Add(i.ToString());
+                //go through list of all useres and see if they are active, then print
+                if (i < 40)
+                {
+                    currentStatusList.Items.Add("  Username            |    Pass                    |     SSConnectedTo");
+                    updateList.Items.Add("  Username");
+
+                }
             }
+
+
         }
 
         private void ShutDown(object sender, EventArgs e)
@@ -38,8 +46,8 @@ namespace WindowsFormsApp1
 
         private void AccountManagementButton(object sender, EventArgs e)
         {
-            ManageUsers form = new ManageUsers();
-            form.Show();
+            man = new ManageUsers();
+            man.Show();
         }
 
         private void SpreadsheetManagmentButton(object sender, EventArgs e)
