@@ -69,7 +69,24 @@ int process_spreadsheets_from_file()
   if (file.is_open())
       while (getline(file, line))
 	{
+	  // Pull out the first token
+	  char * line_pointer = &line[0];
+	  char * token = strtok(line_pointer, "\t");
+	  string token_str(token);
 
+	  // Bad name error
+	  if (token_str != "Name:")
+	    return -1;
+	  
+	  // Iterate over each token
+	  while (token != NULL)
+	    {
+	      
+
+	      
+	      
+	      token = strtok(NULL, "\t");
+	    }
 	}
 
   //error opening file
@@ -118,14 +135,12 @@ int write_sheets_to_file()
 	  for (int i = 0; i < DEFAULT_CELL_COUNT; i++)
 	    {
 	      // Write individual cell history
-	      string cell = "" + i + ":";
-	      file << cell << '\t';
-	      vector<string> cell_hist = get_cell_history(i);
+	      string cell = to_string(i) + ":";
+	      file << cell;
+	      vector<string> cell_hist = sheet_it->second->get_cell_history(i);
 	      for (auto cell_contents : cell_hist)
-		file << cell_contents << '\t';
+		file  << '\t' << cell_contents;
 	    }
-	  
-	  file << "end!";
 
 	  //Separate spreadsheets by newline
 	  file << '\n';
