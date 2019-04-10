@@ -57,7 +57,7 @@ void close(volatile socks & socket_info)
 
 /*
  * Processes all spreadsheets from the Settings directory that should be
- * adjacent to this file, for use on server startup
+ * adjacent to this file, for use on server startup, assumes histories are well formed
  * Returns a non-zero number on an error
  */
 int process_spreadsheets_from_file()
@@ -65,22 +65,115 @@ int process_spreadsheets_from_file()
   ifstream file((*SHEET_FILEPATH));
   string line;
 
+  vector<string> read_partitions;
+  read_partitions.push_back("Name:");
+  read_partitions.push_back("Usermap:");
+  read_partitions.push_back("Spreadsheet_History:");
+  read_partitions.push_back("Cell_Information:");
+
   // Read in spreadsheets
   if (file.is_open())
       while (getline(file, line))
 	{
+	  spreadsheet* curr_sheet = NULL;
+
+
 	  // Pull out the first token
 	  char * line_pointer = &line[0];
 	  char * token = strtok(line_pointer, "\t");
 	  string token_str(token);
 
+	  int part_idx = 0;
+
 	  // Bad name error
-	  if (token_str != "Name:")
+	  if (token_str != read_partitions[part_idx])
+	    return -1;
+	  
+
+	  // Try to get name, make spreadsheet if valid, otherwise return err
+	  token = strtok(NULL, "\t");
+	  if (token == NULL)
+	    return -1;
+	  else
+	    {
+	      token_str.replace(0, token_str.size(), token);
+	      curr_sheet = new spreadsheet(token_str);
+	    }
+
+	  ++part_idx;
+	  token = strtok(NULL, "\t");
+
+	  // Try to parse Usermap (Can be empty)
+	  if (token == NULL)
+	    return -1;
+	  else
+	    {
+	      token_str.replace(0, token_str.size(), token);
+
+	      // Bad partition
+	      if (token_str != read_partitions[part_idx])
+		return -1;
+
+	      part_idx++;
+
+	      // Iterate over usermap until no tokens (error) or until next partition
+	      while (token != NULL )
+		{
+		  // Get user
+		  token = strtok(NULL, "\t");
+		  if (token == NULL)
+		    return -1;
+
+		  string user(token);
+
+		  // If 'user' is actually the next partition in the spreadsheet, break loop
+		  if (user == read_partitions[part_idx])
+		      break;
+
+		  // Get pass
+		  token = strtok(NULL, "\t");
+		  if (token == NULL)
+		    return -1;
+
+		  string pass(token);
+
+		  //Add user password pair to sheet
+		  curr_sheet->add_user(user, pass);
+		}
+	    }
+
+	  // Never reached next partition (aka Spreadsheet history)
+	  if(token == NULL)
+	    return -1;
+
+	  part_idx++;
+
+	  // Iterate over spreadsheet history
+	  token = strtok(NULL, "\t");
+	  while (token != NULL)
+	    {
+	      token_str.replace(0, token_str.size(), token);
+
+	      // Make sure we have not reached next partition
+	      if (token_str == read_partitions[part_idx])
+		      break;
+	    }
+	  
+	  // Never reached next partition (aka Cell history)
+	  if (token == NULL)
 	    return -1;
 	  
 	  // Iterate over each token
 	  while (token != NULL)
 	    {
+
+	      // Case name
+
+	      // Case Usermap
+
+	      // Case spreadsheet history
+
+	      // Case cell histories
 	      
 
 	      
