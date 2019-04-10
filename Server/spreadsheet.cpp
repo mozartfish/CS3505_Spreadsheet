@@ -7,6 +7,7 @@
 
 #include <string>
 #include <stack>
+#include <vector>
 #include <unordered_map>
 #include <sstream>
 #include "spreadsheet.h"
@@ -18,14 +19,14 @@
 spreadsheet::spreadsheet(std::string name)
 {
   this->name = name;
-  this->spd_history = new std::stack<std::string>();
+  this->spd_history = new std::vector<std::string>();
   this->users = new std::unordered_map<std::string, std::string>();
   this->dependencies = new DependencyGraph();
-  this->cell_history = new std::stack<std::string>* [DEFAULT_CELL_COUNT];
+  this->cell_history = new std::vector<std::string>* [DEFAULT_CELL_COUNT];
 
   for (int i = 0; i < DEFAULT_CELL_COUNT; i++)
     {
-      this->cell_history[i] = new std::stack<std::string>();
+      this->cell_history[i] = new std::vector<std::string>();
     }
 }
 
@@ -98,8 +99,8 @@ std::string spreadsheet::undo()
   if (spd_history->empty())
     return NULL;
 
-  std::string cell = spd_history->top();
-  spd_history->pop();
+  std::string cell = spd_history->back();
+  spd_history->pop_back();
 
   // Revert the cell that had the most recent edit
   return this->revert(cell);
@@ -117,14 +118,14 @@ std::string spreadsheet::revert(std::string cell)
   if (cell_idx < 0 || cell_idx >= DEFAULT_CELL_COUNT)
     return NULL;
 
-  std::stack<std::string> * cell_stk = cell_history[cell_idx];
+  std::vector<std::string> * cell_hist = cell_history[cell_idx];
   
   //TODO use dependency graph to make sure circ dep won't exist
-  std::string curr_cont = cell_stk->top();
-  cell_stk->pop();
+  std::string curr_cont = cell_hist->back();
+  cell_hist->pop_back();
   
   // Return the current top contents
-  return cell_stk->top();
+  return cell_hist->back();
 }
 
 /*
@@ -135,7 +136,7 @@ int spreadsheet::cell_to_index(std::string cell)
 {
   int ret_idx = 0;
   bool in_nums = false;
-  std::string mult = "";
+  std::string row;
 
   for (int i = 0; i < cell.length(); i++)
     {
@@ -152,8 +153,8 @@ int spreadsheet::cell_to_index(std::string cell)
       //0->9
       else if (curr >= 48 && curr <= 57 && i > 0)
 	{
-	  in_nums = true;
-	  mult.push_back(cell[i]);
+	  row = cell.substr(i, cell.size());
+	  break;
 	}
 
 	    // Undefined cell
@@ -161,9 +162,10 @@ int spreadsheet::cell_to_index(std::string cell)
 	    return -1;
     } 
 
-      // Multiply alphabetical index by numerical index
-      ret_idx *= std::stoi(mult);
-      return ret_idx;
+  // Multiply alphabetical index by numerical index
+  int row_i = std::stoi(row) - 1;
+  ret_idx = ret_idx * 100 + row_i;
+  return ret_idx;
 }
 
 bool spreadsheet::CircularDependency(std::string cell, std::string Formula)
@@ -187,4 +189,42 @@ bool spreadsheet::CircularDependency(std::string cell, std::string Formula)
   
   return false;
   
+}
+
+/*
+ * Returns a vector of the history of edits for a cell specified as a number
+ * Returns an empty vector for out of range cells
+ */
+std::vector<std::string> & spreadsheet::get_cell_history(int cell_as_num)
+{
+
+  // Return empty vector for out of range
+  if (cell_as_num < 0 || cell_as_num > DEFAULT_CELL_COUNT)
+    return *(new std::vector<std::string>());
+  
+  return *cell_history[cell_as_num];
+}
+
+/*
+ * Returns the history of edits for this spreadsheet
+ */
+std::vector<std::string> & spreadsheet::get_sheet_history()
+{
+  return *spd_history;
+}
+
+/*
+ * Returns the contents of the specified cell, or null if non existant
+ */
+std::string spreadsheet::get_cell_contents(std::string cell)
+{
+  int index = cell_to_index(cell);
+
+  if (index < 0)
+    return NULL;
+
+  if (cell_history[index]->size() == 0)
+    return NULL;
+
+  return cell_history[index]->back();
 }

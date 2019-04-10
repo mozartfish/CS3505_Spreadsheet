@@ -46,6 +46,9 @@ class socket_connections {
   static void WaitForData(int socket_fd, char* buf, int bytes);
   static void SendData(int socket_fd, const char * data, int bytes);
 
+  // Simple wrapper for closing socket
+  static void CloseSocket(int fd);
+
 };
 
 #endif

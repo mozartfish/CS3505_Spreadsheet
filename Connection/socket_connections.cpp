@@ -115,3 +115,12 @@ void socket_connections::SendData(int socket_fd, const char *data, int bytes)
 	  SendData(socket_fd, data, bytes - bytes_written);
 	}
   }
+
+/*
+ * Safely closes a socket of the specified file descriptor
+ */
+void socket_connections::CloseSocket(int socket_fd)
+{
+  if (close(socket_fd) < 0)
+    std::cout << "Error closing socket of file descriptor " << socket_fd << std::endl;
+}

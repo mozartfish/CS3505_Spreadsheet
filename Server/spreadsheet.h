@@ -9,6 +9,7 @@
 #include <string>
 #include <sstream>
 #include <unordered_map>
+#include <vector>
 #include "DependencyGraph.h"
 
 
@@ -21,8 +22,8 @@ class spreadsheet {
 
  private:
   std::string name;
-  std::stack<std::string> * spd_history;
-  std::stack<std::string> ** cell_history;
+  std::vector<std::string> * spd_history;
+  std::vector<std::string> ** cell_history;
   std::unordered_map<std::string, std::string> * users;
   DependencyGraph * dependencies;
 
@@ -38,6 +39,10 @@ class spreadsheet {
   std::string undo();
   std::string revert(std::string cell);
   std::unordered_map<std::string, std::string> & get_users();
+  std::vector<std::string> & get_cell_history(int cell_as_num);
+  std::vector<std::string> & get_sheet_history();
+  std::string get_cell_contents(std::string cell);
+  
   bool CircularDependency(std::string cell, std::string formula);
 };
 

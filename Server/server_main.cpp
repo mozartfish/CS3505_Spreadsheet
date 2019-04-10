@@ -27,20 +27,22 @@ vector<string> * sheet_names;
 unordered_map<int, string> * socket_usermap;
 unordered_map<int, string> * socket_sprdmap;
 queue<string> * updates;
-const string * SHEET_FILEPATH = new String ("./Settings/sheets.txt");
+const string * SHEET_FILEPATH = new string ("./Settings/sheets.txt");
 
 /*
  * Closes the server, sending all necessary goodbyes, processes the rest of
  * the incoming requests, closes all socket connections, deletes all
  * pointer objects, and writes all spreadsheets back to the file in Settings
  */
-void close()
+void close(volatile socks & socket_info)
 {
-  //Send goodbyes
 
   //Clear queue and process messages
+  
 
   //Close sockets
+  for (int socket : *socket_info.sockets)
+    socket_connections::CloseSocket(socket);
 
   //Delete all pointers, and all spreadsheets in the list
   for (unordered_map<string, spreadsheet*>::iterator it = sheets->begin(); it != sheets->end(); it++)
@@ -86,9 +88,48 @@ int write_sheets_to_file()
   ofstream file;
   file.open((*SHEET_FILEPATH), ofstream::out | ofstream::trunc);
 
+  // Write all values, separated with tab characters (similar to tsv)
   if (file.is_open())
     {
 
+      unordered_map<string, spreadsheet*>::iterator sheet_it = sheets->begin();
+
+      for (sheet_it; sheet_it != sheets->end(); sheet_it++)
+	{
+	  //Write name
+	  file << "Name:" << '\t';
+	  file << sheet_it->first << '\t';
+	  
+	  //Write users and passwords
+	  file << "Usermap:" << '\t';
+	  for (auto usermap : sheet_it->second->get_users())
+	    file << usermap.first << '\t' << usermap.second << '\t';
+	  
+	  file << "Spreadsheet_History:" << '\t';
+	  //Write spreadsheet history
+	  for (auto sheet_hist : sheet_it->second->get_sheet_history())
+	    {
+	      file << sheet_hist << '\t';
+	    }
+	  
+	  
+	  //Write cells, and their dependencies, and their history
+	  file << "Cell_Information:" << '\t';
+	  for (int i = 0; i < DEFAULT_CELL_COUNT; i++)
+	    {
+	      // Write individual cell history
+	      string cell = "" + i + ":";
+	      file << cell << '\t';
+	      vector<string> cell_hist = get_cell_history(i);
+	      for (auto cell_contents : cell_hist)
+		file << cell_contents << '\t';
+	    }
+	  
+	  file << "end!";
+
+	  //Separate spreadsheets by newline
+	  file << '\n';
+	}
     }
   //error opening file
   else
@@ -212,8 +253,8 @@ int main(int argc, char ** argv)
        // Get data from buffers
        for (int idx = 0; idx < connections.buffers->size(); idx++)
 	 {
-	   // If data exists, grab and reset buffer
-	   if ((*connections.buffers)[idx][0] != NULL)
+	   // If data exists, grab and reset buffer (If not chars are null)
+	   if ((*connections.buffers)[idx][0] > 0)
 	     {
 	       (*(*connections.partial_data)[idx]) += (*connections.buffers)[idx];
 	       (*connections.buffers)[idx] = new char[BUF_SIZE];
@@ -235,6 +276,7 @@ int main(int argc, char ** argv)
 	   //Add data to queue to process
 	   string  data = (*connections.partial_data)[idx]->substr(0, limit);
 
+	   // TODO add delimit sequence between sheet name, socket, and command
 	   
 	 }
 
@@ -249,12 +291,17 @@ int main(int argc, char ** argv)
 
        while (updates->size() != 0)
 	 {
+	   // Get individual message
+	   string update = updates->front();
+	   updates->pop();
 
+
+	   
 	 }
 
        lock.unlock();
     }
 
-   close();
+   close(connections);
    return 0;
 }
