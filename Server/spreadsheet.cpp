@@ -11,6 +11,7 @@
 #include <unordered_map>
 #include <sstream>
 #include "spreadsheet.h"
+#include <queue>
 
 /*
  *  Constructs a new spreadsheet of the given name, with empty cells
@@ -189,6 +190,29 @@ bool spreadsheet::CircularDependency(std::string cell, std::string Formula)
   
   return false;
   
+}
+
+bool spreadsheet::Visit(std::string start, std::string goal)
+{
+  std::queue <std::string> queue = std::queue <std::string>();
+  queue.push(start);
+  
+  while (!queue.empty())
+  {
+    std::string start = queue.front();
+    if (start == goal)
+      return true;
+    else
+    {
+      std::unordered_set<std::string> get_dependents = this->dependencies->GetDependents(start);
+      for (std::string s : get_dependents)
+      {
+	queue.push(s);
+      }
+    }
+  }
+  
+  return false;
 }
 
 /*

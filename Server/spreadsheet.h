@@ -44,6 +44,7 @@ class spreadsheet {
   std::string get_cell_contents(std::string cell);
   
   bool CircularDependency(std::string cell, std::string formula);
+  bool Visit (std::string start, std::string goal);
 };
 
 #endif
