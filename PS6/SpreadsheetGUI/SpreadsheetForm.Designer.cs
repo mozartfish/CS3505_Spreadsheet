@@ -35,18 +35,13 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.fileMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.visualizerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.visualizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cellNameLabel = new System.Windows.Forms.Label();
             this.contentLabel = new System.Windows.Forms.Label();
             this.valueText = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
+            this.RevertButton = new System.Windows.Forms.Button();
             this.fileMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -118,73 +113,25 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newToolStripMenuItem,
-            this.saveToolStripMenuItem,
-            this.openToolStripMenuItem,
             this.helpToolStripMenuItem,
-            this.closeToolStripMenuItem,
-            this.visualizerToolStripMenuItem});
+            this.closeToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(44, 24);
             this.fileToolStripMenuItem.Text = "File";
             // 
-            // newToolStripMenuItem
-            // 
-            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(147, 26);
-            this.newToolStripMenuItem.Text = "New";
-            this.newToolStripMenuItem.Click += new System.EventHandler(this.NewToolStripMenuItem_Click);
-            // 
-            // saveToolStripMenuItem
-            // 
-            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(147, 26);
-            this.saveToolStripMenuItem.Text = "Save";
-            this.saveToolStripMenuItem.Click += new System.EventHandler(this.SaveToolStripMenuItem_Click);
-            // 
-            // openToolStripMenuItem
-            // 
-            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(147, 26);
-            this.openToolStripMenuItem.Text = "Open";
-            this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenToolStripMenuItem_Click);
-            // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(147, 26);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.helpToolStripMenuItem.Text = "Help";
             this.helpToolStripMenuItem.Click += new System.EventHandler(this.HelpToolStripMenuItem_Click);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(147, 26);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.CloseToolStripMenuItem_Click);
-            // 
-            // visualizerToolStripMenuItem
-            // 
-            this.visualizerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.visualizeToolStripMenuItem,
-            this.clearToolStripMenuItem});
-            this.visualizerToolStripMenuItem.Name = "visualizerToolStripMenuItem";
-            this.visualizerToolStripMenuItem.Size = new System.Drawing.Size(147, 26);
-            this.visualizerToolStripMenuItem.Text = "Visualizer";
-            // 
-            // visualizeToolStripMenuItem
-            // 
-            this.visualizeToolStripMenuItem.Name = "visualizeToolStripMenuItem";
-            this.visualizeToolStripMenuItem.Size = new System.Drawing.Size(142, 26);
-            this.visualizeToolStripMenuItem.Text = "Visualize";
-            this.visualizeToolStripMenuItem.Click += new System.EventHandler(this.VisualizeToolStripMenuItem_Click);
-            // 
-            // clearToolStripMenuItem
-            // 
-            this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(142, 26);
-            this.clearToolStripMenuItem.Text = "Clear";
-            this.clearToolStripMenuItem.Click += new System.EventHandler(this.ClearToolStripMenuItem_Click);
             // 
             // cellNameLabel
             // 
@@ -217,13 +164,24 @@
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.875F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(1388, 31);
+            this.button1.Location = new System.Drawing.Point(1388, 50);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(116, 44);
+            this.button1.Size = new System.Drawing.Size(116, 25);
             this.button1.TabIndex = 21;
             this.button1.Text = "UNDO";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.UndoButton_Click);
+            // 
+            // RevertButton
+            // 
+            this.RevertButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RevertButton.Location = new System.Drawing.Point(1388, 12);
+            this.RevertButton.Name = "RevertButton";
+            this.RevertButton.Size = new System.Drawing.Size(116, 31);
+            this.RevertButton.TabIndex = 22;
+            this.RevertButton.Text = "REVERT";
+            this.RevertButton.UseVisualStyleBackColor = true;
+            this.RevertButton.Click += new System.EventHandler(this.RevertButton_Click);
             // 
             // SpreadsheetForm
             // 
@@ -231,6 +189,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1516, 1055);
+            this.Controls.Add(this.RevertButton);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.valueText);
             this.Controls.Add(this.contentLabel);
@@ -261,18 +220,13 @@
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.MenuStrip fileMenu;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.Label cellNameLabel;
         private System.Windows.Forms.Label contentLabel;
         private System.Windows.Forms.Label valueText;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.ToolStripMenuItem visualizerToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem visualizeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
+        private System.Windows.Forms.Button RevertButton;
     }
 }
 
