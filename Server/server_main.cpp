@@ -77,16 +77,24 @@ int process_spreadsheets_from_file()
 	{
 	  spreadsheet* curr_sheet = NULL;
 
-
 	  // Pull out the first token
 	  char * line_pointer = &line[0];
 	  char * token = strtok(line_pointer, "\t");
-	  string token_str(token);
+
+	  // If no data after line
+	  if (!token)
+	    continue;
+
+	  string * token_str = new string(token);
 
 	  int part_idx = 0;
 
+       /**********************************************************************/
+       /*                       READ SHEET NAME                              */
+       /**********************************************************************/
+
 	  // Bad name error
-	  if (token_str != read_partitions[part_idx])
+	  if (*token_str != read_partitions[part_idx])
 	    return -1;
 	  
 
@@ -96,22 +104,28 @@ int process_spreadsheets_from_file()
 	    return -1;
 	  else
 	    {
-	      token_str.replace(0, token_str.size(), token);
-	      curr_sheet = new spreadsheet(token_str);
+	      delete token_str;
+	      token_str = new string (token);
+	      curr_sheet = new spreadsheet(*token_str);
 	    }
-
+	  
 	  ++part_idx;
 	  token = strtok(NULL, "\t");
+
+       /**********************************************************************/
+       /*                       USERMAP READ BLOCK                           */
+       /**********************************************************************/
+
 
 	  // Try to parse Usermap (Can be empty)
 	  if (token == NULL)
 	    return -1;
 	  else
 	    {
-	      token_str.replace(0, token_str.size(), token);
+	      token_str = new string (token);
 
 	      // Bad partition
-	      if (token_str != read_partitions[part_idx])
+	      if (*token_str != read_partitions[part_idx])
 		return -1;
 
 	      part_idx++;
@@ -142,50 +156,86 @@ int process_spreadsheets_from_file()
 		}
 	    }
 
+       /**********************************************************************/
+       /*                       SHEET HISTORY READ                           */
+       /**********************************************************************/
+
 	  // Never reached next partition (aka Spreadsheet history)
 	  if(token == NULL)
 	    return -1;
 
 	  part_idx++;
 
+	  vector<string> * spd_hist = new vector<string>();
+
 	  // Iterate over spreadsheet history
 	  token = strtok(NULL, "\t");
 	  while (token != NULL)
 	    {
-	      token_str.replace(0, token_str.size(), token);
+	      
+	      token_str = new string (token);
 
 	      // Make sure we have not reached next partition
-	      if (token_str == read_partitions[part_idx])
-		      break;
+	      if (*token_str == read_partitions[part_idx])
+		break;
+
+	      // add directly to spread history
+	      spd_hist->push_back(*token_str);
+
+	      token = strtok(NULL, "\t");
 	    }
+
+	  curr_sheet->add_direct_sheet_history(*spd_hist);
+
+       /**********************************************************************/
+       /*                       CELL HISTORY READ                            */
+       /**********************************************************************/
 	  
 	  // Never reached next partition (aka Cell history)
 	  if (token == NULL)
 	    return -1;
-	  
+
+	  token = strtok(NULL, "\t");
+
 	  // Iterate over each token
-	  while (token != NULL)
+	  while (token)
 	    {
+	      token_str = new string (token);
+	     
+	      //Parse cell num
+	      int cell_num = stoi(token_str->substr(0, token_str->length() - 1));
+	      vector<string> * cell_hist = new vector<string>();
 
-	      // Case name
-
-	      // Case Usermap
-
-	      // Case spreadsheet history
-
-	      // Case cell histories
-	      
-
-	      
-	      
 	      token = strtok(NULL, "\t");
-	    }
+
+	      // Iterate over full history of the cell
+	      while (token)
+		{
+		  token_str = new string(token);
+
+		  // If found next cell
+		  if ((*token_str)[0] == ':' && (*token_str)[token_str->length()] == ':')
+		    break;
+
+		  // Add histories to a vector
+		  cell_hist->push_back(*token_str);
+
+		  token = strtok(NULL, "\t");
+		}
+	      cout << "Adding history" << endl;
+	      
+	      // Add vector of histories to spreadsheet
+	      curr_sheet->add_direct_cell_history(cell_num, *cell_hist);
+	      
+	      } 
+
+	  // Add finished sheet 
+	  (*sheets)[curr_sheet->get_name()] = curr_sheet;
 	}
 
-  //error opening file
-  else
-    return -1;
+  std::cout << "Finishing file read" << std::endl;
   
+  // If could not open assumes there was no sheet to read
   file.close();
   return 0;
 }
@@ -201,6 +251,8 @@ int write_sheets_to_file()
   // Write all values, separated with tab characters (similar to tsv)
   if (file.is_open())
     {
+
+      cout << "Writing spreadsheets back to file" << endl;
 
       unordered_map<string, spreadsheet*>::iterator sheet_it = sheets->begin();
 
@@ -228,7 +280,7 @@ int write_sheets_to_file()
 	  for (int i = 0; i < DEFAULT_CELL_COUNT; i++)
 	    {
 	      // Write individual cell history
-	      string cell = to_string(i) + ":";
+	      string cell = ":" + to_string(i) + ":";
 	      file << cell;
 	      vector<string> cell_hist = sheet_it->second->get_cell_history(i);
 	      for (auto cell_contents : cell_hist)
@@ -306,11 +358,15 @@ int main(int argc, char ** argv)
   socket_sprdmap = new unordered_map<int, string>();
   updates = new queue<string>();
 
-  //TODO Read in all information files for startup and have placed
-  // in their proper objects
+  //Start by reading the file of spreadsheets into the program
+  if (process_spreadsheets_from_file() < 0)
+    {
+      cout << "Error reading spreadsheet file. Check for syntax errors." << endl;
+      return -1;
+    }
 
-  //TODO listen for clients async
-  auto connect = std::async(std::launch::async, socket_connections::WaitForClientConnections, &connections, &lock);
+  //Listen for clients async
+  std::async(std::launch::async, socket_connections::WaitForClientConnections, &connections, &lock);
   
   //Infinite send and receive loop
    while(true)
