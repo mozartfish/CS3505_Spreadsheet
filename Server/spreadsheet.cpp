@@ -169,6 +169,7 @@ int spreadsheet::cell_to_index(std::string cell)
   return ret_idx;
 }
 
+//Function that detects circular dependcies in the spreadsheet
 bool spreadsheet::CircularDependency(std::string cell, std::string Formula)
 {
   //https://stackoverflow.com/questions/16029324/c-splitting-a-string-into-an-array
@@ -184,7 +185,7 @@ bool spreadsheet::CircularDependency(std::string cell, std::string Formula)
   
   for (std::string s : string_tokens)
   {
-    if (s.compare(cell) == 0)
+    if (Visit(s, cell))
       return true;
   }
   
@@ -192,6 +193,7 @@ bool spreadsheet::CircularDependency(std::string cell, std::string Formula)
   
 }
 
+//Helper function that performs a DFS on the dependency graph looking for circular dependcies
 bool spreadsheet::Visit(std::string start, std::string goal)
 {
   std::queue <std::string> queue = std::queue <std::string>();
