@@ -52,11 +52,13 @@ namespace SpreadsheetGUI
         /// </summary>
         private string selectedCellValue;
 
+        //TODO: Delete
         /// <summary>
         /// Used for the background worker to prevent other work from happening.
         /// </summary>
         private Boolean currentlyWorking = false;
 
+        //TODO: Delete
         /// <summary>
         /// Used by the background worker to not change value and contents if cell isn't selected.
         /// </summary>
@@ -128,18 +130,6 @@ namespace SpreadsheetGUI
             PressEnter(e);
         }
 
-
-        //TODO: remove from form and properties menu
-        /// <summary>
-        /// Handles the event triggered by clicking "new" within the menu bar.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void NewToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ClickNew();
-        }
-
         
         /// <summary>
         /// Handles closing the spreadsheet from the menu bar.
@@ -151,28 +141,6 @@ namespace SpreadsheetGUI
             Close();
         }
 
-        //TODO: remove from form and properties menu
-        /// <summary>
-        /// Handles opening a new spreadsheet from the menu bar.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ClickOpen();
-        }
-
-
-        //TODO: remove from form and properties menu
-        /// <summary>
-        /// Handles saving the current spreadsheet and its data.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ClickSave();
-        }
 
         //TODO: Fix the help information
         /// <summary>
@@ -185,28 +153,6 @@ namespace SpreadsheetGUI
             ClickHelp();
         }
 
-
-        //TODO: remove from form and properties menu
-        /// <summary>
-        /// Handles selecting the visualize option from the menu.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void VisualizeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            RandomColor();
-        }
-
-        //TODO: remove from form and properties menu
-        /// <summary>
-        /// Handles selecting the clear option from the menu.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ClearToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ClearColors();
-        }
        
         /// <summary>
         /// Handles closing the current spreadsheet.
@@ -270,46 +216,6 @@ namespace SpreadsheetGUI
 
             //Sets the caret to the end of the contents text box.
             contentTextBox.SelectionStart = contentTextBox.Text.Length;
-        }
-
-        // TODO: Not needed
-        /// <summary>
-        /// Handles opening a previously saved spreadsheet. The user will be prompted to select a spreadsheet from 
-        /// their directories. The newly opened spreadsheet will replace the current spreadsheet on the panelZ
-        /// </summary>
-        private void OpenSpreadsheet()
-        {
-            try
-            {
-                string path = "";
-                using (OpenFileDialog openFile = new OpenFileDialog())
-                {
-
-                    openFile.InitialDirectory = @"c:\";
-                    openFile.Filter = "sprd files (*.sprd)|*.sprd|All files (*.*)|*.*";
-                    openFile.RestoreDirectory = true;
-
-                    if (openFile.ShowDialog() == DialogResult.OK)
-                    {
-                        path = openFile.FileName;
-                        spreadsheet = new Spreadsheet(path, s => controller.IsValid(s), s => controller.Normalize(s), "ps6");
-                        spreadsheetPanel1.Clear();
-
-                        //this loops through the spreadsheet and populates the spreadsheetpanel with the values
-                        foreach (string cell in spreadsheet.GetNamesOfAllNonemptyCells())
-                        {
-                            DisplayCellPanelValue(cell, spreadsheet.GetCellValue(cell).ToString());
-                        }
-                    }
-                }
-                spreadsheetPanel1.SetSelection(0, 0);
-                DisplaySelection(spreadsheetPanel1);
-            }
-            catch (Exception e)
-            {
-
-                WarningDialogBox(e.Message, "File read error");
-            }
         }
 
         /// <summary>
@@ -443,86 +349,6 @@ namespace SpreadsheetGUI
             help.Show();
         }
 
-        //TODO: delete
-        /// <summary>
-        /// This event helper will display the user's directory and allow them to save a new file or overwrite an
-        /// existing one. Default extension for saving are .sprd files, but the user may save under a different 
-        /// file extension. This method will also alert the user if there are any error during file writing or
-        /// if an overwrite is immenant.
-        /// </summary>
-        /// <returns></returns>
-        private Boolean ClickSave()
-        {
-            try
-            {
-                SaveFileDialog save = new SaveFileDialog();
-                save.InitialDirectory = @"C:\";
-                save.RestoreDirectory = true;
-                save.Filter = "sprd files (*.sprd)|*.sprd|All files (*.*)|*.*";
-                save.Title = "Save Spreadsheet";
-
-                DialogResult result = save.ShowDialog();
-
-                if (result == DialogResult.OK)
-                {
-                    spreadsheet.Save(save.FileName);
-                    return true;
-                }
-                else if (result == DialogResult.Cancel)
-                {
-                    return false;
-                }
-            }
-            catch (SpreadsheetReadWriteException e)
-            {
-                WarningDialogBox(e.Message, "Warning");
-            }
-            return false;
-        }
-        
-
-        //TODO: Delete
-        /// <summary>
-        /// This event helper opens a different spreadsheet while also making sure the user knows if they are about to lose data.
-        /// If data is about to be lost, the user has the oppertunity to save, and then open, open and lose the work or cancel.
-        /// </summary>
-        private void ClickOpen()
-        {
-            //if there are unsaved changes to the spreadsheet, ask if they want to delete or save work before opening
-            if (spreadsheet.Changed)
-            {
-                DialogResult resultchoice = MessageBox.Show("Do you want to save before overwriting?", "Loss of data immenent",
-                    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning,MessageBoxDefaultButton.Button2);
-
-                //if the user wants to save their progress and then open
-                if (resultchoice == DialogResult.Yes)
-                {
-                    ClickSave();
-                    OpenSpreadsheet();
-                }
-                //lose work and open spreadsheet
-                if (resultchoice == DialogResult.No)
-                {
-                    OpenSpreadsheet();
-                }
-            }
-            //if the spreadsheet has no changes to it, open a new one
-            else
-            {
-                OpenSpreadsheet();
-            }
-        }
-
-
-        //TODO: delete
-        /// <summary>
-        /// When the New option in the file dialog has been pressed this helper opens a new thread to handle the new spreadsheet
-        /// </summary>
-        private void ClickNew()
-        {
-            SpreadsheetApplicationContext.getAppContext().RunForm(new SpreadsheetForm());
-        }
-
         /// <summary>
         /// when the enter key has been pressed this helper will evaluate the expression in the contents text box
         /// and then updates all the dependencies
@@ -537,15 +363,25 @@ namespace SpreadsheetGUI
                 //if enter was pressed while control was on panel
                 if (e.KeyValue == 13)
                 {
-                    currentlyWorking = true;
-                    backgroundWorker1.RunWorkerAsync();
+                    //currentlyWorking = true;
+                    //backgroundWorker1.RunWorkerAsync();
+
+                    int col, row;
+                    spreadsheetPanel1.GetSelection(out col, out row);
+                    string cellName = ColRowToCellName(col, row);
+
+                    string contents = contentTextBox.Text;
+
+                    //  process update
+                    controller.ProcessEdit(cellName, contents);
+                    
                 }
             }
         }
 
         #endregion
 
-        //TODO: figure out what goes in controller and what goes in form
+        ///TODO: figure out what goes in controller and what goes in form
         /// <summary>
         /// This private method is called when enter is pressed allowing for updates to take place while
         /// the user still has access to the spreadsheet.
@@ -561,12 +397,10 @@ namespace SpreadsheetGUI
             spreadsheetPanel1.GetSelection(out col, out row);
             cellName = ColRowToCellName(col, row);
             
-  
-
-            //this allows the selection to be checked after the work is done so the text boxes are not updated if the selection changes
-            startWorkCellName = cellName;
-            string content = contentTextBox.Text;
-            string currentCellEvaluating = cellName;
+            ////this allows the selection to be checked after the work is done so the text boxes are not updated if the selection changes
+            //startWorkCellName = cellName;
+            //string content = contentTextBox.Text;
+            //string currentCellEvaluating = cellName;
 
             //this updates the spreadsheet panel and spreadsheet values of all the dependent cells
             try
@@ -577,11 +411,18 @@ namespace SpreadsheetGUI
                 // We only want the backing spreadsheet to change when the server tells us to change it
                 // send those changes to the server
 
+                // Parse the content of the cell, check for errors, and update the dependency graph
+               
+
+                // Get the dependents
+
+                // Send to the server
+
                 // (might) need this foreach
                 //Should we be keeping a local copy of the spreadsheet that the server does not have?
                 foreach (string newCellName in spreadsheet.SetContentsOfCell(cellName, contentTextBox.Text))
                 {
-                    currentCellEvaluating = newCellName;
+                   // currentCellEvaluating = newCellName;
                     string value = spreadsheet.GetCellValue(newCellName).ToString();
                     controller.FormulaErrorCheck(ref value);
 
@@ -608,7 +449,7 @@ namespace SpreadsheetGUI
             }
         }
 
-        // TODO: this is used for display
+        /// TODO: get rid of background worker
         /// <summary>
         /// this background worker does all the work required for async evaluating
         /// </summary>
@@ -641,33 +482,7 @@ namespace SpreadsheetGUI
             //now more work can be done!
             currentlyWorking = false;
         }
-
-        //TODO: Get rid of colors
-        /// <summary>
-        /// This method will redraw and save the spreadsheet based on user input. Cells clicked
-        /// will be filled in with a random color for a fun art exercise.
-        /// </summary>
-        private void RandomColor()
-        {
-            Random randomRow = new Random();
-            Random randomCol = new Random();
-            spreadsheetPanel1.Visualize();
-
-        }
-
-        /// <summary>
-        /// Clears any work done by RandomColor() call.
-        /// </summary>
-        private void ClearColors()
-        {
-            spreadsheetPanel1.ClearVisualize();
-            Invalidate();
-            spreadsheetPanel1.GetSelection(out int col, out int row);
-            spreadsheetPanel1.SetSelection(col, row);
-            DisplaySelection(spreadsheetPanel1);
-        }
-
-        //TODO: Add revert button
+ 
 
         /// <summary>
         /// this event is fired when the 
@@ -680,9 +495,13 @@ namespace SpreadsheetGUI
 
 
         }
+
+        private void RevertButton_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
-
 
 
 

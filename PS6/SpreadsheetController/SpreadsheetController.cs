@@ -103,8 +103,33 @@ namespace Controller
             SpreadsheetArrived(spreadsheet);
         }
 
+        public void ProcessEdit(string cellName, string contents)
+        {
+            
+            ISet<string> dependents;
+            try
+            {
+                dependents = spreadsheet.SetContentsOfCell(cellName, contents);
+                
+                //Send cell contents for each dependency and the contents
+                Send(dependents);
+            }
+            catch (Exception) //(FormulaFormatException)
+            {
+
+            }
+            
+        }
+
+        public void Send(ISet<string> set)
+        {
+            //JSON serialize
+            //send that data
+        }
+
         public void Send(string data)
         {
+            //JSON serialize
             Networking.Send(server, data);
         }
         #endregion
