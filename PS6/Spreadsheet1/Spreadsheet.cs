@@ -83,6 +83,46 @@ namespace SS
             ReadXml(filename);  // populates the new spreadsheet 
         }
 
+
+
+         /// <summary>
+         /// 
+         /// </summary>
+         /// <param name="cellName"></param>
+         /// <param name="contents"></param>
+         /// <returns></returns>
+        public IEnumerable<string> ParseContents(string cellName, string contents)
+        {
+            try
+            {
+                IEnumerable<string> dependents = new HashSet<string>();
+                contents = Normalize(contents);
+                CheckInput(cellName, contents);
+
+                if(Regex.IsMatch(contents, @"^="))
+                {
+                    Formula formula = new Formula(contents.Split('=').Last(), Normalize, IsValid);
+                    dependents = formula.GetVariables();
+                }
+
+                return dependents;
+            }
+            catch(InvalidNameException)
+            {
+                throw new InvalidNameException();
+            }
+            catch(FormulaFormatException e)
+            {
+                throw new FormulaFormatException(e.Message);
+            }
+
+        }
+
+
+
+
+
+
         /// <summary>
         /// If name is null or invalid, throws an InvalidNameException.
         /// 
@@ -543,6 +583,7 @@ namespace SS
                         Formula formula = (Formula)cell.Contents;
                         cell.Value = formula.Evaluate(Lookup);
                     }
+
                 }
             }
         }

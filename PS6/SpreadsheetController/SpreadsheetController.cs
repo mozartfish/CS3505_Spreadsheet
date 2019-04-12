@@ -50,6 +50,7 @@ namespace Controller
             this.ListArrived += handler;
         }
 
+       
         public void RegisterSpreadsheetUpdateHandler(SpreadsheetUpdate handler)
         {
             this.SpreadsheetArrived += handler;
@@ -103,27 +104,28 @@ namespace Controller
             SpreadsheetArrived(spreadsheet);
         }
 
+
         public void ProcessEdit(string cellName, string contents)
         {
-            
-            ISet<string> dependents;
+
             try
             {
-                dependents = spreadsheet.SetContentsOfCell(cellName, contents);
-                
-                //Send cell contents for each dependency and the contents
-                Send(dependents);
+                IEnumerable<string> dependents = new HashSet<string>();
+                dependents = spreadsheet.ParseContents(cellName, contents);
+                Send(cellName, contents, dependents);
             }
-            catch (Exception) //(FormulaFormatException)
+            catch (SpreadsheetUtilities.FormulaFormatException e) //(FormulaFormatException)
             {
-
+                throw new SpreadsheetUtilities.FormulaFormatException(e.Message);
             }
-            
         }
 
-        public void Send(ISet<string> set)
+        public void Send(string cellName, string contents, IEnumerable<string> set)
         {
             //JSON serialize
+
+
+
             //send that data
         }
 
