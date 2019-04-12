@@ -203,7 +203,7 @@ int process_spreadsheets_from_file()
 	      token_str = new string (token);
 	     
 	      //Parse cell num
-	      int cell_num = stoi(token_str->substr(0, token_str->length() - 1));
+	      int cell_num = stoi(token_str->substr(1, token_str->length() - 1));
 	      vector<string> * cell_hist = new vector<string>();
 
 	      token = strtok(NULL, "\t");
@@ -214,7 +214,7 @@ int process_spreadsheets_from_file()
 		  token_str = new string(token);
 
 		  // If found next cell
-		  if ((*token_str)[0] == ':' && (*token_str)[token_str->length()] == ':')
+		  if ((*token_str)[0] == ':' && (*token_str)[token_str->length() - 1] == ':')
 		    break;
 
 		  // Add histories to a vector
@@ -222,7 +222,6 @@ int process_spreadsheets_from_file()
 
 		  token = strtok(NULL, "\t");
 		}
-	      cout << "Adding history" << endl;
 	      
 	      // Add vector of histories to spreadsheet
 	      curr_sheet->add_direct_cell_history(cell_num, *cell_hist);
@@ -437,10 +436,18 @@ int main(int argc, char ** argv)
 	   if (limit < 0)
 	     continue;
 
-	   //Add data to queue to process
+	   //Get new data, erase data
 	   string  data = (*connections.partial_data)[idx]->substr(0, limit);
+	   (*connections.partial_data)[idx]->erase(0, limit + 1);
 
-	   // TODO add delimit sequence between sheet name, socket, and command
+	   // Format an update as socket_num, sheet_name, and then the data, separated with \t
+	   string * update = new string();
+	   *update += to_string((*connections.sockets)[idx + 1]) + '\t';
+	   *update += (*socket_sprdmap)[(*connections.sockets)[idx + 1]] + '\t';
+	   *update += data;
+	   
+	   // Add data to the queue
+	   updates->push(*update);
 	   
 	 }
 
@@ -459,8 +466,10 @@ int main(int argc, char ** argv)
 	   string update = updates->front();
 	   updates->pop();
 
-
+	   // get tokens, convert from JSON
 	   
+
+	   // Send updates to all that should be notified if successful
 	 }
 
        lock.unlock();
