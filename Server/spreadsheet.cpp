@@ -254,3 +254,42 @@ std::string spreadsheet::get_cell_contents(std::string cell)
 
   return cell_history[index]->back();
 }
+
+/*
+ * Sets the history of the spreadsheet directly to the provided vector
+ * Undefined histories cause undefined behavior, so use of this method
+ * outisde of the specified format is not recommended
+ */
+void spreadsheet::add_direct_sheet_history(std::vector<std::string> hist)
+{
+  delete spd_history;
+  std::vector<std::string> * new_hist = &hist;
+  spd_history = new_hist;
+}
+
+/*
+ * Sets the history of the specified cell directly to the provided vector
+ * Undefined histories cause undefined behavior, so use of this method
+ * outisde of the specified format is not recommended
+ *
+ * Does nothing for cells outside of the range of the spreadsheet
+ */
+void spreadsheet::add_direct_cell_history(int cell, std::vector<std::string> & hist)
+{
+  if (cell < 0 || cell > DEFAULT_CELL_COUNT)
+    return;
+
+  // Delete old history and overwrite
+  delete cell_history[cell];
+  std::vector<std::string> * cell_hist = &hist;
+  cell_history[cell] = cell_hist;
+}
+
+
+/*
+ * Returns the name of this spreadsheet
+ */
+std::string spreadsheet::get_name()
+{
+  return this->name;
+}
