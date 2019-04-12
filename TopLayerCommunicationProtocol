@@ -1,0 +1,85 @@
+Final Project Admin Front End:
+
+ToDo: 
+	This weekend:
+- make 2 buttons that change the window to  another window, and has a back button from that window that returns to main (make one, and copy paste)
+- 1 warning shutdown dialog box
+- 2 scrolling lists (make one and copy paste)
+
+
+
+
+BRUCE:
+ - Scrolling list
+ - 
+
+
+
+
+AARON:
+ - Open new window
+ - make unit tests, 
+
+
+
+Release to Team:
+
+	Top Protocol:
+There are XXX new messages that we will need to make to acomedate the admin front end
+ - Need To alert the server to remove a certain spreadsheet:
+{
+"type" : "remove spreadsheet",
+"name" : "name.sprd"
+}\n\n
+
+
+ - need to tell server to make a blank spreadsheet
+{
+"type" : "create",
+"name" : "exampleSpreadsheet.sprd"
+}\n\n
+
+
+ - server must send an update to the server when a new connection is made POTENTIAL: also send time, then front end can show when someone joined
+{
+"type" : "connection made",
+"name" : "exampleSpreadsheet.sprd",
+"username" : "Horribleatgrading"
+}\n\n
+
+
+ - The server must sdd the front end to the list of people that must be updated when a SS changes, front end must know of all SS changes(across all SS))
+
+
+ - front end must send a message to the server to inform it to shut down
+{
+"type" : "shutdown"
+}\n\n
+
+
+ - The front end must be able to tell the server to create a user
+{
+"type" : "create user",
+"username" : "exampleSpreadsheet.sprd",
+"password" : "Horribleatgrading"
+}\n\n
+
+
+
+
+ - The front end must be able to tell the server to delete a user
+{
+"type" : "delete user",
+"username" : "Horribleatgrading",
+"password" : "bumbus"
+}\n\n
+
+
+ 
+ - The front end must be able to tell the server to change a user's password
+{
+"type" : "connection made",
+"username" : "Horribleatgrading",
+"password" : "bumbus",
+"new password" : "dumbledore"
+}\n\n

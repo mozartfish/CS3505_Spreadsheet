@@ -6,17 +6,24 @@ using System.Windows.Forms;
 
 namespace WindowsFormsApp1
 {
-    static class Program
+    public static class Program
     {
+        public static Form1 form;
+
+        public delegate void PassForm(Form1 formpassed);
+        public static event PassForm FormPass;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        public static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            form = new Form1();
+            //FormPass(form);
+            Application.Run(form);
         }
     }
 }
