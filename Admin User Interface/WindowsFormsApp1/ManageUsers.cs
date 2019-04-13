@@ -1,5 +1,4 @@
-﻿using AdminModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Controller;
 
 namespace WindowsFormsApp1
 {
@@ -19,20 +19,19 @@ namespace WindowsFormsApp1
         public delegate void CreateUserEventHandler();
         public event CreateUserEventHandler createUser;
 
+        /// <summary>
+        /// basic constructor
+        /// </summary>
         public ManageUsers()
         {
             InitializeComponent();
-            // Test Scrolling Function - CurrentStatusList
-            for (int i = 0; i < 1000; i++)
-            {
-                listBox1.Items.Add(i.ToString());
-            }
         }
 
-        public ManageUsers(AdminLogic logic)
+        public ManageUsers(AdminController controller)
         {
             InitializeComponent();
-            Form thing = new Form();
+            
+            //currentStatusList.Items.Add(i.ToString());
         }
 
         private void ManageUsers_FormClosing(object sender, FormClosingEventArgs e)
