@@ -10,6 +10,7 @@ namespace Controller
     {
         public AdminController()
         {
+            //network controller goes here
 
         }
     }

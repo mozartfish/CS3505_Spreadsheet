@@ -18,7 +18,7 @@ namespace WindowsFormsApp1
         {
             InitializeComponent();
             //logic = new AdminLogic();
-
+            AdminController
 
             // Test Scrolling Function - CurrentStatusList
             //for (int i = 0; i < 1000; i++)
