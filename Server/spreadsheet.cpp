@@ -97,8 +97,8 @@ bool spreadsheet::change_cell(std::string cell, std::string contents)
   }
   else
   {
-    spd_sheet->push_back(cell);
-    cell_history[indx]->push_back(contents);
+    spd_history->push_back(cell);
+    cell_history[cell_idx]->push_back(contents);
     return true;
   }
  

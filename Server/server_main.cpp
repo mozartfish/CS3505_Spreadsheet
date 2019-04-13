@@ -466,9 +466,30 @@ int main(int argc, char ** argv)
 	   string update = updates->front();
 	   updates->pop();
 
-	   // get tokens, convert from JSON
-	   char * token = strtok(&update[0], '\t');
+	   // Get client ID
+	   char * token = strtok(&update[0], "\t");
+	   int fd = atoi(token);
+
+	   // Get the spreadsheet for the update
+	   token = strtok(NULL, "\t");
+	   string spread_name(token);
+
 	   
+	   // Get the JSON Serialized update
+	   token = strtok(NULL, "\t");
+	   string serialized_update(token);
+
+	   //Deserialize
+	   message * deserialized = &(server_helpers::json_to_message(serialized_update));
+
+	   //Process update
+	   // Open
+
+	   // Edit
+
+	   // Undo
+
+	   // Revert
 
 	   // Send updates to all that should be notified if successful
 	 }
