@@ -117,6 +117,6 @@ message & server_helpers::json_to_message(std::string & mess)
   }
   else
   {
-    return NULL;
+    return *new message("");
   }
 }
