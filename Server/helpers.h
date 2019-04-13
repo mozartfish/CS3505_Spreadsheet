@@ -16,7 +16,7 @@ class server_helpers
 
  public:
   static std::string message_to_json(const message & mess);
-  static message & json_to_message(const std::string & mess);
+  static message & json_to_message(std::string & mess);
 };
 
 #endif
