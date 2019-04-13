@@ -101,7 +101,6 @@ bool spreadsheet::change_cell(std::string cell, std::string contents)
     cell_history[cell_idx]->push_back(contents);
     return true;
   }
- 
 }
 
 /*
@@ -138,6 +137,7 @@ std::string spreadsheet::revert(std::string cell)
   //TODO use dependency graph to make sure circ dep won't exist
   std::string curr_cont = cell_hist->back();
   cell_hist->pop_back();
+  if (
   
   // Return the current top contents
   return cell_hist->back();
