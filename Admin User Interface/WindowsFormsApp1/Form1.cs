@@ -23,7 +23,7 @@ namespace WindowsFormsApp1
             // Test Scrolling Function - CurrentStatusList
             //for (int i = 0; i < 1000; i++)
             //{
-            //    //currentStatusList.Items.Add(i.ToString());
+            //    currentStatusList.Items.Add(i.ToString());
             //}
         }
 
