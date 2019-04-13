@@ -1,9 +1,8 @@
 ﻿using JsonClasses;
-using Newtonsoft.Json;
+//using Newtonsoft.Json;
 using System;
 using System.Text;
 using System.Windows.Forms;
-using Controller;
 
 //using AdminModel;
 
@@ -13,27 +12,50 @@ namespace WindowsFormsApp1
     {
         public delegate void NameEventHandle();
         public event NameEventHandle OpenNewAcctMan;
-        AdminController controller;
+        //public AdminLogic logic;
 
         public Form1()
         {
             InitializeComponent();
-            controller = new AdminController();
+            //logic = new AdminLogic();
+
+
+            // Test Scrolling Function - CurrentStatusList
+            //for (int i = 0; i < 1000; i++)
+            //{
+            //    currentStatusList.Items.Add(i.ToString());
+            //}
         }
 
         private void ShutDown(object sender, EventArgs e)
         {
-            controller.ShutDown();
+            //logic.ShutDownServer();
         }
 
         private void AccountManagementButton(object sender, EventArgs e)
         {
-            ManageUsers usrMan = new ManageUsers(controller);
+            //logic.OpenAcctManPage();
+            
         }
 
         private void SpreadsheetManagmentButton(object sender, EventArgs e)
         {
-            SpreadsheetManagement sprdMan = new SpreadsheetManagement(controller);
+            
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
