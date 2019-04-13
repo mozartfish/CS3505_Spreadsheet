@@ -88,8 +88,20 @@ bool spreadsheet::change_cell(std::string cell, std::string contents)
   int cell_idx = cell_to_index(cell);
   if (cell_idx < 0 || cell_idx >= DEFAULT_CELL_COUNT)
     return false;
-    
-  
+
+  //check for circular dependencies
+  if (contents[0] == '=')
+  {
+    if (CircularDependency(cell, contents))
+      return false;
+  }
+  else
+  {
+    spd_sheet->push_back(cell);
+    cell_history[indx]->push_back(contents);
+    return true;
+  }
+ 
 }
 
 /*
