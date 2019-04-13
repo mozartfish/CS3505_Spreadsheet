@@ -137,7 +137,14 @@ std::string spreadsheet::revert(std::string cell)
   //TODO use dependency graph to make sure circ dep won't exist
   std::string curr_cont = cell_hist->back();
   cell_hist->pop_back();
-  if (
+  if (cell_hist[cell_idx].back()[0] == '=')
+  {
+    if (CircularDependency(cell, cell_hist[cell_idx].back()))
+    {
+      cell_hist[cell_idx].push_back(curr_cont);
+      return NULL;
+    }
+  }
   
   // Return the current top contents
   return cell_hist->back();
