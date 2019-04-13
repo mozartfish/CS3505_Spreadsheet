@@ -11,6 +11,7 @@
 #include <vector>
 #include <mutex>
 #include <string>
+#include <chrono>
 
 #ifndef CONNECT_H
 #define CONNECT_H

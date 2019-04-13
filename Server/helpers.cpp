@@ -11,6 +11,9 @@
 
 using namespace std;
 
+/*
+ * Converts a message object into a sendable JSON string
+ */
 string server_helpers::message_to_json( const message & mess)
 {
   string m_json;
@@ -65,7 +68,9 @@ string server_helpers::message_to_json( const message & mess)
   return m_json;
 }
 
-
+/*
+ * Converts a JSON serialized string into a readable message object
+ */
 message & server_helpers::json_to_message(const std::string & mess)
 {
 
