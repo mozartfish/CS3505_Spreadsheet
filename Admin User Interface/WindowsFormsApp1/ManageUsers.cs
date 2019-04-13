@@ -32,6 +32,7 @@ namespace WindowsFormsApp1
         public ManageUsers(AdminLogic logic)
         {
             InitializeComponent();
+            Form thing = new Form();
         }
 
         private void ManageUsers_FormClosing(object sender, FormClosingEventArgs e)

@@ -12,12 +12,13 @@ namespace WindowsFormsApp1
     {
         public delegate void NameEventHandle();
         public event NameEventHandle OpenNewAcctMan;
-        public AdminLogic logic;
+        //public AdminLogic logic;
 
         public Form1()
         {
             InitializeComponent();
-            logic = new AdminLogic();
+            //logic = new AdminLogic();
+
 
             // Test Scrolling Function - CurrentStatusList
             //for (int i = 0; i < 1000; i++)
@@ -28,12 +29,12 @@ namespace WindowsFormsApp1
 
         private void ShutDown(object sender, EventArgs e)
         {
-            logic.ShutDownServer();
+            //logic.ShutDownServer();
         }
 
         private void AccountManagementButton(object sender, EventArgs e)
         {
-            logic.OpenAcctManPage();
+            //logic.OpenAcctManPage();
             
         }
 
