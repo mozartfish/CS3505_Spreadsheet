@@ -467,6 +467,7 @@ int main(int argc, char ** argv)
 	   updates->pop();
 
 	   // get tokens, convert from JSON
+	   char * token = strtok(&update[0], '\t');
 	   
 
 	   // Send updates to all that should be notified if successful
