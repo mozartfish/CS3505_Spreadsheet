@@ -1,5 +1,4 @@
-﻿//using AdminModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,13 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Controller;
 
 namespace WindowsFormsApp1
 {
     public partial class SpreadsheetManagement : Form
     {
 
-        public SpreadsheetManagement()
+        public SpreadsheetManagement(AdminController controller)
         {
             InitializeComponent();
             //logic = passedlogic;

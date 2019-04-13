@@ -36,7 +36,6 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.currentStatusList = new System.Windows.Forms.ListBox();
             this.updateList = new System.Windows.Forms.ListBox();
-            this.button4 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -83,21 +82,21 @@
             // 
             this.textBox1.Location = new System.Drawing.Point(12, 96);
             this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(625, 20);
             this.textBox1.TabIndex = 11;
             this.textBox1.Text = "Current Status";
             this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged_1);
             // 
             // textBox2
             // 
             this.textBox2.Location = new System.Drawing.Point(643, 96);
             this.textBox2.Name = "textBox2";
+            this.textBox2.ReadOnly = true;
             this.textBox2.Size = new System.Drawing.Size(325, 20);
             this.textBox2.TabIndex = 12;
             this.textBox2.Text = "Update";
             this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // currentStatusList
             // 
@@ -117,24 +116,11 @@
             this.updateList.TabIndex = 14;
             this.updateList.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged_1);
             // 
-            // button4
-            // 
-            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button4.Location = new System.Drawing.Point(468, 142);
-            this.button4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(160, 70);
-            this.button4.TabIndex = 15;
-            this.button4.Text = "Pretend Send To Server";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.PretendSendToServer);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1003, 603);
-            this.Controls.Add(this.button4);
             this.Controls.Add(this.updateList);
             this.Controls.Add(this.currentStatusList);
             this.Controls.Add(this.textBox2);
@@ -143,7 +129,7 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button1);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "d";
             this.ResumeLayout(false);
@@ -161,7 +147,6 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.ListBox currentStatusList;
         private System.Windows.Forms.ListBox updateList;
-        private System.Windows.Forms.Button button4;
     }
 }
 
