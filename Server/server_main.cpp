@@ -346,6 +346,7 @@ int main(int argc, char ** argv)
   connections.new_socket_connected = false;
   connections.buffers = new std::vector<char*>();
   connections.partial_data = new vector<string*>();
+  connections.needs_removed = new vector<bool>();
 
   // Initialize a lock that gets passed around for when updating 
   // the socks struct or accessing its members
@@ -394,6 +395,7 @@ int main(int argc, char ** argv)
               connections.buffers->push_back(new char[BUF_SIZE]);
 	      bzero((*connections.buffers)[idx - 1], BUF_SIZE);
 	      connections.partial_data->push_back(new string());
+	      connections.needs_removed->push_back(false);
 
 	      
 	      // Send list of spreadsheet names
@@ -410,6 +412,40 @@ int main(int argc, char ** argv)
 
 
        /**********************************************************************/
+       /*                     CLIENT REMOVAL BLOCK                           */
+       /**********************************************************************/
+       lock.lock();
+
+       int it_idx = 0;
+       vector<bool>::iterator it = connections.needs_removed->begin();
+       while (it != connections.needs_removed->end())
+	 {
+	   // If a client needs removed, remove it
+	   if (*it)
+	     {
+	       // Make sure double erasure doesn't happen
+	       connections.needs_removed->erase(it++);
+
+	       // Erase the socket from the usermap and sheet map
+	       int fd = (*connections.sockets)[it_idx + 1];
+	       socket_usermap->erase(fd);
+	       socket_sprdmap->erase(fd);
+
+	       // Close the socket
+	       socket_connections::CloseSocket(fd);
+	       
+	       // Erase the socket from the connections struct
+	       connections.sockets->erase(connections.sockets->begin() + it_idx + 1);
+	       --(connections.size_before_update);
+	       connections.buffers->erase(connections.buffers->begin() + it_idx);
+	       connections.partial_data->erase(connections.partial_data->begin() + it_idx);
+	       
+	       it_idx++;
+	     }
+	 }
+       lock.unlock();
+
+       /**********************************************************************/
        /*                       DATA RECEIVE BLOCK                           */
        /**********************************************************************/
        lock.lock();
@@ -423,11 +459,12 @@ int main(int argc, char ** argv)
 	       (*(*connections.partial_data)[idx]) += (*connections.buffers)[idx];
 	       (*connections.buffers)[idx] = new char[BUF_SIZE];
 	       bzero((*connections.buffers)[idx], BUF_SIZE);
-	     }
+	     
 
-	   // Resume getting data
-	   std::async(std::launch::async, socket_connections::WaitForData,
-			 (*connections.sockets)[idx + 1],  (*connections.buffers)[idx], BUF_SIZE);
+	       // Resume getting data
+	       std::async(std::launch::async, socket_connections::WaitForData,
+		      (*connections.sockets)[idx + 1],  (*connections.buffers)[idx], BUF_SIZE);
+	     }
 
 	   // Process data
 	   string delimiter = "\n\n";
