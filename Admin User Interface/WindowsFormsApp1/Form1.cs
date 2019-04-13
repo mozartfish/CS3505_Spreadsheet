@@ -4,7 +4,7 @@ using System;
 using System.Text;
 using System.Windows.Forms;
 
-//using AdminModel;
+using AdminModel;
 
 namespace WindowsFormsApp1
 {
@@ -12,40 +12,34 @@ namespace WindowsFormsApp1
     {
         public delegate void NameEventHandle();
         public event NameEventHandle OpenNewAcctMan;
+        public AdminLogic logic;
 
         public Form1()
         {
             InitializeComponent();
-            //logic = new AdminLogic();
+            logic = new AdminLogic();
 
             // Test Scrolling Function - CurrentStatusList
-            for (int i = 0; i < 1000; i++)
-            {
-                //currentStatusList.Items.Add(i.ToString());
-            }
+            //for (int i = 0; i < 1000; i++)
+            //{
+            //    //currentStatusList.Items.Add(i.ToString());
+            //}
         }
 
         private void ShutDown(object sender, EventArgs e)
         {
-            //logic.ShutDownServer();
+            logic.ShutDownServer();
         }
 
         private void AccountManagementButton(object sender, EventArgs e)
         {
-            //OpenNewAcctMan();
-            ManageUsers man = new ManageUsers();
-            man.Show();
-
+            logic.OpenAcctManPage();
+            
         }
 
         private void SpreadsheetManagmentButton(object sender, EventArgs e)
         {
-            //if (logic.GetSSWindowsCount() == 0)
-            {
-                SpreadsheetManagement form = new SpreadsheetManagement();
-                form.Show();
-                //logic.SetSSWindowsCount(1);
-            }
+            
         }
 
         private void button4_Click(object sender, EventArgs e)

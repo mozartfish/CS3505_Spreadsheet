@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AdminModel;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -26,6 +27,11 @@ namespace WindowsFormsApp1
             {
                 listBox1.Items.Add(i.ToString());
             }
+        }
+
+        public ManageUsers(AdminLogic logic)
+        {
+            InitializeComponent();
         }
 
         private void ManageUsers_FormClosing(object sender, FormClosingEventArgs e)

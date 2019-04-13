@@ -102,6 +102,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AdminModel\AdminModel.csproj">
+      <Project>{d1b72b76-1dc2-406b-897c-3f133996fe35}</Project>
+      <Name>AdminModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\JsonClasses\JsonClasses.csproj">
       <Project>{40487d0e-ae12-4ef6-b1c4-fd8ee02d1e5d}</Project>
       <Name>JsonClasses</Name>

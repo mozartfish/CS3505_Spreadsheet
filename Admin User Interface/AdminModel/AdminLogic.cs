@@ -20,7 +20,8 @@ namespace AdminModel
         private string[] users;//TODO:
         private string[] passwords;
 
-        ManageUsers man;
+        //ManageUsers userMan;
+        //SpreadsheetManagement sprdMan;
 
         public AdminLogic()
         {
@@ -30,17 +31,17 @@ namespace AdminModel
 
             
             //Form1 form = Program.form;
-            man = new ManageUsers();
+            //userMan = new ManageUsers();
 
             //pass the form from main to the logic to start the logic block
-            Program.FormPass += OpenAcctManPage;
+            //Program.FormPass += OpenAcctManPage;
 
 
             //man.createUser += CreateUser;
         }
 
 
-        public void OpenAcctManPage(Form1 form)
+        public void OpenAcctManPage()
         {
 
             //ManageUsers form = new ManageUsers();
