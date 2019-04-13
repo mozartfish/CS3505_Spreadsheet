@@ -403,6 +403,9 @@ int main(int argc, char ** argv)
 
 	      std::async(std::launch::async, socket_connections::WaitForData,
 			 (*connections.sockets)[idx],  (*connections.buffers)[idx - 1], BUF_SIZE);
+
+	      std::async(std::launch::async, socket_connections::WaitForDataTimer,
+			 (*connections.buffers)[idx - 1], idx - 1, &lock, connections.needs_removed);
 			 
 	    }
 	  connections.new_socket_connected = false;
@@ -464,6 +467,9 @@ int main(int argc, char ** argv)
 	       // Resume getting data
 	       std::async(std::launch::async, socket_connections::WaitForData,
 		      (*connections.sockets)[idx + 1],  (*connections.buffers)[idx], BUF_SIZE);
+
+	       std::async(std::launch::async, socket_connections::WaitForDataTimer,
+			 (*connections.buffers)[idx], idx, &lock, connections.needs_removed);
 	     }
 
 	   // Process data

@@ -105,7 +105,7 @@ void socket_connections::WaitForClientConnections(volatile socks * sock_list, st
  * Counts the time passed when waiting for data to decide whether to
  * disconnect the client being waited on
  */
-void socket_connections::WaitForDataTimer(char* buf, int vec_idx, std::mutex* lock, std::vector<bool> & disconnect_list)
+void socket_connections::WaitForDataTimer(char* buf, int vec_idx, std::mutex* lock, std::vector<bool> * disconnect_list)
 {
   auto begin = std::chrono::steady_clock::now();
   while (std::chrono::duration_cast<std::chrono::minutes>(std::chrono::steady_clock::now() - begin).count() < 5);
@@ -116,7 +116,7 @@ void socket_connections::WaitForDataTimer(char* buf, int vec_idx, std::mutex* lo
 
   // Set disconnect to true if no data has been found yet
   (*lock).lock();
-  disconnect_list[vec_idx] = true;
+  (*disconnect_list)[vec_idx] = true;
   (*lock).unlock();
 }
 

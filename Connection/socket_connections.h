@@ -53,7 +53,7 @@ class socket_connections {
   static void CloseSocket(int fd);
 
   // Helper function for waiting on data
-  static void WaitForDataTimer(char* buf, int vec_idx, std::mutex* lock, std::vector<bool> & disconnect_list);
+  static void WaitForDataTimer(char* buf, int vec_idx, std::mutex* lock, std::vector<bool> * disconnect_list);
 
 };
 
