@@ -11,26 +11,48 @@ namespace AdminModel
 {
     public class Model
     {
-        private List<Spreadsheet> ssList;
-        private List<User> usersList;
+        private Dictionary<string, Spreadsheet> ssDict;
+        private Dictionary<string, User> usersDict;
 
         public Model()
         {
-            ssList = new List<Spreadsheet>();
-            usersList = new List<User>();
+            ssDict = new Dictionary<string, Spreadsheet>();
+            usersDict = new Dictionary<string, User>();
         }
 
-        public void AddNewSS(Spreadsheet ss)
+        #region Getters
+        public List<Spreadsheet> GetSSList()
         {
-            if (ssList.Contains(ss))
-            {
-                //TODO: add warning
-            }
-            else
-            {
-                ssList.Add(ss);
-            }
+            return ssDict.Values.ToList();
         }
+
+        public Spreadsheet GetSS(string ssName)
+        {
+            return ssDict[ssName];
+        }
+
+        public List<User> GetUsersList()
+        {
+            return usersDict.Values.ToList();
+        }
+
+        public User GetUser(string username)
+        {
+            return usersDict[username];
+        }
+        #endregion
+
+        #region Setters
+        public void SetSS(string ssName, Spreadsheet ss)
+        {
+            ssDict[ssName] = ss;
+        }
+
+        public void SetUser(string username, User user)
+        {
+            usersDict[username] = user;
+        }
+        #endregion
 
 
 
@@ -163,125 +185,123 @@ namespace AdminModel
 
 
 
-    public class OldSpreadsheets
-    {
-        /// <summary>
-        /// maps user and password and active status to a hashcode
-        /// Ex. (if user does contain the user pass that you are looking for)
-        /// DataPair pair = new DataPair(user, pass);
-        /// GetKey(user,pass)
-        /// spreadsheets.Contains(GetKey(user,pass));     => returns true
-        /// </summary>
-        private Dictionary<int, SSActivePair> spreadsheets;
-        public OldSpreadsheets()
-        {
-            spreadsheets = new Dictionary<int, SSActivePair>();
-        }
+    //public class OldSpreadsheets
+    //{
+    //    /// <summary>
+    //    /// maps user and password and active status to a hashcode
+    //    /// Ex. (if user does contain the user pass that you are looking for)
+    //    /// DataPair pair = new DataPair(user, pass);
+    //    /// GetKey(user,pass)
+    //    /// spreadsheets.Contains(GetKey(user,pass));     => returns true
+    //    /// </summary>
+    //    private Dictionary<int, SSActivePair> spreadsheets;
+    //    public OldSpreadsheets()
+    //    {
+    //        spreadsheets = new Dictionary<int, SSActivePair>();
+    //    }
 
-        /// <summary>
-        /// returns how many element are in the dictionary
-        /// TODO: might change to make the count return an int that is manually counted, but why should we do extra work
-        /// </summary>
-        /// <returns></returns>
-        public int Count()
-        {
-            return spreadsheets.Count();
-        }
+    //    /// <summary>
+    //    /// returns how many element are in the dictionary
+    //    /// TODO: might change to make the count return an int that is manually counted, but why should we do extra work
+    //    /// </summary>
+    //    /// <returns></returns>
+    //    public int Count()
+    //    {
+    //        return spreadsheets.Count();
+    //    }
 
-        public SSActivePair[] GetAll()
-        {
-            SSActivePair[] list = new SSActivePair[Count()];
-            int listLocation = 0;
-            int reverseListLocation = 0;
-            foreach (KeyValuePair<int, SSActivePair> user in spreadsheets)
-            {
-                //put actives in the front
-                if (spreadsheets[user.Key].second == 1)
-                {
-                    list[listLocation] = user.Value;
-                    listLocation++;
-                }
-                //throw the non actives to the back
-                else
-                {
-                    list[reverseListLocation] = user.Value;
-                    reverseListLocation--;
-                }
-            }
-            return list;
+    //    public SSActivePair[] GetAll()
+    //    {
+    //        SSActivePair[] list = new SSActivePair[Count()];
+    //        int listLocation = 0;
+    //        int reverseListLocation = 0;
+    //        foreach (KeyValuePair<int, SSActivePair> user in spreadsheets)
+    //        {
+    //            //put actives in the front
+    //            if (spreadsheets[user.Key].second == 1)
+    //            {
+    //                list[listLocation] = user.Value;
+    //                listLocation++;
+    //            }
+    //            //throw the non actives to the back
+    //            else
+    //            {
+    //                list[reverseListLocation] = user.Value;
+    //                reverseListLocation--;
+    //            }
+    //        }
+    //        return list;
 
-        }
+    //    }
 
-        public void Add(string spreadsheet)
-        {
-            //if the user pass pair is in the dictionary
-            if (spreadsheets.ContainsKey(spreadsheet.GetHashCode()))
-            {
-                SSActivePair pair = new SSActivePair(spreadsheet, 0);
-                spreadsheets.Add(spreadsheet.GetHashCode(), pair);
-            }
-        }
+    //    public void Add(string spreadsheet)
+    //    {
+    //        //if the user pass pair is in the dictionary
+    //        if (spreadsheets.ContainsKey(spreadsheet.GetHashCode()))
+    //        {
+    //            SSActivePair pair = new SSActivePair(spreadsheet, 0);
+    //            spreadsheets.Add(spreadsheet.GetHashCode(), pair);
+    //        }
+    //    }
 
-        public void Remove(string spreadsheet)
-        {
-            //if the user pass pair is in the dictionary
-            if (spreadsheets.ContainsKey(spreadsheet.GetHashCode()))
-            {
-                spreadsheets.Remove(spreadsheet.GetHashCode());
-            }
-        }
+    //    public void Remove(string spreadsheet)
+    //    {
+    //        //if the user pass pair is in the dictionary
+    //        if (spreadsheets.ContainsKey(spreadsheet.GetHashCode()))
+    //        {
+    //            spreadsheets.Remove(spreadsheet.GetHashCode());
+    //        }
+    //    }
 
-        public bool Contains(string spreadsheet)
-        {
-            //if the dict contains the user password pair
-            if (spreadsheets.ContainsKey(spreadsheet.GetHashCode()))
-            {
-                return true;
-            }
-            return false;
-        }
+    //    public bool Contains(string spreadsheet)
+    //    {
+    //        //if the dict contains the user password pair
+    //        if (spreadsheets.ContainsKey(spreadsheet.GetHashCode()))
+    //        {
+    //            return true;
+    //        }
+    //        return false;
+    //    }
 
-        /// <summary>
-        /// Here in the case that we want to add a new active user
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="pass"></param>
-        /// <param name="active"></param>
-        public void Add(string spreadsheet, int active)
-        {
-            //if the user pass pair is in the dictionary
-            if (spreadsheets.ContainsKey(spreadsheet.GetHashCode()))
-            {
-                SSActivePair trip = new SSActivePair(spreadsheet, active);
-                spreadsheets.Add(spreadsheet.GetHashCode(), trip);
-            }
-        }
+    //    /// <summary>
+    //    /// Here in the case that we want to add a new active user
+    //    /// </summary>
+    //    /// <param name="user"></param>
+    //    /// <param name="pass"></param>
+    //    /// <param name="active"></param>
+    //    public void Add(string spreadsheet, int active)
+    //    {
+    //        //if the user pass pair is in the dictionary
+    //        if (spreadsheets.ContainsKey(spreadsheet.GetHashCode()))
+    //        {
+    //            SSActivePair trip = new SSActivePair(spreadsheet, active);
+    //            spreadsheets.Add(spreadsheet.GetHashCode(), trip);
+    //        }
+    //    }
 
-        public void SetActive(string spreadsheet, int active)
-        {
-            //if the user pass pair is in the dictionary
-            if (spreadsheets.ContainsKey(spreadsheet.GetHashCode()))
-            {
-                SSActivePair trip = new SSActivePair(spreadsheet, active);
-                spreadsheets.Add(spreadsheet.GetHashCode(), trip);
-            }
-        }
+    //    public void SetActive(string spreadsheet, int active)
+    //    {
+    //        //if the user pass pair is in the dictionary
+    //        if (spreadsheets.ContainsKey(spreadsheet.GetHashCode()))
+    //        {
+    //            SSActivePair trip = new SSActivePair(spreadsheet, active);
+    //            spreadsheets.Add(spreadsheet.GetHashCode(), trip);
+    //        }
+    //    }
 
-        //return 1 if the user is active
-        //return 0 if the user is inactive
-        //return -1 if there is no user
-        public int GetActive(string spreadsheet)
-        {
-            if (spreadsheets.ContainsKey(spreadsheet.GetHashCode()))
-            {
-                return spreadsheets[spreadsheet.GetHashCode()].second;
-            }
-            //if there was no user pass pair
-            return -1;
-        }
-    }
-
-
+    //    //return 1 if the user is active
+    //    //return 0 if the user is inactive
+    //    //return -1 if there is no user
+    //    public int GetActive(string spreadsheet)
+    //    {
+    //        if (spreadsheets.ContainsKey(spreadsheet.GetHashCode()))
+    //        {
+    //            return spreadsheets[spreadsheet.GetHashCode()].second;
+    //        }
+    //        //if there was no user pass pair
+    //        return -1;
+    //    }
+    //}
 
 
 
@@ -289,131 +309,133 @@ namespace AdminModel
 
 
 
-    public class OldUsers
-    {
-        /// <summary>
-        /// maps user and password and active status to a hashcode
-        /// Ex. (if user does contain the user pass that you are looking for)
-        /// DataPair pair = new DataPair(user, pass);
-        /// GetKey(user,pass)
-        /// users.Contains(GetKey(user,pass));     => returns true
-        /// </summary>
-        Dictionary<int, UserPassActive> users;
-        public OldUsers()
-        {
-            users = new Dictionary<int, UserPassActive>();
-        }
-
-        /// <summary>
-        /// returns how many element are in the dictionary
-        /// TODO: might change to make the count return an int that is manually counted, but why should we do extra work
-        /// </summary>
-        /// <returns></returns>
-        public int Count()
-        {
-            return users.Count();
-        }
-
-        public UserPassActive[] GetAll()
-        {
-            UserPassActive[] list = new UserPassActive[Count()];
-            int listLocation = 0;
-            int reverseListLocation = 0;
-            foreach (KeyValuePair<int, UserPassActive> user in users)
-            {
-                //put actives in the front
-                if (users[user.Key].active == 1)
-                {
-                    list[listLocation] = user.Value;
-                    listLocation++;
-                }
-                //throw the non actives to the back
-                else
-                {
-                    list[reverseListLocation] = user.Value;
-                    reverseListLocation--;
-                }
-            }
-            return list;
-
-        }
-
-        public void Add(string user, string pass)
-        {
-            //if the user pass pair is in the dictionary
-            if (users.ContainsKey(GetKey(user, pass)))
-            {
-                UserPassActive trip = new UserPassActive(user, pass, 0);
-                users.Add(GetKey(user, pass), trip);
-            }
-        }
-
-        public void Remove(string user, string pass)
-        {
-            //if the user pass pair is in the dictionary
-            if (users.ContainsKey(GetKey(user, pass)))
-            {
-                users.Remove(GetKey(user, pass));
-            }
-        }
-
-        public bool Contains(string user, string pass)
-        {
-            //if the dict contains the user password pair
-            if (users.ContainsKey(GetKey(user, pass)))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Here in the case that we want to add a new active user
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="pass"></param>
-        /// <param name="active"></param>
-        public void Add(string user, string pass, int active)
-        {
-            //if the user pass pair is in the dictionary
-            if (users.ContainsKey(GetKey(user, pass)))
-            {
-                UserPassActive trip = new UserPassActive(user, pass, active);
-                users.Add(GetKey(user, pass), trip);
-            }
-        }
-
-        public void SetActive(string user, string pass, int active)
-        {
-            //if the user pass pair is in the dictionary
-            if (users.ContainsKey(GetKey(user, pass)))
-            {
-                UserPassActive trip = new UserPassActive(user, pass, active);
-                users.Add(GetKey(user, pass), trip);
-            }
-        }
-
-        //return 1 if the user is active
-        //return 0 if the user is inactive
-        //return -1 if there is no user
-        public int GetActive(string user, string pass)
-        {
-            if (users.ContainsKey(GetKey(user, pass)))
-            {
-                return users[GetKey(user, pass)].active;
-            }
-            //if there was no user pass pair
-            return -1;
-        }
 
 
+    //public class OldUsers
+    //{
+    //    /// <summary>
+    //    /// maps user and password and active status to a hashcode
+    //    /// Ex. (if user does contain the user pass that you are looking for)
+    //    /// DataPair pair = new DataPair(user, pass);
+    //    /// GetKey(user,pass)
+    //    /// users.Contains(GetKey(user,pass));     => returns true
+    //    /// </summary>
+    //    Dictionary<int, UserPassActive> users;
+    //    public OldUsers()
+    //    {
+    //        users = new Dictionary<int, UserPassActive>();
+    //    }
 
-        private int GetKey(string user, string pass)
-        {
-            UserPassPair pair = new UserPassPair(user, pass);
-            return GetKey(user, pass);
-        }
-    }
+    //    /// <summary>
+    //    /// returns how many element are in the dictionary
+    //    /// TODO: might change to make the count return an int that is manually counted, but why should we do extra work
+    //    /// </summary>
+    //    /// <returns></returns>
+    //    public int Count()
+    //    {
+    //        return users.Count();
+    //    }
+
+    //    public UserPassActive[] GetAll()
+    //    {
+    //        UserPassActive[] list = new UserPassActive[Count()];
+    //        int listLocation = 0;
+    //        int reverseListLocation = 0;
+    //        foreach (KeyValuePair<int, UserPassActive> user in users)
+    //        {
+    //            //put actives in the front
+    //            if (users[user.Key].active == 1)
+    //            {
+    //                list[listLocation] = user.Value;
+    //                listLocation++;
+    //            }
+    //            //throw the non actives to the back
+    //            else
+    //            {
+    //                list[reverseListLocation] = user.Value;
+    //                reverseListLocation--;
+    //            }
+    //        }
+    //        return list;
+
+    //    }
+
+    //    public void Add(string user, string pass)
+    //    {
+    //        //if the user pass pair is in the dictionary
+    //        if (users.ContainsKey(GetKey(user, pass)))
+    //        {
+    //            UserPassActive trip = new UserPassActive(user, pass, 0);
+    //            users.Add(GetKey(user, pass), trip);
+    //        }
+    //    }
+
+    //    public void Remove(string user, string pass)
+    //    {
+    //        //if the user pass pair is in the dictionary
+    //        if (users.ContainsKey(GetKey(user, pass)))
+    //        {
+    //            users.Remove(GetKey(user, pass));
+    //        }
+    //    }
+
+    //    public bool Contains(string user, string pass)
+    //    {
+    //        //if the dict contains the user password pair
+    //        if (users.ContainsKey(GetKey(user, pass)))
+    //        {
+    //            return true;
+    //        }
+    //        return false;
+    //    }
+
+    //    /// <summary>
+    //    /// Here in the case that we want to add a new active user
+    //    /// </summary>
+    //    /// <param name="user"></param>
+    //    /// <param name="pass"></param>
+    //    /// <param name="active"></param>
+    //    public void Add(string user, string pass, int active)
+    //    {
+    //        //if the user pass pair is in the dictionary
+    //        if (users.ContainsKey(GetKey(user, pass)))
+    //        {
+    //            UserPassActive trip = new UserPassActive(user, pass, active);
+    //            users.Add(GetKey(user, pass), trip);
+    //        }
+    //    }
+
+    //    public void SetActive(string user, string pass, int active)
+    //    {
+    //        //if the user pass pair is in the dictionary
+    //        if (users.ContainsKey(GetKey(user, pass)))
+    //        {
+    //            UserPassActive trip = new UserPassActive(user, pass, active);
+    //            users.Add(GetKey(user, pass), trip);
+    //        }
+    //    }
+
+    //    //return 1 if the user is active
+    //    //return 0 if the user is inactive
+    //    //return -1 if there is no user
+    //    public int GetActive(string user, string pass)
+    //    {
+    //        if (users.ContainsKey(GetKey(user, pass)))
+    //        {
+    //            return users[GetKey(user, pass)].active;
+    //        }
+    //        //if there was no user pass pair
+    //        return -1;
+    //    }
+
+
+
+    //    private int GetKey(string user, string pass)
+    //    {
+    //        UserPassPair pair = new UserPassPair(user, pass);
+    //        return GetKey(user, pass);
+    //    }
+    //}
 
 
 
