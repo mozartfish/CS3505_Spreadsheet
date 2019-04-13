@@ -36,21 +36,6 @@ namespace WindowsFormsApp1
             SpreadsheetManagement sprdMan = new SpreadsheetManagement(controller);
         }
 
-        private void button4_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 

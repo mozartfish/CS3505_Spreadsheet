@@ -82,21 +82,21 @@
             // 
             this.textBox1.Location = new System.Drawing.Point(12, 96);
             this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(625, 20);
             this.textBox1.TabIndex = 11;
             this.textBox1.Text = "Current Status";
             this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged_1);
             // 
             // textBox2
             // 
             this.textBox2.Location = new System.Drawing.Point(643, 96);
             this.textBox2.Name = "textBox2";
+            this.textBox2.ReadOnly = true;
             this.textBox2.Size = new System.Drawing.Size(325, 20);
             this.textBox2.TabIndex = 12;
             this.textBox2.Text = "Update";
             this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // currentStatusList
             // 
@@ -129,7 +129,7 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button1);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "d";
             this.ResumeLayout(false);
