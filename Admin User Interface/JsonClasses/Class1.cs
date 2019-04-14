@@ -13,12 +13,6 @@ namespace JsonClasses
         public string Name { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
-
-        public string ToString()
-        {
-            string returning = "type : " + Type +"\nname : " + Name + "\nusername : " + Username + "\npassword : " + Password + "\n";
-            return returning;
-        }
     }
 
     public class Edit
