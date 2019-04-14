@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AdminModel
+namespace Model
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class Spreadsheet
     {
         [JsonProperty]
         private List<User> users;
+
         [JsonProperty]
         private string name;
 

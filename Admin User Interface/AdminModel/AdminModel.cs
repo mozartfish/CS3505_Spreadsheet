@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 //using WindowsFormsApp1;
 
-namespace AdminModel
+namespace Model
 {
-    public class Model
+    public class AdminModel
     {
         private Dictionary<string, Spreadsheet> ssDict;
         private Dictionary<string, User> usersDict;
 
-        public Model()
+        public AdminModel()
         {
             ssDict = new Dictionary<string, Spreadsheet>();
             usersDict = new Dictionary<string, User>();

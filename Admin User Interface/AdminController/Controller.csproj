@@ -42,14 +42,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminController.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="NetworkController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AdminModel\AdminModel.csproj">
+    <ProjectReference Include="..\AdminModel\Model.csproj">
       <Project>{d1b72b76-1dc2-406b-897c-3f133996fe35}</Project>
-      <Name>AdminModel</Name>
+      <Name>Model</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

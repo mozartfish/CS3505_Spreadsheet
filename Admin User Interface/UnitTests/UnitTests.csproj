@@ -56,13 +56,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AdminController\AdminController.csproj">
+    <ProjectReference Include="..\AdminController\Controller.csproj">
       <Project>{c2952f9a-1f73-4eb0-958a-e6eae6d7fa1f}</Project>
-      <Name>AdminController</Name>
+      <Name>Controller</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AdminModel\AdminModel.csproj">
+    <ProjectReference Include="..\AdminModel\Model.csproj">
       <Project>{d1b72b76-1dc2-406b-897c-3f133996fe35}</Project>
-      <Name>AdminModel</Name>
+      <Name>Model</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

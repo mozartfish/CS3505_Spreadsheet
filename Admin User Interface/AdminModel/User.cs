@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AdminModel
+namespace Model
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class User
