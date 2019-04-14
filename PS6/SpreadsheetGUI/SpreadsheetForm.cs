@@ -97,11 +97,15 @@ namespace SpreadsheetGUI
         }
 
 
-
-
         public void UpdateSpreadsheet(Spreadsheet ss)
         {
+            //update the spreadsheet view
+            IEnumerable<string> cells = ss.GetNamesOfAllNonemptyCells();
 
+            foreach(string cell in cells)
+            {
+                DisplayCellPanelValue(cell, ss.GetCellValue(cell).ToString());
+            }
         }
 
 
@@ -379,6 +383,9 @@ namespace SpreadsheetGUI
             }
         }
 
+
+       
+
         #endregion
 
         ///TODO: figure out what goes in controller and what goes in form
@@ -388,100 +395,100 @@ namespace SpreadsheetGUI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void BackgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
-        {
-            int col;
-            int row;
-            string cellName;
+        //private void BackgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        //{
+        //    int col;
+        //    int row;
+        //    string cellName;
             
-            spreadsheetPanel1.GetSelection(out col, out row);
-            cellName = ColRowToCellName(col, row);
+        //    spreadsheetPanel1.GetSelection(out col, out row);
+        //    cellName = ColRowToCellName(col, row);
             
-            ////this allows the selection to be checked after the work is done so the text boxes are not updated if the selection changes
-            //startWorkCellName = cellName;
-            //string content = contentTextBox.Text;
-            //string currentCellEvaluating = cellName;
+        //    ////this allows the selection to be checked after the work is done so the text boxes are not updated if the selection changes
+        //    //startWorkCellName = cellName;
+        //    //string content = contentTextBox.Text;
+        //    //string currentCellEvaluating = cellName;
 
-            //this updates the spreadsheet panel and spreadsheet values of all the dependent cells
-            try
-            {
-                // spreadsheet.GetDirectDependents 
-                // spreadsheet.SetContentsOfCell(cellName, contentTextBox.Text) updates the backing spreadsheet and returns set of changed cells
-                // We want the return value of this method, but we don't want it to actually change the backing spreadsheet
-                // We only want the backing spreadsheet to change when the server tells us to change it
-                // send those changes to the server
+        //    //this updates the spreadsheet panel and spreadsheet values of all the dependent cells
+        //    try
+        //    {
+        //        // spreadsheet.GetDirectDependents 
+        //        // spreadsheet.SetContentsOfCell(cellName, contentTextBox.Text) updates the backing spreadsheet and returns set of changed cells
+        //        // We want the return value of this method, but we don't want it to actually change the backing spreadsheet
+        //        // We only want the backing spreadsheet to change when the server tells us to change it
+        //        // send those changes to the server
 
-                // Parse the content of the cell, check for errors, and update the dependency graph
+        //        // Parse the content of the cell, check for errors, and update the dependency graph
                
 
-                // Get the dependents
+        //        // Get the dependents
 
-                // Send to the server
+        //        // Send to the server
 
-                // (might) need this foreach
-                //Should we be keeping a local copy of the spreadsheet that the server does not have?
-                foreach (string newCellName in spreadsheet.SetContentsOfCell(cellName, contentTextBox.Text))
-                {
-                   // currentCellEvaluating = newCellName;
-                    string value = spreadsheet.GetCellValue(newCellName).ToString();
-                    controller.FormulaErrorCheck(ref value);
+        //        // (might) need this foreach
+        //        //Should we be keeping a local copy of the spreadsheet that the server does not have?
+        //        foreach (string newCellName in spreadsheet.SetContentsOfCell(cellName, contentTextBox.Text))
+        //        {
+        //           // currentCellEvaluating = newCellName;
+        //            string value = spreadsheet.GetCellValue(newCellName).ToString();
+        //            controller.FormulaErrorCheck(ref value);
 
-                    //first cell
-                    if (cellName.Equals(newCellName))
-                    {
-                        selectedCellValue = value;
-                    }
+        //            //first cell
+        //            if (cellName.Equals(newCellName))
+        //            {
+        //                selectedCellValue = value;
+        //            }
 
-                    // TODO: remove -- we should only display what the server sends to us(?)
-                    DisplayCellPanelValue(newCellName, value);
-                }
+        //            // TODO: remove -- we should only display what the server sends to us(?)
+        //            DisplayCellPanelValue(newCellName, value);
+        //        }
 
                 
-            }
-            // TODO: let server detect circular dependency
-            catch (CircularException)
-            {
-                WarningDialogBox("The formula entered would cause a circular dependency at cell " + cellName, "CircularException at cell: " + cellName);
-            }
-            catch (SpreadsheetUtilities.FormulaFormatException)
-            {
-                WarningDialogBox("The formula at " + cellName + " entered was not formatted correctly", "FormulaFormatException at cell: " + cellName);
-            }
-        }
+        //    }
+        //    // TODO: let server detect circular dependency
+        //    catch (CircularException)
+        //    {
+        //        WarningDialogBox("The formula entered would cause a circular dependency at cell " + cellName, "CircularException at cell: " + cellName);
+        //    }
+        //    catch (SpreadsheetUtilities.FormulaFormatException)
+        //    {
+        //        WarningDialogBox("The formula at " + cellName + " entered was not formatted correctly", "FormulaFormatException at cell: " + cellName);
+        //    }
+        //}
 
-        /// TODO: get rid of background worker
-        /// <summary>
-        /// this background worker does all the work required for async evaluating
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BackgroundWorker1_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
-        {
-            //get the col and row of the selected cell
-            spreadsheetPanel1.GetSelection(out int col, out int row);
-            finishWorkCellName = ColRowToCellName(col, row);
+        ///// TODO: get rid of background worker
+        ///// <summary>
+        ///// this background worker does all the work required for async evaluating
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //private void BackgroundWorker1_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        //{
+        //    //get the col and row of the selected cell
+        //    spreadsheetPanel1.GetSelection(out int col, out int row);
+        //    finishWorkCellName = ColRowToCellName(col, row);
 
-            //if the selection has not changed since the start of the work
-            if (startWorkCellName.Equals(finishWorkCellName))
-            {
-                //change content and value 
-                contentTextBox.SelectionStart = contentTextBox.Text.Length;
-                valueTextBox.Text = selectedCellValue;
+        //    //if the selection has not changed since the start of the work
+        //    if (startWorkCellName.Equals(finishWorkCellName))
+        //    {
+        //        //change content and value 
+        //        contentTextBox.SelectionStart = contentTextBox.Text.Length;
+        //        valueTextBox.Text = selectedCellValue;
                
-                // moves the cursor down
-                if (row != 98)
-                {
-                    spreadsheetPanel1.SetSelection(col, row + 1);
-                    row = row + 1;
-                }
+        //        // moves the cursor down
+        //        if (row != 98)
+        //        {
+        //            spreadsheetPanel1.SetSelection(col, row + 1);
+        //            row = row + 1;
+        //        }
                 
-                DisplaySelection(spreadsheetPanel1);
-                contentTextBox.SelectionStart = contentTextBox.Text.Length;
-            }
+        //        DisplaySelection(spreadsheetPanel1);
+        //        contentTextBox.SelectionStart = contentTextBox.Text.Length;
+        //    }
 
-            //now more work can be done!
-            currentlyWorking = false;
-        }
+        //    //now more work can be done!
+        //    currentlyWorking = false;
+        //}
  
 
         /// <summary>
@@ -491,14 +498,14 @@ namespace SpreadsheetGUI
         /// <param name="e"></param>
         private void UndoButton_Click(object sender, EventArgs e)
         {
-            //TODO: Fix to send "undo" message to the server
-
-
+            controller.SendUndo();
         }
 
         private void RevertButton_Click(object sender, EventArgs e)
         {
-
+            spreadsheetPanel1.GetSelection(out int col, out int row);
+            string cellName = ColRowToCellName(col, row);
+            controller.SendRevert(cellName);
         }
     }
 }

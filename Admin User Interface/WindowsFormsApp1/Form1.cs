@@ -116,7 +116,7 @@ namespace WindowsFormsApp1
         {
             Open message = new Open()
             {
-                Type = "open",
+                type = "open",
                 Name = name,
                 Username = username,
                 Password = password
@@ -129,10 +129,10 @@ namespace WindowsFormsApp1
         {
             Edit message = new Edit()
             {
-                Type = "edit",
-                Cell = cell,
-                Value = value,
-                Dependencies = dep
+                type = "edit",
+                cell = cell,
+                value = value,
+                dependencies = dep
             };
             string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
             return jsonOpen;
@@ -150,8 +150,8 @@ namespace WindowsFormsApp1
         {
             Revert message = new Revert()
             {
-                Type = "revert",
-                Cell = cell
+                type = "revert",
+                cell = cell
             };
             string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
             return jsonOpen;
@@ -161,9 +161,9 @@ namespace WindowsFormsApp1
         {
             Error message = new Error()
             {
-                Type = "error",
-                Code = code,
-                Source = source,
+                type = "error",
+                code = code,
+                source = source,
             };
             string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
             return jsonOpen;

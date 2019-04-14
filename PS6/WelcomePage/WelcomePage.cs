@@ -91,7 +91,7 @@ namespace WelcomePage
                 ("Please Enter Name of Spreadsheet", "New Spreadsheet", "NewSpreadsheet");
 
             //send the name of the spreadsheet
-            controller.Send(spreadsheet);
+            controller.SendOpen(spreadsheet);
         }
     }
 }
