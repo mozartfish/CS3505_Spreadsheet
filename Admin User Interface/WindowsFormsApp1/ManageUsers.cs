@@ -62,5 +62,10 @@ namespace WindowsFormsApp1
         {
             //logic.DeleteUser(DeleteUser_User.Text, DeleteUser_Pass.Text);
         }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

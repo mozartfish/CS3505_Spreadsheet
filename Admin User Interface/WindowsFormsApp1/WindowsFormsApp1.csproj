@@ -102,8 +102,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AdminController\Controller.csproj">
-      <Project>{c2952f9a-1f73-4eb0-958a-e6eae6d7fa1f}</Project>
+    <ProjectReference Include="..\Controller\Controller.csproj">
+      <Project>{C2952F9A-1F73-4EB0-958A-E6EAE6D7FA1F}</Project>
       <Name>Controller</Name>
     </ProjectReference>
     <ProjectReference Include="..\JsonClasses\JsonClasses.csproj">
