@@ -35,7 +35,7 @@ class spreadsheet {
 
   bool add_user(std::string user, std::string pass);
   bool remove_user(std::string user);
-  bool change_cell(std::string cell, std::string contents);
+  bool change_cell(std::string cell, std::string contents, std::vector<std::string> * dependencies);
   std::string undo();
   std::string revert(std::string cell);
   std::unordered_map<std::string, std::string> & get_users();
@@ -47,7 +47,8 @@ class spreadsheet {
   void add_direct_cell_history(int cell, std::vector<std::string> & hist);
   std::string get_name();
   
-  bool CircularDependency(std::string cell, std::string formula);
+  bool CircularDependency(std::string cell, std::vector<std::string> * dependencies);
+  std::vector<std::string> * cells_from_formula(std::string formula);
   bool Visit (std::string start, std::string goal);
 };
 

@@ -70,6 +70,7 @@ void socket_connections::WaitForClientConnections(volatile socks * sock_list, st
       struct sockaddr_in cli_addr;
       socklen_t clilen = sizeof(cli_addr);
       int fd = accept((*socket_list)[0], (struct sockaddr *) &cli_addr, &clilen);
+      std::cout << "connected" << std::endl;
 
       lock->lock();
       socket_list->push_back(fd);
@@ -81,9 +82,13 @@ void socket_connections::WaitForClientConnections(volatile socks * sock_list, st
 	  continue;
 	}
 
+      std::cout << "new socket connected" << std::endl;
+
       // set new connection
       sock_list->new_socket_connected = true;
       lock->unlock();
+
+      std::cout << "unlocked" << std::endl;
     }
   }
   

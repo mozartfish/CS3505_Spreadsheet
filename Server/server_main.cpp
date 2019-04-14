@@ -367,7 +367,9 @@ int main(int argc, char ** argv)
     }
 
   //Listen for clients async
-  std::async(std::launch::async, socket_connections::WaitForClientConnections, &connections, &lock);
+  auto x = std::async(std::launch::async, socket_connections::WaitForClientConnections, &connections, &lock);
+
+  std::cout << "entering loop" << std::endl;
   
   //Infinite send and receive loop
    while(true)
@@ -413,7 +415,6 @@ int main(int argc, char ** argv)
       	}
        lock.unlock();
 
-
        /**********************************************************************/
        /*                     CLIENT REMOVAL BLOCK                           */
        /**********************************************************************/
@@ -448,6 +449,7 @@ int main(int argc, char ** argv)
 	 }
        lock.unlock();
 
+       
        /**********************************************************************/
        /*                       DATA RECEIVE BLOCK                           */
        /**********************************************************************/
@@ -497,7 +499,6 @@ int main(int argc, char ** argv)
 
        lock.unlock();
 
-
        /**********************************************************************/
        /*                         UPDATE PROCESSING                          */
        /**********************************************************************/
@@ -528,17 +529,37 @@ int main(int argc, char ** argv)
 
 	   //Process update
 	   // Open
-
+	   if (deserialized->type == "open")
+	     {
+	       // if (check_sprd(deserialized->name, deserialized->username, deserialized->password))
+		 //TODO FULL SEND OF SPREADSHEET TO CLIENT
+	       //  else
+		 //TODO SEND ERROR MESSAGE
+	     }
+	     
 	   // Edit
+	   else if (deserialized->type == "edit")
+	     {
+
+	     }
 
 	   // Undo
+	   else if (deserialized->type == "undo")
+	     {
+
+	     }
 
 	   // Revert
+	   else if (deserialized->type == "revert")
+	     {
 
+	     }
+	     
 	   // Send updates to all that should be notified if successful
 	 }
 
        lock.unlock();
+
     }
 
    close(connections);
