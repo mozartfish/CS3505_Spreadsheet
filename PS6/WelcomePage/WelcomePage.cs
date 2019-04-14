@@ -22,6 +22,15 @@ namespace WelcomePage
             InitializeComponent();
             controller = new SpreadsheetController();
             controller.RegisterListUpdateHandler(UpdateListView);
+            controller.RegisterErrorHandler(UpdateError);
+            controller.RegisterNetworkErrorHandler(NetworkError);
+        }
+
+        private void NetworkError()
+        {
+            string mssg = "An error occured with the connection to the server. Please try again.";
+            MessageBox.Show(mssg, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            this.Invoke(new MethodInvoker(() => ConnectButton.Enabled = true));
         }
 
         /// <summary>
@@ -49,37 +58,65 @@ namespace WelcomePage
             }
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
+        private void UpdateError(int errorCode, string source)
+        {
+            if (errorCode == 1)  // invalid authorization
+            {
+               // DialogResult result =
+              MessageBox.Show("Your password is incorrect, please re-enter your password before selecting a spreadsheet",
+                        "Invalid Authorization", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else //it is a circulardependency error
+            {
+                MessageBox.Show("A circular dependency was detected at cell " + source + ". Note: the offending edit has not been applied.",
+                        "Circular Dependency", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void connectButton_Click(object sender, EventArgs e)
         {
-            //Error checking
-            controller.Password = Password.Text;
-            controller.Username = Username.Text;
             ConnectToServer(ServerAddress.Text);
-
-            //TODO: disable button
-
         }
 
 
         private void ConnectToServer(string hostName)
         {
             //Error checking
-            controller.Connect(hostName);
+            if (ServerAddress.Text == "")
+            {
+                MessageBox.Show("Please enter a server address",
+                    "Invalid Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                ConnectButton.Enabled = false;
+                controller.Connect(hostName);
+            }
         }
 
         private void spreadsheetList_SelectedIndexChanged(object sender, EventArgs e)
         {
             if(spreadsheetList.SelectedItem != null) // make sure a spreadsheet has been selected
-            { 
+            {
+                // Store their credentials
+                controller.Password = Password.Text;
+                controller.Username = Username.Text;
+
                 string currSpreadsheet = spreadsheetList.SelectedItem.ToString();
             
-                //MessageBox.Show(currSpreadsheet);
                 SpreadsheetGUI.SpreadsheetForm ssForm = new SpreadsheetGUI.SpreadsheetForm();
                 SpreadsheetGUI.SpreadsheetApplicationContext appContext = 
                     SpreadsheetGUI.SpreadsheetApplicationContext.getAppContext();
                 appContext.RunForm(ssForm);
                 
             }
+
+            //TODO: fix how we are closing the window
             //this.Hide();
             //this.Close();
         }
@@ -89,6 +126,10 @@ namespace WelcomePage
             //option to name the spreadsheet via dialog box
             string spreadsheet = Microsoft.VisualBasic.Interaction.InputBox
                 ("Please Enter Name of Spreadsheet", "New Spreadsheet", "NewSpreadsheet");
+
+            // Store their credentials
+            controller.Password = Password.Text;
+            controller.Username = Username.Text;
 
             //send the name of the spreadsheet
             controller.SendOpen(spreadsheet);

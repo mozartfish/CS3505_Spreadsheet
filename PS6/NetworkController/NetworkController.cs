@@ -24,10 +24,7 @@ namespace Controller
     /// <param name="ss"></param>
     public delegate void NetworkAction(SocketState ss);
 
-    /// <summary>
-    /// Handles any NetworkError.
-    /// </summary>
-    public delegate void NetWorkErrorHandler();
+
 
 
     /// <summary>
@@ -163,11 +160,6 @@ namespace Controller
     {
         public const int DEFAULT_PORT = 2112;
 
-        /// <summary>
-        /// Event that handles network errors
-        /// </summary>
-        private static event NetWorkErrorHandler NetworkError;
-
 
         /// <summary>
         /// Creates a socket object for the given host string
@@ -180,53 +172,50 @@ namespace Controller
             ipAddress = IPAddress.None;
             socket = null;
 
+
+
+
+            //Establish the remote endpoint for the socket
+            IPHostEntry ipHostInfo;
+
+            // Determine if the server address is a URL or an IP
             try
             {
-
-                //Establish the remote endpoint for the socket
-                IPHostEntry ipHostInfo;
-
-                // Determine if the server address is a URL or an IP
-                try
+                ipHostInfo = Dns.GetHostEntry(hostName);
+                bool foundIPV4 = false;
+                foreach (IPAddress address in ipHostInfo.AddressList)
                 {
-                    ipHostInfo = Dns.GetHostEntry(hostName);
-                    bool foundIPV4 = false;
-                    foreach (IPAddress address in ipHostInfo.AddressList)
+                    if (address.AddressFamily != AddressFamily.InterNetworkV6)
                     {
-                        if (address.AddressFamily != AddressFamily.InterNetworkV6)
-                        {
-                            foundIPV4 = true;
-                            ipAddress = address;
-                            break;
-                        }
-                    }
-
-                    // Didn't find any IPV4 addresses
-                    if (!foundIPV4)
-                    {
-                        System.Diagnostics.Debug.WriteLine("Invalid address: " + hostName);
-                        throw new ArgumentException("Invalid address");
+                        foundIPV4 = true;
+                        ipAddress = address;
+                        break;
                     }
                 }
-                catch (Exception)
+
+                // Didn't find any IPV4 addresses
+                if (!foundIPV4)
                 {
-                    //see if host name is actually an IP addresss 
-                    System.Diagnostics.Debug.WriteLine("using IP");
-                    ipAddress = IPAddress.Parse(hostName);
+                    System.Diagnostics.Debug.WriteLine("Invalid address: " + hostName);
+                    throw new ArgumentException("Invalid address");
                 }
-
-                //Create a TCP/IP socket
-                socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
-                socket.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, false);
-
-                // Disable Nagle's algorithm
-                socket.NoDelay = true;
             }
             catch (Exception)
             {
-                NetworkError();
+                //see if host name is actually an IP addresss 
+                System.Diagnostics.Debug.WriteLine("using IP");
+                ipAddress = IPAddress.Parse(hostName);
             }
+
+            //Create a TCP/IP socket
+            socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+
+            socket.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, false);
+
+            // Disable Nagle's algorithm
+            socket.NoDelay = true;
+
+
         }
 
         /// <summary>
@@ -239,25 +228,19 @@ namespace Controller
         {
             SocketState ss = new SocketState(null, -1, MessageProcessor);
 
-            try
-            {
-                System.Diagnostics.Debug.WriteLine("Connecting to " + hostName);
+            System.Diagnostics.Debug.WriteLine("Connecting to " + hostName);
 
-                //Create a TCP/IP Socket
-                Socket socket;
-                IPAddress ipAddress;
+            //Create a TCP/IP Socket
+            Socket socket;
+            IPAddress ipAddress;
 
-                Networking.MakeSocket(hostName, out socket, out ipAddress);
-                ss = new SocketState(socket, -1, MessageProcessor);
+            Networking.MakeSocket(hostName, out socket, out ipAddress);
+            ss = new SocketState(socket, -1, MessageProcessor);
 
-                socket.BeginConnect(ipAddress, Networking.DEFAULT_PORT, ConnectedCallback, ss);
-                return socket;
-            }
-            catch (SocketException)
-            {
-                ss.Disconnected = true;
-                return ss.theSocket;
-            }
+            socket.BeginConnect(ipAddress, Networking.DEFAULT_PORT, ConnectedCallback, ss);
+            return socket;
+
+
         }
 
         /// <summary>
@@ -276,11 +259,6 @@ namespace Controller
             catch (SocketException)
             {
                 ss.Disconnected = true;
-                ss.MessageProcessor(ss);
-            }
-            catch (Exception)
-            {
-                NetworkError();
             }
 
             ss.MessageProcessor(ss);
@@ -371,14 +349,7 @@ namespace Controller
             }
         }
 
-        /// <summary>
-        /// Registers a handler for the NetworkError Event.
-        /// </summary>
-        /// <param name="handler"></param>
-        public static void RegisterNetworkErrorHandler(NetWorkErrorHandler handler)
-        {
-            NetworkError += handler;
-        }
+
 
         /// <summary>
         /// Starts listening for new connections on the specified port and

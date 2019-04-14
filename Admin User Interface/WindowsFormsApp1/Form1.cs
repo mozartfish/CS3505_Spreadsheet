@@ -117,9 +117,9 @@ namespace WindowsFormsApp1
             Open message = new Open()
             {
                 type = "open",
-                Name = name,
-                Username = username,
-                Password = password
+                name = name,
+                username = username,
+                password = password
             };
             string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
             return jsonOpen;

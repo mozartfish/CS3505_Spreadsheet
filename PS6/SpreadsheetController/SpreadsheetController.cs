@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using JsonClasses;
+using System.Windows.Forms;
 
 namespace Controller
 { 
@@ -18,6 +19,20 @@ namespace Controller
 
         public delegate void SpreadsheetUpdate(SS.Spreadsheet ss);
         private event SpreadsheetUpdate SpreadsheetArrived;
+
+        public delegate void ErrorUpdate(int code, string source);
+        private event ErrorUpdate ErrorOccured;
+
+
+        /// <summary>
+        /// Handles any NetworkError.
+        /// </summary>
+        public delegate void NetWorkErrorHandler();
+
+        /// <summary>
+        /// Event that handles network errors
+        /// </summary>
+        private static event NetWorkErrorHandler NetworkError;
 
         private Socket server;
         private string username;
@@ -31,7 +46,6 @@ namespace Controller
             username = "";
             spreadsheets = new List<string>();
             spreadsheet = new SS.Spreadsheet();
-            
         }
 
         public List<string> Spreadsheets
@@ -56,21 +70,47 @@ namespace Controller
             this.ListArrived += handler;
         }
 
-       
+        /// <summary>
+        /// Registers a handler for the NetworkError Event.
+        /// </summary>
+        /// <param name="handler"></param>
+        public void RegisterNetworkErrorHandler(NetWorkErrorHandler handler)
+        {
+            NetworkError += handler;
+        }
+
         public void RegisterSpreadsheetUpdateHandler(SpreadsheetUpdate handler)
         {
             this.SpreadsheetArrived += handler;
         }
 
+        public void RegisterErrorHandler(ErrorUpdate handler)
+        {
+            this.ErrorOccured += handler;
+        }
 
         #region networking
         public void Connect(string hostName)
         {
-            server = Networking.ConnectToServer(hostName, FirstContact);
+            try
+            {
+                server = Networking.ConnectToServer(hostName, FirstContact);
+            }
+            catch(Exception e)
+            {
+                NetworkError();
+            }
+            
         }
 
         public void FirstContact(SocketState ss)
         {
+            if(ss.Disconnected)
+            {
+                NetworkError();
+                return;
+            }
+
             //set callme to recieve startup
             ss.MessageProcessor = ReceiveStartup;
 
@@ -80,9 +120,13 @@ namespace Controller
 
         public void ReceiveStartup(SocketState ss)
         {
-            // parse socket state for the list of spreadsheets
-            // for each spreadsheet, spreadsheets.Add(spreadsheet)
+            if(ss.Disconnected)
+            {
+                NetworkError();
+                return;
+            }
 
+            // parse socket state for the list of spreadsheets
             string[] messages = Regex.Split(ss.sb.ToString(), @"(?^<=[\n\n])");
 
             foreach(string message in messages)
@@ -99,19 +143,16 @@ namespace Controller
                 if(message[0] == '{' && message[message.Length - 3] == '}')
                 {
                     JObject obj = JObject.Parse(message);
-
-                    JToken listToken = obj["SpreadsheetList"]; //What to put in for the obj parameter?
+                    JToken listToken = obj["list"]; 
                     
                     if(listToken != null)
                     {
                         SpreadsheetList list = JsonConvert.DeserializeObject<SpreadsheetList>(message);
-                        foreach(string spreadsheet in list.Spreadsheets)
+                        foreach(string spreadsheet in list.spreadsheets)
                         {
                             spreadsheets.Add(spreadsheet);
                         }
-
                     }
-
                 }
             }
 
@@ -119,11 +160,75 @@ namespace Controller
             ListArrived(spreadsheets);
 
             //set CallMe to ReceiveSpreadsheet
+            ss.MessageProcessor = ReceiveInitialSpreadsheet;
+            Networking.GetData(ss);
+        }
+
+        public void ReceiveInitialSpreadsheet(SocketState ss)
+        {
+            if(ss.Disconnected)
+            {
+                NetworkError();
+                return;
+            }
+            // Check for authorization error
+            string[] messages = Regex.Split(ss.sb.ToString(), @"(?^<=[\n\n])");
+
+            foreach (string message in messages)
+            {
+                // ignore empty messages
+                if (message.Length == 0)
+                {
+                    continue;
+                }
+                // incomplete message; wait for more data
+                if (message.Substring(message.Length - 2) != "\n\n")
+                {
+                    break;
+                }
+
+                if (message[0] == '{' && message[message.Length - 3] == '}')
+                {
+                    JObject obj = JObject.Parse(message);
+                    JToken errorToken = obj["error"]; //What to put in for the obj parameter?
+
+                    if (errorToken != null) // Invalid authorization error occurred! 
+                    {
+                        Error error = JsonConvert.DeserializeObject<Error>(message);
+
+                        //trigger error event passing in error object
+                        ErrorOccured(error.code, error.source);
+                    }
+                    else
+                    {
+                        JToken sendToken = obj["full send"];
+
+                        if (sendToken != null)
+                        {
+                            FullSend fullSend = JsonConvert.DeserializeObject<FullSend>(message);
+
+                            foreach (string cell in fullSend.spreadsheet.Keys)
+                            {
+                                spreadsheet.SetContentsOfCell(cell, fullSend.spreadsheet[cell]);
+                            }
+                        }
+                    }
+                }
+            } 
+            
+            // set CallMe to ReceiveSpreadsheet
             ss.MessageProcessor = ReceiveSpreadsheet;
+            Networking.GetData(ss); 
         }
 
         public void ReceiveSpreadsheet(SocketState ss)
         {
+            if(ss.Disconnected)
+            {
+                NetworkError();
+                spreadsheet = new SS.Spreadsheet();
+                return;
+            }
 
             string[] messages = Regex.Split(ss.sb.ToString(), @"(?^<=[\n\n])");
 
@@ -141,36 +246,49 @@ namespace Controller
                 if (message[0] == '{' && message[message.Length - 3] == '}')
                 {
                     JObject obj = JObject.Parse(message);
+                    JToken sendToken = obj["full send"]; 
+                    JToken errorToken = obj["error"];
 
-                    JToken sendToken = obj["FullSend"]; //What to put in for the obj parameter?
-
-                    if (sendToken != null)
+                    if(errorToken !=null)
+                    {
+                        Error error = JsonConvert.DeserializeObject<Error>(message);
+                        ErrorOccured(error.code, error.source);
+                        Networking.GetData(ss);
+                        return;
+                    }
+                    else if (sendToken != null)
                     {
                         FullSend fullSend = JsonConvert.DeserializeObject<FullSend>(message);
 
-                        foreach(string cell in fullSend.Spreadsheet.Keys)
+                        foreach(string cell in fullSend.spreadsheet.Keys)
                         {
-                            spreadsheet.SetContentsOfCell(cell, fullSend.Spreadsheet[cell]);
+                            spreadsheet.SetContentsOfCell(cell, fullSend.spreadsheet[cell]);
                         }
                     }
                 }
             }
 
-            //trigger UpdateSpreadsheetEvent
+            // trigger UpdateSpreadsheetEvent for redrawing
             SpreadsheetArrived(spreadsheet);
+
+            // Continue receiving loop
+            Networking.GetData(ss);
         }
 
-
+        /// <summary>
+        /// After recieving the edit
+        /// </summary>
+        /// <param name="cellName"></param>
+        /// <param name="contents"></param>
         public void ProcessEdit(string cellName, string contents)
         {
-
             try
             {
                 IEnumerable<string> dependents = new HashSet<string>();
                 dependents = spreadsheet.ParseContents(cellName, contents);
                 SendEdit(cellName, contents, dependents);
             }
-            catch (SpreadsheetUtilities.FormulaFormatException e) //(FormulaFormatException)
+            catch (SpreadsheetUtilities.FormulaFormatException e) 
             {
                 throw new SpreadsheetUtilities.FormulaFormatException(e.Message);
             }
@@ -180,15 +298,15 @@ namespace Controller
         {
             //Build message
             JsonClasses.Edit edit = new JsonClasses.Edit();
-            edit.Cell = cellName;
-            edit.Value = contents;
+            edit.cell = cellName;
+            edit.value = contents;
 
             string dependencies = "";
             foreach(string variable in set)
             {
                 dependencies += variable;
             }
-            edit.Dependencies = dependencies;
+            edit.dependencies = dependencies;
 
             //JSON serialize
             Networking.Send(server, JsonConvert.SerializeObject(edit) + "\n\n");
@@ -198,9 +316,9 @@ namespace Controller
         {
             //JSON serialize
             JsonClasses.Open open = new JsonClasses.Open();
-            open.Name = spreadsheetName;
-            open.Username = username;
-            open.Password = password;
+            open.name = spreadsheetName;
+            open.username = username;
+            open.password = password;
 
             Networking.Send(server, JsonConvert.SerializeObject(open) + "\n\n");
         }
@@ -214,7 +332,7 @@ namespace Controller
         public void SendRevert(string cellName)
         {
             JsonClasses.Revert revert = new JsonClasses.Revert();
-            revert.Cell = cellName;
+            revert.cell = cellName;
 
             Networking.Send(server, JsonConvert.SerializeObject(revert) + "\n\n");
         }

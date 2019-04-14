@@ -75,6 +75,7 @@ namespace SpreadsheetGUI
             //Added for server based spreadsheet
             controller = new Controller.SpreadsheetController();
             controller.RegisterSpreadsheetUpdateHandler(UpdateSpreadsheet);
+            controller.RegisterNetworkErrorHandler(NetworkError);
 
 
             spreadsheetPanel1.SelectionChanged += DisplaySelection;
@@ -91,11 +92,13 @@ namespace SpreadsheetGUI
                 char uppercharshouldbestring = (char)(i + 65);
                 LetterToNumber.Add(uppercharshouldbestring.ToString(), i);
             }
-
-
            
         }
 
+        private void NetworkError()
+        {
+            MessageBox.Show("", "Network Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
 
         public void UpdateSpreadsheet(Spreadsheet ss)
         {
@@ -395,8 +398,8 @@ namespace SpreadsheetGUI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        //private void BackgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
-        //{
+        private void BackgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
         //    int col;
         //    int row;
         //    string cellName;
@@ -454,7 +457,7 @@ namespace SpreadsheetGUI
         //    {
         //        WarningDialogBox("The formula at " + cellName + " entered was not formatted correctly", "FormulaFormatException at cell: " + cellName);
         //    }
-        //}
+        }
 
         ///// TODO: get rid of background worker
         ///// <summary>
@@ -462,8 +465,8 @@ namespace SpreadsheetGUI
         ///// </summary>
         ///// <param name="sender"></param>
         ///// <param name="e"></param>
-        //private void BackgroundWorker1_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
-        //{
+       private void BackgroundWorker1_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
         //    //get the col and row of the selected cell
         //    spreadsheetPanel1.GetSelection(out int col, out int row);
         //    finishWorkCellName = ColRowToCellName(col, row);
@@ -488,7 +491,7 @@ namespace SpreadsheetGUI
 
         //    //now more work can be done!
         //    currentlyWorking = false;
-        //}
+        }
  
 
         /// <summary>
