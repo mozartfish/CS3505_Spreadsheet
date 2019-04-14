@@ -88,6 +88,19 @@ bool spreadsheet::change_cell(std::string cell, std::string contents)
   int cell_idx = cell_to_index(cell);
   if (cell_idx < 0 || cell_idx >= DEFAULT_CELL_COUNT)
     return false;
+
+  //check for circular dependencies
+  if (contents[0] == '=')
+  {
+    if (CircularDependency(cell, contents))
+      return false;
+  }
+  else
+  {
+    spd_history->push_back(cell);
+    cell_history[cell_idx]->push_back(contents);
+    return true;
+  }
 }
 
 /*
@@ -124,6 +137,14 @@ std::string spreadsheet::revert(std::string cell)
   //TODO use dependency graph to make sure circ dep won't exist
   std::string curr_cont = cell_hist->back();
   cell_hist->pop_back();
+  if (cell_hist[cell_idx].back()[0] == '=')
+  {
+    if (CircularDependency(cell, cell_hist[cell_idx].back()))
+    {
+      cell_hist[cell_idx].push_back(curr_cont);
+      return NULL;
+    }
+  }
   
   // Return the current top contents
   return cell_hist->back();

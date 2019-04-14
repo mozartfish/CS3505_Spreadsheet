@@ -11,6 +11,7 @@
 #include <vector>
 #include <mutex>
 #include <string>
+#include <chrono>
 
 #ifndef CONNECT_H
 #define CONNECT_H
@@ -28,6 +29,8 @@ struct socks {
   // Buffer that gets data and buffer that holds data
   std::vector<char*>* buffers;
   std::vector<std::string *>* partial_data;
+
+  std::vector<bool>* needs_removed;
   };
 
 class socket_connections {
@@ -48,6 +51,9 @@ class socket_connections {
 
   // Simple wrapper for closing socket
   static void CloseSocket(int fd);
+
+  // Helper function for waiting on data
+  static void WaitForDataTimer(char* buf, int vec_idx, std::mutex* lock, std::vector<bool> * disconnect_list);
 
 };
 
