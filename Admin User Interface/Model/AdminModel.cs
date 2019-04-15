@@ -65,11 +65,17 @@ namespace Model
             {
                 if (usersDict[entry.Key].GetActive() == 1)
                 {
-                    activeList.Add(entry.Value.ToString());
+
+                    string user = entry.Value.GetUsername() + "  " + entry.Value.GetPassword() + "   " + entry.Value.GetActive() + " " + entry.Value.GetWorkingOn().ToString();
+                    
+                    activeList.Add(user);
+
                 }
                 else
                 {
-                    inactiveList.Add(entry.Value.ToString());
+                    string user = entry.Value.GetUsername() + "  " + entry.Value.GetPassword() + "   " + entry.Value.GetActive();
+
+                    inactiveList.Add(user);
                 }
             }
 
@@ -97,7 +103,12 @@ namespace Model
 
         public void TESTAddUser(string user)
         {
-            usersDict.Add(user, new User());
+            User use = new User();
+            use.SetUsername("user");
+            use.SetPassword("pass");
+            use.SetActive(1);
+
+            usersDict.Add(user, use);
         }
         #endregion
 

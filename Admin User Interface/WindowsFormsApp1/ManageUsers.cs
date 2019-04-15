@@ -101,7 +101,6 @@ namespace WindowsFormsApp1
             }
 
             //TEST
-            controller.TestAddUse("hiya");
 
 
             List<string> userList = new List<string>();
@@ -133,7 +132,9 @@ namespace WindowsFormsApp1
         {
             for (int i = 0; i < 10; i++)
             {
-                listBox1.Items.Add("Hi");
+                controller.TestAddUse(i.ToString());
+
+                //listBox1.Items.Add("Hi");
                 //listBox1.DataSource += "Hi";
             }
         }
