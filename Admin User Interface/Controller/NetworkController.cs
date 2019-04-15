@@ -6,7 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AdminController
+namespace Controller
 {
 
     /// <summary>
@@ -109,7 +109,8 @@ namespace AdminController
     /// </summary>
     public static class Networking
     {
-        public const int DEFAULT_PORT = 2112;
+        //public const int DEFAULT_PORT = 2112;
+        public const int DEFAULT_PORT = 11000; // To test connection
 
         /// <summary>
         /// Event that handles network errors
@@ -307,6 +308,7 @@ namespace AdminController
         public static bool Send(Socket socket, string data)
         {
             byte[] messageBytes = Encoding.UTF8.GetBytes(data);
+            Console.WriteLine(data);
             try
             {
                 socket.BeginSend(messageBytes, 0, messageBytes.Length, SocketFlags.None, SendCallback, socket);
