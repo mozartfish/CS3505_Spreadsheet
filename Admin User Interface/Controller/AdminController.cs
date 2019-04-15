@@ -17,6 +17,12 @@ namespace Controller
 
         private AdminModel model;
 
+        #region Events
+        public delegate void UpdateInterfaceHandler(Dictionary<string, User> users, Dictionary<string, Spreadsheet> spreadsheets);
+
+        public event UpdateInterfaceHandler UpdateInterface;
+        #endregion
+
         /// <summary>
         /// Default constructor for Admin Controller
         /// </summary>
@@ -29,6 +35,11 @@ namespace Controller
             //spreadsheet.SetName("ss1");
             //spreadsheet.AddUsers("Peter Jensen");
             //model.SetSS("ss1", spreadsheet);
+            User user = new User();
+            user.SetUsername("Peter Jensen");
+            user.SetPassword("12345678");
+            user.SetActive(1);
+            user.AddWorkingOn("ss1.sprd");
         }
 
         /// <summary>
@@ -96,7 +107,7 @@ namespace Controller
             string totalData = ss.sb.ToString();
             //Console.WriteLine(totalData);
 
-            string[] messages = Regex.Split(totalData, @"(?<=[\n\n])");
+            string[] messages = Regex.Split(totalData, @"(?<=[\n])");
 
             foreach (string message in messages)
             {
@@ -105,13 +116,13 @@ namespace Controller
                 {
                     continue;
                 }
-                if (message.Substring(message.Length - 2) != "\n\n")
+                if (message.Substring(message.Length - 1) != "\n")
                 {
                     //Console.WriteLine("EOL");
                     break;
                 }
 
-                if (message[0] == '{' && message[message.Length - 3] == '}')
+                if (message[0] == '{' && message[message.Length - 2] == '}')
                 {
                     //Console.WriteLine("Object get updated");
                     object updateObj = Deserialize(message);
@@ -121,6 +132,8 @@ namespace Controller
                     //Console.WriteLine("User: " + model.GetSS("ss1").GetUsers());
                 }
             }
+
+            UpdateInterface?.Invoke(model.GetUsersDict(), model.GetSSDict());
         }
 
         /// <summary>

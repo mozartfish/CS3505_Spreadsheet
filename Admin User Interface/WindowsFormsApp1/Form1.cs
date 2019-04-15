@@ -1,11 +1,10 @@
 ﻿using JsonClasses;
-//using Newtonsoft.Json;
+using System.Collections.Generic;
 using System;
 using System.Text;
 using System.Windows.Forms;
 using Controller;
-
-//using AdminModel;
+using Model;
 
 namespace WindowsFormsApp1
 {
@@ -13,12 +12,17 @@ namespace WindowsFormsApp1
     {
         public delegate void NameEventHandle();
         public event NameEventHandle OpenNewAcctMan;
-        //public AdminLogic logic;
 
+        private AdminController controller;
+        
         public Form1()
         {
             InitializeComponent();
-            AdminController controller = new AdminController();
+
+            controller = new AdminController();
+
+            // Register handlers
+            controller.UpdateInterface += HandleUpdateInterface;
 
             // Test Scrolling Function - CurrentStatusList
             //for (int i = 0; i < 1000; i++)
@@ -28,6 +32,15 @@ namespace WindowsFormsApp1
 
             // Testing connection
             controller.Connect("localhost");
+        }
+
+        private void HandleUpdateInterface(Dictionary<string, User> users, Dictionary<string, Spreadsheet> spreadsheet)
+        {
+            foreach(string username in users.Keys)
+            {
+                this.Invoke(new MethodInvoker(() => currentStatusList.Items.Add(username)));
+            }
+            
         }
 
         private void ShutDown(object sender, EventArgs e)
