@@ -13,9 +13,28 @@ namespace Controller
 {
     public class AdminController
     {
+        #region Events
+
+        #endregion Events
+
+
+
+
+        #region Controller Definitions
+
         private Socket server;
 
         private AdminModel model;
+
+        #endregion Controller Definitions
+
+
+
+        #region Gui Definitions
+
+        private bool acctManOpen, ssManOpen;
+
+        #endregion Gui Definitions
 
         /// <summary>
         /// Default constructor for Admin Controller
@@ -24,12 +43,23 @@ namespace Controller
         {
             model = new AdminModel();
 
+            #region Gui Var Initialize
+
+
+            acctManOpen = false;
+            ssManOpen = false;
+
+
+            #endregion Gui Var Initialize
+
             // testing
             //Spreadsheet spreadsheet = new Spreadsheet();
             //spreadsheet.SetName("ss1");
             //spreadsheet.AddUsers("Peter Jensen");
             //model.SetSS("ss1", spreadsheet);
         }
+
+        #region NetworkControl
 
         /// <summary>
         /// Start the network connection
@@ -211,10 +241,82 @@ namespace Controller
             Networking.Send(server, messageBuilder.ToString());
         }
 
+        #endregion NetworkControl
+
+
+
+
+        #region GuiControl
+
+
+        #region Main Gui
+
+
+        /// <summary>
+        /// TODO:
+        /// </summary>
         public void ShutDown()
         {
             //TODO: stub! should contact the server and wait for a responce, then return and allow the gui to close
         }
 
+
+
+
+        #endregion Main Gui
+
+
+        #region Account Management
+
+
+        /// <summary>
+        /// if an account managment page is already open, do not open a new sheet
+        /// </summary>
+        /// <returns></returns>
+        public bool OpenAcctManPage()
+        {
+            return !acctManOpen;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="state"></param>
+        public void SetAcctManPageState(bool state)
+        {
+            acctManOpen = state;
+        }
+
+        #endregion Account Management
+
+
+        #region Spreadsheet Management
+
+
+        /// <summary>
+        /// if an ss managment page is already open, do not open a new sheet
+        /// </summary>
+        /// <returns></returns>
+        public bool OpenSSManPage()
+        {
+            return !ssManOpen;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="state"></param>
+        public void SetSSManPageState(bool state)
+        {
+            ssManOpen = state;
+        }
+
+
+        #endregion Spreadsheet Management
+
+
+        #endregion GuiControl
     }
 }

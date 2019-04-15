@@ -19,32 +19,43 @@ namespace WindowsFormsApp1
         public delegate void CreateUserEventHandler();
         public event CreateUserEventHandler createUser;
 
+
+        #region definitions
+
+        AdminController controller;
+
+        #endregion definitions
+
+
         /// <summary>
         /// basic constructor
         /// </summary>
-        public ManageUsers()
-        {
-            InitializeComponent();
-        }
+        //public ManageUsers()
+        //{
+        //    InitializeComponent();
+        //}
 
-        public ManageUsers(AdminController controller)
+        public ManageUsers(AdminController contr)
         {
             InitializeComponent();
+            controller = contr;
+
+            //TODO: initialize all the data for the acct man here!!
             
-            //currentStatusList.Items.Add(i.ToString());
+            //currentStatusList.Items.Add(i.ToString());   //Use this!
         }
 
+        /// <summary>
+        /// inform the controller that the user man page is closing
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ManageUsers_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //closeAcctPage();
-
-            //if (logic.GetAcctWindowsCount() == 1)
-            //{
-            //    logic.SetAcctWindowsCount(0);
-            //}
+            controller.SetAcctManPageState(false);
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void Create_user_button(object sender, EventArgs e)
         {
             if (createUser != null)
             {
@@ -53,12 +64,12 @@ namespace WindowsFormsApp1
             //logic.CreateUser(CreateUser_User.Text, CreateUser_pass.Text);
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void ChangePassword_button(object sender, EventArgs e)
         {
             //logic.ChangeUserPass(ChangeUser_User.Text, ChangeUser_OldPass.Text, ChangeUser_newPass.Text);
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void DeleteUser_button(object sender, EventArgs e)
         {
             //logic.DeleteUser(DeleteUser_User.Text, DeleteUser_Pass.Text);
         }

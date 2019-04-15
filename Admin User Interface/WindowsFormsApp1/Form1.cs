@@ -13,18 +13,17 @@ namespace WindowsFormsApp1
     {
         public delegate void NameEventHandle();
         public event NameEventHandle OpenNewAcctMan;
-        //public AdminLogic logic;
+
+
+
+        AdminController controller;
+        SpreadsheetManagement ssMan;
+        ManageUsers userMan;
 
         public Form1()
         {
             InitializeComponent();
-            AdminController controller = new AdminController();
-
-            // Test Scrolling Function - CurrentStatusList
-            //for (int i = 0; i < 1000; i++)
-            //{
-            //    currentStatusList.Items.Add(i.ToString());
-            //}
+            controller = new AdminController();
 
             // Testing connection
             controller.Connect("localhost");
@@ -37,13 +36,24 @@ namespace WindowsFormsApp1
 
         private void AccountManagementButton(object sender, EventArgs e)
         {
-            //logic.OpenAcctManPage();
-            
+            if (controller.OpenAcctManPage())
+            {
+                userMan = new ManageUsers(controller);
+                userMan.Show();
+                controller.SetAcctManPageState(true);
+            }
         }
 
         private void SpreadsheetManagmentButton(object sender, EventArgs e)
         {
-            
+
+            //Copied from ^ switch to work for spreadhseet
+            if (controller.OpenSSManPage())
+            {
+                ssMan = new SpreadsheetManagement(controller);
+                ssMan.Show();
+                controller.SetSSManPageState(true);
+            }
         }
 
         private void button4_Click(object sender, EventArgs e)
