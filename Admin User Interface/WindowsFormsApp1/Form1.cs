@@ -34,13 +34,47 @@ namespace WindowsFormsApp1
             controller.Connect("localhost");
         }
 
-        private void HandleUpdateInterface(Dictionary<string, User> users, Dictionary<string, Spreadsheet> spreadsheet)
+        /// <summary>
+        /// Event handler receiving User and Spreadsheet data from Admin Controller
+        /// Update the GUI with new data
+        /// </summary>
+        /// <param name="users"></param>
+        /// <param name="spreadsheet"></param>
+        private void HandleUpdateInterface(Dictionary<string, User> users, Dictionary<string, Spreadsheet> spreadsheets)
+        {
+            // Update the Current Status column with User data
+            this.Invoke(new MethodInvoker(() =>
+            {
+                currentStatusList.Items.Clear();
+                foreach(string username in users.Keys)
+                {
+                    Console.WriteLine(username);
+                    currentStatusList.Items.Add(username);
+                }
+            }));
+
+            // Update the Update column with Spreadsheet data
+            this.Invoke(new MethodInvoker(() =>
+            {
+                updateList.Items.Clear();
+                foreach(Spreadsheet ss in spreadsheets.Values)
+                {
+                    if(ss.GetStatus() == 2)
+                    {
+                        Console.WriteLine(ss.GetName());
+                        updateList.Items.Add(ss.GetName());
+                    }
+                }
+            }));
+        }
+
+        private void UpdateList(Dictionary<string, User> users)
         {
             foreach(string username in users.Keys)
             {
-                this.Invoke(new MethodInvoker(() => currentStatusList.Items.Add(username)));
+                Console.WriteLine(username);
+                currentStatusList.Items.Add(username);
             }
-            
         }
 
         private void ShutDown(object sender, EventArgs e)

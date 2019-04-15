@@ -40,6 +40,7 @@ namespace Controller
             user.SetPassword("12345678");
             user.SetActive(1);
             user.AddWorkingOn("ss1.sprd");
+            user.SetStatus(0);
         }
 
         /// <summary>
@@ -107,7 +108,7 @@ namespace Controller
             string totalData = ss.sb.ToString();
             //Console.WriteLine(totalData);
 
-            string[] messages = Regex.Split(totalData, @"(?<=[\n])");
+            string[] messages = Regex.Split(totalData, @"(?<=[\n\n])");
 
             foreach (string message in messages)
             {
@@ -116,13 +117,13 @@ namespace Controller
                 {
                     continue;
                 }
-                if (message.Substring(message.Length - 1) != "\n")
+                if (message.Substring(message.Length - 2) != "\n\n")
                 {
                     //Console.WriteLine("EOL");
                     break;
                 }
 
-                if (message[0] == '{' && message[message.Length - 2] == '}')
+                if (message[0] == '{' && message[message.Length - 3] == '}')
                 {
                     //Console.WriteLine("Object get updated");
                     object updateObj = Deserialize(message);
