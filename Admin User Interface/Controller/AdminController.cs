@@ -8,15 +8,32 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Model;
 using Newtonsoft.Json;
+using System.Windows.Forms;
 
 namespace Controller
 {
     public class AdminController
     {
+        #region Events
+
+        #endregion Events
+        
+
+
+        #region Controller Definitions
+
         private Socket server;
 
         private AdminModel model;
+        #endregion Controller Definitions
 
+
+
+        #region Gui Definitions
+
+        private bool acctManOpen, ssManOpen;
+
+        #endregion Gui Definitions
         #region Events
         public delegate void UpdateInterfaceHandler(Dictionary<string, User> users, Dictionary<string, Spreadsheet> spreadsheets);
 
@@ -30,6 +47,15 @@ namespace Controller
         {
             model = new AdminModel();
 
+            #region Gui Var Initialize
+
+
+            acctManOpen = false;
+            ssManOpen = false;
+
+
+            #endregion Gui Var Initialize
+
             // testing
             //Spreadsheet spreadsheet = new Spreadsheet();
             //spreadsheet.SetName("ss1");
@@ -42,6 +68,8 @@ namespace Controller
             user.AddWorkingOn("ss1.sprd");
             user.SetStatus(0);
         }
+
+        #region NetworkControl
 
         /// <summary>
         /// Start the network connection
@@ -225,10 +253,132 @@ namespace Controller
             Networking.Send(server, messageBuilder.ToString());
         }
 
+        #endregion NetworkControl
+
+
+
+
+        #region GuiControl
+
+
+        #region Main Gui
+
+
+        /// <summary>
+        /// TODO:
+        /// </summary>
         public void ShutDown()
         {
             //TODO: stub! should contact the server and wait for a responce, then return and allow the gui to close
+
+
+
+
+            string title = "WARNING";
+            string text = "YOU ARE ABOUT TO SHUTDOWN THE SERVER,\nCLICK OK TO SHUT DOWN";
+
+            DialogResult result = MessageBox.Show(text, title, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (result == DialogResult.Yes)
+            {
+                //Send message to the server telling it to shut down 
+            }
         }
 
+
+
+
+        #endregion Main Gui
+
+
+        #region Account Management
+
+
+        /// <summary>
+        /// if an account managment page is already open, do not open a new sheet
+        /// </summary>
+        /// <returns></returns>
+        public bool OpenAcctManPage()
+        {
+            return !acctManOpen;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="state"></param>
+        public void SetAcctManPageState(bool state)
+        {
+            acctManOpen = state;
+        }
+
+
+        /// <summary>
+        /// Return all users in array with form of all active followed by all inactive users
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetAllUsers()
+        {
+            return model.GetOrderedUsersList();
+        }
+
+
+        public void TestAddUse(string user)
+        {
+            model.TESTAddUser(user);
+        }
+
+
+
+        #endregion Account Management
+
+
+        #region Spreadsheet Management
+
+
+        /// <summary>
+        /// if an ss managment page is already open, do not open a new sheet
+        /// </summary>
+        /// <returns></returns>
+        public bool OpenSSManPage()
+        {
+            return !ssManOpen;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="state"></param>
+        public void SetSSManPageState(bool state)
+        {
+            ssManOpen = state;
+        }
+
+
+        #endregion Spreadsheet Management
+
+
+        #endregion GuiControl
     }
 }
+
+
+
+
+
+
+//HELP:
+/*
+ * Shut down needs to send a message to the server to shut down, while blocking!!!
+ * 
+ * killing admin form should tell the server to close socket
+ * 
+ * network has to communicate with the controller
+ * 
+ * controller must allert all active forms/ user and ss man as well as the main gui must be registered to the network events
+ * 
+ * 
+ * 
+ * 
+ */

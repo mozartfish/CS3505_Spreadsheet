@@ -12,7 +12,8 @@ namespace WindowsFormsApp1
     {
         public delegate void NameEventHandle();
         public event NameEventHandle OpenNewAcctMan;
-
+        SpreadsheetManagement ssMan;
+        ManageUsers userMan;
         private AdminController controller;
         
         public Form1()
@@ -80,17 +81,29 @@ namespace WindowsFormsApp1
         private void ShutDown(object sender, EventArgs e)
         {
             //logic.ShutDownServer();
+            controller.ShutDown();
         }
 
         private void AccountManagementButton(object sender, EventArgs e)
         {
-            //logic.OpenAcctManPage();
-            
+            if (controller.OpenAcctManPage())
+            {
+                userMan = new ManageUsers(controller);
+                userMan.Show();
+                controller.SetAcctManPageState(true);
+            }
         }
 
         private void SpreadsheetManagmentButton(object sender, EventArgs e)
         {
-            
+
+            //Copied from ^ switch to work for spreadhseet
+            if (controller.OpenSSManPage())
+            {
+                ssMan = new SpreadsheetManagement(controller);
+                ssMan.Show();
+                controller.SetSSManPageState(true);
+            }
         }
 
         private void button4_Click(object sender, EventArgs e)

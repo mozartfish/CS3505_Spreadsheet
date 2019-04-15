@@ -46,6 +46,54 @@ namespace Model
             return usersDict.Values.ToList();
         }
 
+        //public List<User> GetOrderedUsersList()
+        public List<string> GetOrderedUsersList()
+        {
+            //List<User> activeList = new List<User>();
+            //List<User> inactiveList = new List<User>();
+
+            //foreach (KeyValuePair<string, User> entry in usersDict)
+            //{
+            //    if (usersDict[entry.Key].GetActive() == 1)
+            //    {
+            //        activeList.Add(entry.Value);
+            //    }
+            //    else
+            //    {
+            //        inactiveList.Add(entry.Value);
+            //    }
+            //}
+
+            //activeList.AddRange(inactiveList);
+
+            //return activeList;
+
+            List<string> activeList = new List<string>();
+            List<string> inactiveList = new List<string>();
+
+            foreach (KeyValuePair<string, User> entry in usersDict)
+            {
+                if (usersDict[entry.Key].GetActive() == 1)
+                {
+
+                    string user = entry.Value.GetUsername() + "  " + entry.Value.GetPassword() + "   " + entry.Value.GetActive() + " " + entry.Value.GetWorkingOn().ToString();
+                    
+                    activeList.Add(user);
+
+                }
+                else
+                {
+                    string user = entry.Value.GetUsername() + "  " + entry.Value.GetPassword() + "   " + entry.Value.GetActive();
+
+                    inactiveList.Add(user);
+                }
+            }
+
+            activeList.AddRange(inactiveList);
+
+            return activeList;
+        }
+
         public User GetUser(string username)
         {
             return usersDict[username];
@@ -61,6 +109,16 @@ namespace Model
         public void SetUser(string username, User user)
         {
             usersDict[username] = user;
+        }
+
+        public void TESTAddUser(string user)
+        {
+            User use = new User();
+            use.SetUsername("user");
+            use.SetPassword("pass");
+            use.SetActive(1);
+
+            usersDict.Add(user, use);
         }
         #endregion
 

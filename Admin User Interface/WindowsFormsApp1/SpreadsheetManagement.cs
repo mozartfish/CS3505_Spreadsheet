@@ -14,21 +14,45 @@ namespace WindowsFormsApp1
     public partial class SpreadsheetManagement : Form
     {
 
-        public SpreadsheetManagement(AdminController controller)
+        #region definitions
+
+        AdminController controller;
+
+        #endregion definitions
+
+
+
+        public SpreadsheetManagement(AdminController contr)
         {
             InitializeComponent();
-            //logic = passedlogic;
+            controller = contr;
+
+
+            //TODO: set up the SSman here! looking at all the data structures and grabbing SS information
+
         }
 
         private void SpreadsheetManagement_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //if (logic.GetSSWindowsCount() == 1)
-            {
-               // logic.SetSSWindowsCount(0);
-            }
+            controller.SetSSManPageState(false);
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CreateSS_button(object sender, EventArgs e)
+        {
+
+        }
+
+        /// <summary>
+        /// tells the server to remove the SS and then removes the SS
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DeleteSS_button(object sender, EventArgs e)
         {
 
         }
