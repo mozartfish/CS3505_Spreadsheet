@@ -17,8 +17,8 @@ using namespace std;
 int main()
 {
  string foo =  "{\"type\": \"open\", \"name\": \"cool.sprd\", \"username\": \"pajensen\", \"password\": \"Doofus\"}";
- server_helpers::message_to_json(foo);
- 
+ message * m = &server_helpers::json_to_message(foo);
+ cout << m->type << endl;
   
   return 0;
 }

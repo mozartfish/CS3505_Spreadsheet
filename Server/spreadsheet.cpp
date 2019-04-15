@@ -140,21 +140,20 @@ bool spreadsheet::change_cell(std::string cell, std::string contents, std::vecto
 
 /*
  *  Performs an undo on this spreadsheet, and returns the contents of
- *  the last edit, with the cell name attached to the beginning
- *  Returns NULL if no previous edits
+ *  the last edit, with the cell name attached to the beginning separated by \t
+ *  Returns empty string if no previous edits
  */
 std::string spreadsheet::undo()
 {
+  std::string empty("");
   if (spd_history->empty())
-    return NULL;
+    return empty;
 
   std::string cell = spd_history->back();
   spd_history->pop_back();
 
   // Revert the cell that had the most recent edit
-  return this->revert(cell);
-  
-  
+  return cell + "\t" + this->revert(cell);
 }
 
 /*

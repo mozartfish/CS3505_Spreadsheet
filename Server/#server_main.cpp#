@@ -342,7 +342,7 @@ void process_updates()
 	  // Try to change cell
 	  if(sheet->change_cell(deserialized->cell, deserialized->value, deserialized->dependencies))
 	    {
-
+	      
 	    }
 	  
 	  // If there is a failure
@@ -364,7 +364,7 @@ void process_updates()
       // Revert
       else if (deserialized->type == "revert")
 	{
-	  
+	  string result = sheet->revert(
 	}
 	     
       // Send updates to all that should be notified if successful
