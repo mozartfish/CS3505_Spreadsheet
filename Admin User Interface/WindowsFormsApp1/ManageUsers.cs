@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -40,10 +41,15 @@ namespace WindowsFormsApp1
             InitializeComponent();
             controller = contr;
 
+            RedrawUsersList();
+
             //TODO: initialize all the data for the acct man here!!
-            
+
             //currentStatusList.Items.Add(i.ToString());   //Use this!
         }
+
+
+        #region events from admin
 
         /// <summary>
         /// inform the controller that the user man page is closing
@@ -77,6 +83,59 @@ namespace WindowsFormsApp1
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        #endregion events form admin
+
+
+        /// <summary>
+        /// goes through the data and adds active users first, then adds non-active users
+        /// </summary>
+        private void RedrawUsersList()
+        {
+
+            if (listBox1.Items.Count > 0)
+            {
+                //ClearListBox();
+                listBox1.Items.Clear();
+            }
+
+            //TEST
+            controller.TestAddUse("hiya");
+
+
+            List<string> userList = new List<string>();
+            userList = controller.GetAllUsers();
+
+            foreach (string user in userList)
+            {
+                listBox1.Items.Add(user);
+            }
+
+
+            //currentStatusList.Items.Add(i.ToString());
+        }
+
+        //private void ClearListBox()
+        //{
+        //    BindingSource bindingSource = (BindingSource)listBox1.DataSource;
+        //    IList SourceList = (IList)bindingSource.List;
+
+        //    SourceList.Clear();
+        //}
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            RedrawUsersList();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                listBox1.Items.Add("Hi");
+                //listBox1.DataSource += "Hi";
+            }
         }
     }
 }

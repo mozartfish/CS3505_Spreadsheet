@@ -32,6 +32,7 @@ namespace WindowsFormsApp1
         private void ShutDown(object sender, EventArgs e)
         {
             //logic.ShutDownServer();
+            controller.ShutDown();
         }
 
         private void AccountManagementButton(object sender, EventArgs e)

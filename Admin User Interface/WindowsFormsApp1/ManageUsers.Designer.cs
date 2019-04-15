@@ -49,6 +49,8 @@
             this.CreateUser_User = new System.Windows.Forms.TextBox();
             this.textBox13 = new System.Windows.Forms.TextBox();
             this.ChangeUser_newPass = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listBox1
@@ -56,7 +58,7 @@
             this.listBox1.FormattingEnabled = true;
             this.listBox1.ItemHeight = 25;
             this.listBox1.Location = new System.Drawing.Point(12, 12);
-            this.listBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.listBox1.Margin = new System.Windows.Forms.Padding(4);
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(860, 829);
             this.listBox1.TabIndex = 0;
@@ -65,7 +67,7 @@
             // button4
             // 
             this.button4.Location = new System.Drawing.Point(1378, 87);
-            this.button4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button4.Margin = new System.Windows.Forms.Padding(4);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(210, 77);
             this.button4.TabIndex = 4;
@@ -76,7 +78,7 @@
             // button2
             // 
             this.button2.Location = new System.Drawing.Point(1378, 287);
-            this.button2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button2.Margin = new System.Windows.Forms.Padding(4);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(210, 77);
             this.button2.TabIndex = 9;
@@ -87,7 +89,7 @@
             // DeleteUser_Pass
             // 
             this.DeleteUser_Pass.Location = new System.Drawing.Point(992, 548);
-            this.DeleteUser_Pass.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.DeleteUser_Pass.Margin = new System.Windows.Forms.Padding(4);
             this.DeleteUser_Pass.Name = "DeleteUser_Pass";
             this.DeleteUser_Pass.Size = new System.Drawing.Size(380, 31);
             this.DeleteUser_Pass.TabIndex = 14;
@@ -95,7 +97,7 @@
             // DeleteUser_User
             // 
             this.DeleteUser_User.Location = new System.Drawing.Point(992, 512);
-            this.DeleteUser_User.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.DeleteUser_User.Margin = new System.Windows.Forms.Padding(4);
             this.DeleteUser_User.Name = "DeleteUser_User";
             this.DeleteUser_User.Size = new System.Drawing.Size(380, 31);
             this.DeleteUser_User.TabIndex = 13;
@@ -103,7 +105,7 @@
             // button3
             // 
             this.button3.Location = new System.Drawing.Point(1378, 512);
-            this.button3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button3.Margin = new System.Windows.Forms.Padding(4);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(210, 77);
             this.button3.TabIndex = 12;
@@ -115,7 +117,7 @@
             // 
             this.richTextBox1.Enabled = false;
             this.richTextBox1.Location = new System.Drawing.Point(896, 15);
-            this.richTextBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.richTextBox1.Margin = new System.Windows.Forms.Padding(4);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.ReadOnly = true;
             this.richTextBox1.Size = new System.Drawing.Size(692, 60);
@@ -126,7 +128,7 @@
             // 
             this.richTextBox2.Enabled = false;
             this.richTextBox2.Location = new System.Drawing.Point(896, 444);
-            this.richTextBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.richTextBox2.Margin = new System.Windows.Forms.Padding(4);
             this.richTextBox2.Name = "richTextBox2";
             this.richTextBox2.ReadOnly = true;
             this.richTextBox2.Size = new System.Drawing.Size(692, 60);
@@ -137,7 +139,7 @@
             // 
             this.richTextBox3.Enabled = false;
             this.richTextBox3.Location = new System.Drawing.Point(896, 208);
-            this.richTextBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.richTextBox3.Margin = new System.Windows.Forms.Padding(4);
             this.richTextBox3.Name = "richTextBox3";
             this.richTextBox3.ReadOnly = true;
             this.richTextBox3.Size = new System.Drawing.Size(692, 60);
@@ -148,7 +150,7 @@
             // 
             this.textBox7.Enabled = false;
             this.textBox7.Location = new System.Drawing.Point(896, 512);
-            this.textBox7.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox7.Margin = new System.Windows.Forms.Padding(4);
             this.textBox7.Name = "textBox7";
             this.textBox7.ReadOnly = true;
             this.textBox7.Size = new System.Drawing.Size(88, 31);
@@ -159,7 +161,7 @@
             // 
             this.textBox8.Enabled = false;
             this.textBox8.Location = new System.Drawing.Point(896, 548);
-            this.textBox8.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox8.Margin = new System.Windows.Forms.Padding(4);
             this.textBox8.Name = "textBox8";
             this.textBox8.ReadOnly = true;
             this.textBox8.Size = new System.Drawing.Size(88, 31);
@@ -170,7 +172,7 @@
             // 
             this.textBox3.Enabled = false;
             this.textBox3.Location = new System.Drawing.Point(896, 310);
-            this.textBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox3.Margin = new System.Windows.Forms.Padding(4);
             this.textBox3.Name = "textBox3";
             this.textBox3.ReadOnly = true;
             this.textBox3.Size = new System.Drawing.Size(128, 31);
@@ -181,7 +183,7 @@
             // 
             this.textBox4.Enabled = false;
             this.textBox4.Location = new System.Drawing.Point(896, 273);
-            this.textBox4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox4.Margin = new System.Windows.Forms.Padding(4);
             this.textBox4.Name = "textBox4";
             this.textBox4.ReadOnly = true;
             this.textBox4.Size = new System.Drawing.Size(88, 31);
@@ -191,7 +193,7 @@
             // ChangeUser_OldPass
             // 
             this.ChangeUser_OldPass.Location = new System.Drawing.Point(1028, 310);
-            this.ChangeUser_OldPass.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ChangeUser_OldPass.Margin = new System.Windows.Forms.Padding(4);
             this.ChangeUser_OldPass.Name = "ChangeUser_OldPass";
             this.ChangeUser_OldPass.Size = new System.Drawing.Size(344, 31);
             this.ChangeUser_OldPass.TabIndex = 22;
@@ -199,7 +201,7 @@
             // ChangeUser_User
             // 
             this.ChangeUser_User.Location = new System.Drawing.Point(992, 273);
-            this.ChangeUser_User.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ChangeUser_User.Margin = new System.Windows.Forms.Padding(4);
             this.ChangeUser_User.Name = "ChangeUser_User";
             this.ChangeUser_User.Size = new System.Drawing.Size(380, 31);
             this.ChangeUser_User.TabIndex = 21;
@@ -208,7 +210,7 @@
             // 
             this.textBox1.Enabled = false;
             this.textBox1.Location = new System.Drawing.Point(896, 123);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(4);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(88, 31);
@@ -219,7 +221,7 @@
             // 
             this.textBox2.Enabled = false;
             this.textBox2.Location = new System.Drawing.Point(896, 87);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox2.Margin = new System.Windows.Forms.Padding(4);
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
             this.textBox2.Size = new System.Drawing.Size(88, 31);
@@ -229,7 +231,7 @@
             // CreateUser_pass
             // 
             this.CreateUser_pass.Location = new System.Drawing.Point(992, 123);
-            this.CreateUser_pass.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.CreateUser_pass.Margin = new System.Windows.Forms.Padding(4);
             this.CreateUser_pass.Name = "CreateUser_pass";
             this.CreateUser_pass.Size = new System.Drawing.Size(380, 31);
             this.CreateUser_pass.TabIndex = 26;
@@ -237,7 +239,7 @@
             // CreateUser_User
             // 
             this.CreateUser_User.Location = new System.Drawing.Point(992, 87);
-            this.CreateUser_User.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.CreateUser_User.Margin = new System.Windows.Forms.Padding(4);
             this.CreateUser_User.Name = "CreateUser_User";
             this.CreateUser_User.Size = new System.Drawing.Size(380, 31);
             this.CreateUser_User.TabIndex = 25;
@@ -246,7 +248,7 @@
             // 
             this.textBox13.Enabled = false;
             this.textBox13.Location = new System.Drawing.Point(896, 346);
-            this.textBox13.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox13.Margin = new System.Windows.Forms.Padding(4);
             this.textBox13.Name = "textBox13";
             this.textBox13.ReadOnly = true;
             this.textBox13.Size = new System.Drawing.Size(128, 31);
@@ -256,16 +258,38 @@
             // ChangeUser_newPass
             // 
             this.ChangeUser_newPass.Location = new System.Drawing.Point(1028, 346);
-            this.ChangeUser_newPass.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ChangeUser_newPass.Margin = new System.Windows.Forms.Padding(4);
             this.ChangeUser_newPass.Name = "ChangeUser_newPass";
             this.ChangeUser_newPass.Size = new System.Drawing.Size(344, 31);
             this.ChangeUser_newPass.TabIndex = 29;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(503, 239);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(214, 285);
+            this.button1.TabIndex = 31;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(535, 87);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(152, 103);
+            this.button5.TabIndex = 32;
+            this.button5.Text = "button5";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // ManageUsers
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1600, 865);
+            this.Controls.Add(this.button5);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox13);
             this.Controls.Add(this.ChangeUser_newPass);
             this.Controls.Add(this.textBox1);
@@ -287,7 +311,7 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.listBox1);
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "ManageUsers";
             this.Text = "ManageUsers";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ManageUsers_FormClosing);
@@ -319,5 +343,7 @@
         private System.Windows.Forms.TextBox CreateUser_User;
         private System.Windows.Forms.TextBox textBox13;
         private System.Windows.Forms.TextBox ChangeUser_newPass;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button5;
     }
 }

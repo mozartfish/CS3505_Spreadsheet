@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Model;
 using Newtonsoft.Json;
+using System.Windows.Forms;
 
 namespace Controller
 {
@@ -16,8 +17,7 @@ namespace Controller
         #region Events
 
         #endregion Events
-
-
+        
 
 
         #region Controller Definitions
@@ -258,6 +258,18 @@ namespace Controller
         public void ShutDown()
         {
             //TODO: stub! should contact the server and wait for a responce, then return and allow the gui to close
+
+
+
+
+            string title = "WARNING";
+            string text = "YOU ARE ABOUT TO SHUTDOWN THE SERVER,\nCLICK OK TO SHUT DOWN";
+
+            DialogResult result = MessageBox.Show(text, title, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (result == DialogResult.Yes)
+            {
+                //Send message to the server telling it to shut down 
+            }
         }
 
 
@@ -287,6 +299,24 @@ namespace Controller
         {
             acctManOpen = state;
         }
+
+
+        /// <summary>
+        /// Return all users in array with form of all active followed by all inactive users
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetAllUsers()
+        {
+            return model.GetOrderedUsersList();
+        }
+
+
+        public void TestAddUse(string user)
+        {
+            model.TESTAddUser(user);
+        }
+
+
 
         #endregion Account Management
 
@@ -320,3 +350,23 @@ namespace Controller
         #endregion GuiControl
     }
 }
+
+
+
+
+
+
+//HELP:
+/*
+ * Shut down needs to send a message to the server to shut down, while blocking!!!
+ * 
+ * killing admin form should tell the server to close socket
+ * 
+ * network has to communicate with the controller
+ * 
+ * controller must allert all active forms/ user and ss man as well as the main gui must be registered to the network events
+ * 
+ * 
+ * 
+ * 
+ */
