@@ -34,6 +34,15 @@ namespace Model
         [JsonProperty]
         private List<string> workingOn;
 
+        /// <summary>
+        /// Status of the User
+        /// -1 - Delete user
+        /// 0  - No status change
+        /// 1  - Create user
+        /// </summary>
+        [JsonProperty]
+        private int status;
+
         public User()
         {
             workingOn = new List<string>();
@@ -84,6 +93,16 @@ namespace Model
             {
                 workingOn.Remove(name);
             }
+        }
+
+        public int GetStatus()
+        {
+            return status;
+        }
+
+        public void SetStatus(int newStatus)
+        {
+            status = newStatus;
         }
     }
 }
