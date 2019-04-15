@@ -1,6 +1,6 @@
 /*
  * Authors: Thomas Ady and Pranav Rajan
- * Last Revision: 4/1/19
+ * Last Revision: 4/15/19
  *
  * Contains all function definitions for a spreadsheet object
  */
@@ -21,6 +21,7 @@
 spreadsheet::spreadsheet(std::string name)
 {
   this->name = name;
+  this->listeners = new std::unordered_set<int>();
   this->spd_history = new std::vector<std::string>();
   this->users = new std::unordered_map<std::string, std::string>();
   this->dependencies = new DependencyGraph();
@@ -41,6 +42,31 @@ spreadsheet::~spreadsheet()
   delete this->spd_history;
   delete this-> users;
   delete this-> dependencies;
+  delete this-> listeners;
+}
+
+/*
+ * Adds a socket fd listener to the spreadsheet
+ */
+void spreadsheet::add_listener(int fd)
+{
+  this->listeners->insert(fd);
+}
+
+/*
+ * Removes a socket fd listener from the spreadsheet
+ */
+void spreadsheet::remove_listener(int fd)
+{
+  this->listeners->erase(fd);
+}
+
+/*
+ * Returns the list of all current listeners to this spreadsheet
+ */
+const std::unordered_set<int> & spreadsheet::get_listeners()
+{
+  return *(this->listeners);
 }
 
 /*

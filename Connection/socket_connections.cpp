@@ -1,6 +1,6 @@
 /*
  * Authors: Thomas Ady, Pranav Rajan
- * Last revision: 3/30/19
+ * Last revision: 4/15/19
  *
  * Contains all function definitions for networking code
  * to be used with server client connections
@@ -116,7 +116,7 @@ void socket_connections::WaitForDataTimer(char* buf, int vec_idx, std::mutex* lo
   while (std::chrono::duration_cast<std::chrono::minutes>(std::chrono::steady_clock::now() - begin).count() < 5);
 
   // If there is data after the time, return
-  if(buf[0])
+  if(buf[0] || buf[0] < 0)
     return;
 
   // Set disconnect to true if no data has been found yet

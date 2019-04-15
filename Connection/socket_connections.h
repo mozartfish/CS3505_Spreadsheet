@@ -21,6 +21,8 @@
 // A struct containing a list of sockets and a size of the list
 struct socks {
   std::vector<int>* sockets;
+
+  bool continue_listening;
   
   // Fields to let any user of this struct know it has been modified
   int size_before_update;

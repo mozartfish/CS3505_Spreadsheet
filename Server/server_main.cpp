@@ -1,6 +1,6 @@
 /*
  * Authors: Thomas Ady and Pranav Rajan
- * Last revision: 3/28/19
+ * Last revision: 4/15/19
  *
  * The entry point for the server spreadsheet application
  */
@@ -23,6 +23,7 @@
 
 using namespace std;
 
+// All necessary fields for running the server
 unordered_map<string, spreadsheet*> * sheets;
 vector<string> * sheet_names;
 unordered_map<int, string> * socket_usermap;
@@ -30,31 +31,15 @@ unordered_map<int, string> * socket_sprdmap;
 queue<string> * updates;
 const string * SHEET_FILEPATH = new string ("./Settings/sheets.txt");
 
-/*
- * Closes the server, sending all necessary goodbyes, processes the rest of
- * the incoming requests, closes all socket connections, deletes all
- * pointer objects, and writes all spreadsheets back to the file in Settings
- */
-void close(volatile socks & socket_info)
-{
 
-  //Clear queue and process messages
-  
+// Function declarations
+void close(volatile socks & socket_info);
+int process_spreadsheets_from_file();
+int write_sheets_to_file();
+void process_updates();
+bool check_sprd(string spread_name, string user, string pass, int fd);
 
-  //Close sockets
-  for (int socket : *socket_info.sockets)
-    socket_connections::CloseSocket(socket);
 
-  //Delete all pointers, and all spreadsheets in the list
-  for (unordered_map<string, spreadsheet*>::iterator it = sheets->begin(); it != sheets->end(); it++)
-    delete it->second;
-  delete sheets;
-  delete sheet_names;
-  delete socket_usermap;
-  delete socket_sprdmap;
-  delete updates;
-  delete SHEET_FILEPATH;
-}
 
 /*
  * Processes all spreadsheets from the Settings directory that should be
@@ -240,6 +225,11 @@ int process_spreadsheets_from_file()
   return 0;
 }
 
+
+
+
+
+
 /*
  * Writes the state of all of the current spreadsheets to the specified SHEET_FILEPATH under a .txt file
  */
@@ -299,13 +289,115 @@ int write_sheets_to_file()
   return 0;
 }
 
+
+
+
+
+
+
+
+/*
+ * Function that processes all messages contained in the queue field updates, and sends them out to all
+ * necessary users
+ */
+void process_updates()
+{
+  while (updates->size() != 0)
+    {
+      // Get individual message
+      string update = updates->front();
+      updates->pop();
+      
+      // Get client ID
+      char * token = strtok(&update[0], "\t");
+      int fd = atoi(token);
+      
+      // Get the spreadsheet for the update
+      token = strtok(NULL, "\t");
+      string spread_name(token);
+      
+      
+      // Get the JSON Serialized update
+      token = strtok(NULL, "\t");
+      string serialized_update(token);
+      
+      //Deserialize
+      message * deserialized = &(server_helpers::json_to_message(serialized_update));
+      
+      //Process update
+      // Open
+      if (deserialized->type == "open")
+	{
+	  // if (check_sprd(deserialized->name, deserialized->username, deserialized->password))
+	  //TODO FULL SEND OF SPREADSHEET TO CLIENT
+	       //  else
+	  //TODO SEND ERROR MESSAGE
+	}
+      
+      // Edit
+      else if (deserialized->type == "edit")
+	{
+	  
+	}
+      
+      // Undo
+      else if (deserialized->type == "undo")
+	{
+	  
+	}
+      
+      // Revert
+      else if (deserialized->type == "revert")
+	{
+	  
+	}
+	     
+      // Send updates to all that should be notified if successful
+    }
+}
+
+/*
+ * Closes the server, sending all necessary goodbyes, processes the rest of
+ * the incoming requests, closes all socket connections, deletes all
+ * pointer objects, and writes all spreadsheets back to the file in Settings
+ */
+void close(volatile socks & socket_info)
+{
+
+  //Wait 7 seconds for data to finish coming in
+  auto begin = std::chrono::steady_clock::now();
+  while (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - begin).count() < 7);
+
+  //Clear queue and process messages
+  
+
+  //Close sockets
+  for (int socket : *socket_info.sockets)
+    socket_connections::CloseSocket(socket);
+
+  //Write the sheets to the file
+  if (!write_sheets_to_file())
+    cout << "Error writing back spreadsheets, last version will be saved instead" << endl;
+
+  //Delete all pointers, and all spreadsheets in the list
+  for (unordered_map<string, spreadsheet*>::iterator it = sheets->begin(); it != sheets->end(); it++)
+    delete it->second;
+  delete sheets;
+  delete sheet_names;
+  delete socket_usermap;
+  delete socket_sprdmap;
+  delete updates;
+  delete SHEET_FILEPATH;
+}
+
+
 /*
  * Opens/creates a spreadsheet with the given spreadsheet name
  * username and password, returns true if the spreadsheet did not
  * exist or if the user password combo was correct, or if there
  * was no user of the provided name associated with the spreadsheet
  */
-bool check_sprd(string spread_name, string user, string pass)
+bool check_sprd(string spread_name, string user, string pass, int fd)
 {
   //Create new spreadsheet if nonexistant
   if (sheets->find(spread_name) == sheets->end())
@@ -313,6 +405,7 @@ bool check_sprd(string spread_name, string user, string pass)
       sheet_names->push_back(spread_name);
       (*sheets)[spread_name] = new spreadsheet(spread_name);
       (*sheets)[spread_name]->add_user(user, pass);
+      (*sheets)[spread_name]->add_listener(fd);
       return true;
     }
   
@@ -325,10 +418,16 @@ bool check_sprd(string spread_name, string user, string pass)
       if (sprd_users.find(user) == sprd_users.end())
 	{
 	  (*sheets)[spread_name]->add_user(user, pass);
+	  (*sheets)[spread_name]->add_listener(fd);
+	  return true;
+	}
+      else if (sprd_users[user] == pass)
+	{
+	  (*sheets)[spread_name]->add_listener(fd);
 	  return true;
 	}
       else
-	return (sprd_users[user] == pass);
+	return false;
     }
 }
 
@@ -342,6 +441,7 @@ int main(int argc, char ** argv)
   // Initialize the struct of sockets
   volatile  socks connections;
   connections.sockets = new std::vector<int>();
+  connections.continue_listening = true;
   connections.size_before_update = 0;
   connections.new_socket_connected = false;
   connections.buffers = new std::vector<char*>();
@@ -368,8 +468,6 @@ int main(int argc, char ** argv)
 
   //Listen for clients async
   auto x = std::async(std::launch::async, socket_connections::WaitForClientConnections, &connections, &lock);
-
-  std::cout << "entering loop" << std::endl;
   
   //Infinite send and receive loop
    while(true)
@@ -430,8 +528,10 @@ int main(int argc, char ** argv)
 	       // Make sure double erasure doesn't happen
 	       connections.needs_removed->erase(it++);
 
-	       // Erase the socket from the usermap and sheet map
+	       // Erase the socket from the usermap and sheet map, and remove it from the spreadsheet listeners
 	       int fd = (*connections.sockets)[it_idx + 1];
+	       string sheet_asso = (*socket_sprdmap)[fd];
+	       (*sheets)[sheet_asso]->remove_listener(fd);
 	       socket_usermap->erase(fd);
 	       socket_sprdmap->erase(fd);
 
@@ -505,58 +605,7 @@ int main(int argc, char ** argv)
 
        lock.lock();
 
-       while (updates->size() != 0)
-	 {
-	   // Get individual message
-	   string update = updates->front();
-	   updates->pop();
-
-	   // Get client ID
-	   char * token = strtok(&update[0], "\t");
-	   int fd = atoi(token);
-
-	   // Get the spreadsheet for the update
-	   token = strtok(NULL, "\t");
-	   string spread_name(token);
-
-	   
-	   // Get the JSON Serialized update
-	   token = strtok(NULL, "\t");
-	   string serialized_update(token);
-
-	   //Deserialize
-	   message * deserialized = &(server_helpers::json_to_message(serialized_update));
-
-	   //Process update
-	   // Open
-	   if (deserialized->type == "open")
-	     {
-	       // if (check_sprd(deserialized->name, deserialized->username, deserialized->password))
-		 //TODO FULL SEND OF SPREADSHEET TO CLIENT
-	       //  else
-		 //TODO SEND ERROR MESSAGE
-	     }
-	     
-	   // Edit
-	   else if (deserialized->type == "edit")
-	     {
-
-	     }
-
-	   // Undo
-	   else if (deserialized->type == "undo")
-	     {
-
-	     }
-
-	   // Revert
-	   else if (deserialized->type == "revert")
-	     {
-
-	     }
-	     
-	   // Send updates to all that should be notified if successful
-	 }
+       process_updates();
 
        lock.unlock();
 

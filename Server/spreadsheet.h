@@ -1,6 +1,6 @@
 /*
  * Authors: Thomas Ady and Pranav Rajan
- * Last Revision: 4/1/19
+ * Last Revision: 4/15/19
  *
  * A header class for representing spreadsheet objects
  */
@@ -9,6 +9,7 @@
 #include <string>
 #include <sstream>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "DependencyGraph.h"
 
@@ -22,16 +23,21 @@ class spreadsheet {
 
  private:
   std::string name;
+  std::unordered_set<int> * listeners;
   std::vector<std::string> * spd_history;
   std::vector<std::string> ** cell_history;
   std::unordered_map<std::string, std::string> * users;
   DependencyGraph * dependencies;
 
-  static int cell_to_index(std::string cell);
+  
 
  public:
   spreadsheet(std::string name);
   ~spreadsheet();
+
+  void add_listener(int fd);
+  void remove_listener(int fd);
+  const std::unordered_set<int> & get_listeners();
 
   bool add_user(std::string user, std::string pass);
   bool remove_user(std::string user);
@@ -50,6 +56,8 @@ class spreadsheet {
   bool CircularDependency(std::string cell, std::vector<std::string> * dependencies);
   std::vector<std::string> * cells_from_formula(std::string formula);
   bool Visit (std::string start, std::string goal);
+
+  static int cell_to_index(std::string cell);
 };
 
 #endif
