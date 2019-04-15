@@ -10,21 +10,34 @@ namespace Model
     [JsonObject(MemberSerialization.OptIn)]
     public class User
     {
+        /// <summary>
+        /// Username
+        /// </summary>
         [JsonProperty]
-        private int active { get; set; }
+        private string username;
+
+        /// <summary>
+        /// Password
+        /// </summary>
+        [JsonProperty]
+        private string password;
+
+        /// <summary>
+        /// Active status
+        /// </summary>
+        [JsonProperty]
+        private int active;
 
         /// <summary>
         /// This is an array of strings because a user may be logged onto multiple spreadsheets at once
         /// </summary>
         [JsonProperty]
-        private List<string> workingOn { get; set; }
+        private List<string> workingOn;
 
-        [JsonProperty]
-        private string username;
-
-        [JsonProperty]
-        private string password;
-
+        public User()
+        {
+            workingOn = new List<string>();
+        }
         public string GetUsername()
         {
             return username;

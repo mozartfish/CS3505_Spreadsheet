@@ -10,33 +10,49 @@ namespace Model
     [JsonObject(MemberSerialization.OptIn)]
     public class Spreadsheet
     {
+        /// <summary>
+        /// Spreadsheet name
+        /// </summary>
         [JsonProperty]
-        private List<User> users;
+        private string SSname;
 
+        /// <summary>
+        /// List of users working on spreadsheet
+        /// </summary>
         [JsonProperty]
-        private string name;
+        private List<string> users;
+
+        public Spreadsheet()
+        {
+            users = new List<string>();
+        }
 
         public string GetName()
         {
-            return name;
+            return SSname;
         }
 
         public void SetName(string newName)
         {
-            name = newName;
+            SSname = newName;
         }
 
-        public List<User> GetUsers()
+        public List<string> GetUsers()
         {
             return users;
         }
 
-        public void AddUsers(User newName)
+        public void SetUsers(List<string> usersList)
         {
-            users.Add(newName);
+            users = usersList;
         }
 
-        public void RemoveUser(User name)
+        public void AddUsers(string newUser)
+        {
+            users.Add(newUser);
+        }
+
+        public void RemoveUser(string name)
         {
             if (users.Contains(name))
             {

@@ -3,6 +3,7 @@
 using System;
 using System.Text;
 using System.Windows.Forms;
+using Controller;
 
 //using AdminModel;
 
@@ -17,14 +18,16 @@ namespace WindowsFormsApp1
         public Form1()
         {
             InitializeComponent();
-            //logic = new AdminLogic();
-
+            AdminController controller = new AdminController();
 
             // Test Scrolling Function - CurrentStatusList
             //for (int i = 0; i < 1000; i++)
             //{
             //    currentStatusList.Items.Add(i.ToString());
             //}
+
+            // Testing connection
+            controller.Connect("localhost");
         }
 
         private void ShutDown(object sender, EventArgs e)
