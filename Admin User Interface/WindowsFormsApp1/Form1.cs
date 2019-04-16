@@ -157,7 +157,7 @@ namespace WindowsFormsApp1
             return jsonOpen;
         }
 
-        private string ErrorMessageToJson(string code, string source)
+        private string ErrorMessageToJson(int code, string source)
         {
             Error message = new Error()
             {

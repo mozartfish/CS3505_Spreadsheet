@@ -1,4 +1,6 @@
-﻿///Joanna Lowry && Cole Jacobs && Aaron 
+﻿///Joanna Lowry && Cole Jacobs && Aaron Carlisle
+///Represents the message classes for the sever-based spreadsheet
+///as specified by the SendIt communications protocol
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace JsonClasses
 {
+    /// <summary>
+    /// SpreadsheetList message type
+    /// </summary>
     [JsonObject(MemberSerialization.OptOut)]
     public class SpreadsheetList
     {
@@ -21,6 +26,9 @@ namespace JsonClasses
         }
     }
 
+    /// <summary>
+    /// Represents the FullSend message type
+    /// </summary>
     [JsonObject(MemberSerialization.OptOut)]
     public class FullSend
     {
@@ -36,6 +44,9 @@ namespace JsonClasses
 
     }
 
+    /// <summary>
+    /// Represents the Open message type
+    /// </summary>
     [JsonObject(MemberSerialization.OptOut)]
     public class Open
     {
@@ -57,6 +68,9 @@ namespace JsonClasses
         }
     }
 
+    /// <summary>
+    /// Represents the Edit message type
+    /// </summary>
     [JsonObject(MemberSerialization.OptOut)]
     public class Edit
     {
@@ -71,7 +85,9 @@ namespace JsonClasses
         }
     }
 
-
+    /// <summary>
+    /// Represents the Undo message type
+    /// </summary>
     [JsonObject(MemberSerialization.OptOut)]
     public class Undo
     {
@@ -83,7 +99,9 @@ namespace JsonClasses
         }
     }
 
-
+    /// <summary>
+    /// Represents the Revert message type
+    /// </summary>
     [JsonObject(MemberSerialization.OptOut)]
     public class Revert
     {
@@ -96,6 +114,9 @@ namespace JsonClasses
         }
     }
 
+    /// <summary>
+    /// Represents the Error message type
+    /// </summary>
     [JsonObject(MemberSerialization.OptOut)]
     public class Error
     {
@@ -103,6 +124,7 @@ namespace JsonClasses
         public string type { get; set; }
         public int code { get; set; }
         public string source { get; set; }
+
         public Error()
         {
             type = "error";
