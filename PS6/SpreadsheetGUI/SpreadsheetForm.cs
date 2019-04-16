@@ -250,21 +250,13 @@ namespace Display
         /// </summary>
         private void CloseSpreadsheet()
         {
-            // Proceede to close the spreadsheet if unchanged.
-            if (!spreadsheet.Changed)
+            DialogResult result = MessageBox.Show("You are about to terminate your connection, are you sure you want to close?", "Closing Connection",
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+
+            //Closes the form
+            if (result == DialogResult.OK)
             {
                 KillForm = true;
-            }
-            else
-            {
-                DialogResult result = MessageBox.Show("You are about to lose unsaved work, close anyway?", "Loss of data immenent", 
-                    MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-                
-                //Closes the form
-                if (result == DialogResult.OK)
-                {
-                    KillForm = true;
-                }
             }
         }
 

@@ -135,16 +135,14 @@ namespace Display
 
                 string currSpreadsheet = spreadsheetList.SelectedItem.ToString();
             
+                this.Hide();
                 Display.SpreadsheetForm ssForm = new Display.SpreadsheetForm();
                 Display.SpreadsheetApplicationContext appContext = 
                     Display.SpreadsheetApplicationContext.getAppContext();
                 appContext.RunForm(ssForm);
                 
+                ssForm.FormClosed += (o, ev) => this.Close();
             }
-
-            //TODO: fix how we are closing the window
-            //this.Hide();
-            //this.Close();
         }
 
         /// <summary>
