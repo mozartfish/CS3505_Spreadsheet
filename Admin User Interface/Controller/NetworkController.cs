@@ -110,7 +110,7 @@ namespace Controller
     public static class Networking
     {
         //public const int DEFAULT_PORT = 2112;
-        public const int DEFAULT_PORT = 11000; // To test connection
+        public const int DEFAULT_PORT = 11000; // To test connection with fancy chat system
 
         /// <summary>
         /// Event that handles network errors

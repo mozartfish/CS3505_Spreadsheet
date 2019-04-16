@@ -63,20 +63,27 @@ namespace WindowsFormsApp1
 
         private void Create_user_button(object sender, EventArgs e)
         {
-            if (createUser != null)
-            {
-                createUser();
-            }
-            //logic.CreateUser(CreateUser_User.Text, CreateUser_pass.Text);
+            string username = CreateUser_User.Text;
+            string password = CreateUser_Pass.Text;
+            controller.SendUserChangePass(username,  password, 1);
         }
 
         private void ChangePassword_button(object sender, EventArgs e)
         {
+            string username = CreateUser_User.Text;
+            string password = CreateUser_Pass.Text;
+            controller.SendUserChangePass(username, password, 0);
+
             //logic.ChangeUserPass(ChangeUser_User.Text, ChangeUser_OldPass.Text, ChangeUser_newPass.Text);
         }
 
         private void DeleteUser_button(object sender, EventArgs e)
         {
+            string username = CreateUser_User.Text;
+            string password = CreateUser_Pass.Text;
+            controller.SendUserChangePass(username, password, -1);
+
+
             //logic.DeleteUser(DeleteUser_User.Text, DeleteUser_Pass.Text);
         }
 

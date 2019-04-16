@@ -45,7 +45,7 @@
             this.ChangeUser_User = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.CreateUser_pass = new System.Windows.Forms.TextBox();
+            this.CreateUser_Pass = new System.Windows.Forms.TextBox();
             this.CreateUser_User = new System.Windows.Forms.TextBox();
             this.textBox13 = new System.Windows.Forms.TextBox();
             this.ChangeUser_newPass = new System.Windows.Forms.TextBox();
@@ -230,11 +230,11 @@
             // 
             // CreateUser_pass
             // 
-            this.CreateUser_pass.Location = new System.Drawing.Point(992, 123);
-            this.CreateUser_pass.Margin = new System.Windows.Forms.Padding(4);
-            this.CreateUser_pass.Name = "CreateUser_pass";
-            this.CreateUser_pass.Size = new System.Drawing.Size(380, 31);
-            this.CreateUser_pass.TabIndex = 26;
+            this.CreateUser_Pass.Location = new System.Drawing.Point(992, 123);
+            this.CreateUser_Pass.Margin = new System.Windows.Forms.Padding(4);
+            this.CreateUser_Pass.Name = "CreateUser_pass";
+            this.CreateUser_Pass.Size = new System.Drawing.Size(380, 31);
+            this.CreateUser_Pass.TabIndex = 26;
             // 
             // CreateUser_User
             // 
@@ -294,7 +294,7 @@
             this.Controls.Add(this.ChangeUser_newPass);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.CreateUser_pass);
+            this.Controls.Add(this.CreateUser_Pass);
             this.Controls.Add(this.CreateUser_User);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.textBox4);
@@ -339,7 +339,7 @@
         private System.Windows.Forms.TextBox ChangeUser_User;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox CreateUser_pass;
+        private System.Windows.Forms.TextBox CreateUser_Pass;
         private System.Windows.Forms.TextBox CreateUser_User;
         private System.Windows.Forms.TextBox textBox13;
         private System.Windows.Forms.TextBox ChangeUser_newPass;

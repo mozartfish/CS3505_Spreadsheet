@@ -206,6 +206,13 @@ namespace Controller
             Networking.Send(server, msg);
         }
 
+        private void SendShutDownMessage()
+        {
+            string msg = "ShutDown\n";
+
+            Networking.Send(server, msg);
+        }
+
         private void SendMessage()
         {
             //TODO: Call method SendUserChange() and SendSSChange()
@@ -225,6 +232,33 @@ namespace Controller
 
             Networking.Send(server, messageBuilder.ToString());
         }
+        
+
+        public void SendUserChangePass(string username, string newPass, int active)
+        {
+            StringBuilder messageBuilder = new StringBuilder();
+
+            User user = model.GetUser(username);
+            user.SetPassword(newPass);
+            string serializedObj = JsonConvert.SerializeObject(user) + "\n\n";
+            messageBuilder.Append(serializedObj);
+
+            Networking.Send(server, messageBuilder.ToString());
+        }
+
+
+        //public void SendUserDelete(string username, string newPass)
+        //{
+        //    StringBuilder messageBuilder = new StringBuilder();
+
+        //    User user = model.GetUser(username);
+        //    user.SetActive(-1);
+        //    string serializedObj = JsonConvert.SerializeObject(user) + "\n\n";
+        //    messageBuilder.Append(serializedObj);
+
+        //    Networking.Send(server, messageBuilder.ToString());
+        //}
+
 
         /// <summary>
         /// Helper method to send spreadsheet status change (creation/deletion)
