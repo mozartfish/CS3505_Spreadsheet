@@ -1,6 +1,6 @@
 /*
  * Authors: Thomas Ady and Pranav Rajan
- * Last Revision: 4/1/19
+ * Last Revision: 4/15/19
  *
  * Contains all function definitions for a spreadsheet object
  */
@@ -9,6 +9,7 @@
 #include <stack>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 #include <sstream>
 #include "spreadsheet.h"
 #include <queue>
@@ -20,6 +21,7 @@
 spreadsheet::spreadsheet(std::string name)
 {
   this->name = name;
+  this->listeners = new std::unordered_set<int>();
   this->spd_history = new std::vector<std::string>();
   this->users = new std::unordered_map<std::string, std::string>();
   this->dependencies = new DependencyGraph();
@@ -40,6 +42,31 @@ spreadsheet::~spreadsheet()
   delete this->spd_history;
   delete this-> users;
   delete this-> dependencies;
+  delete this-> listeners;
+}
+
+/*
+ * Adds a socket fd listener to the spreadsheet
+ */
+void spreadsheet::add_listener(int fd)
+{
+  this->listeners->insert(fd);
+}
+
+/*
+ * Removes a socket fd listener from the spreadsheet
+ */
+void spreadsheet::remove_listener(int fd)
+{
+  this->listeners->erase(fd);
+}
+
+/*
+ * Returns the list of all current listeners to this spreadsheet
+ */
+const std::unordered_set<int> & spreadsheet::get_listeners()
+{
+  return *(this->listeners);
 }
 
 /*
@@ -83,7 +110,7 @@ std::unordered_map<std::string, std::string> & spreadsheet::get_users()
  *  cell and new contents, returns true if the edit can be processed
  *
  */
-bool spreadsheet::change_cell(std::string cell, std::string contents)
+bool spreadsheet::change_cell(std::string cell, std::string contents, std::vector<std::string> * dep_list)
 {
   int cell_idx = cell_to_index(cell);
   if (cell_idx < 0 || cell_idx >= DEFAULT_CELL_COUNT)
@@ -92,34 +119,41 @@ bool spreadsheet::change_cell(std::string cell, std::string contents)
   //check for circular dependencies
   if (contents[0] == '=')
   {
-    if (CircularDependency(cell, contents))
+    if (CircularDependency(cell, dep_list))
       return false;
+    
+    std::unordered_set<std::string> * dep_set = new std::unordered_set<std::string>();
+    for (std::string cell_dep : *dep_list)
+      dep_set->insert(cell_dep);
+
+    dependencies->ReplaceDependents(cell, *dep_set);
+    
   }
   else
   {
     spd_history->push_back(cell);
     cell_history[cell_idx]->push_back(contents);
+    
     return true;
   }
 }
 
 /*
  *  Performs an undo on this spreadsheet, and returns the contents of
- *  the last edit, with the cell name attached to the beginning
- *  Returns NULL if no previous edits
+ *  the last edit, with the cell name attached to the beginning separated by \t
+ *  Returns empty string if no previous edits
  */
 std::string spreadsheet::undo()
 {
+  std::string empty("");
   if (spd_history->empty())
-    return NULL;
+    return empty;
 
   std::string cell = spd_history->back();
   spd_history->pop_back();
 
   // Revert the cell that had the most recent edit
-  return this->revert(cell);
-  
-  
+  return cell + "\t" + this->revert(cell);
 }
 
 /*
@@ -139,11 +173,19 @@ std::string spreadsheet::revert(std::string cell)
   cell_hist->pop_back();
   if (cell_hist[cell_idx].back()[0] == '=')
   {
-    if (CircularDependency(cell, cell_hist[cell_idx].back()))
+    std::vector<std::string> * deps = cells_from_formula(cell_hist[cell_idx].back());
+    if (CircularDependency(cell, deps))
     {
       cell_hist[cell_idx].push_back(curr_cont);
       return NULL;
     }
+
+    std::unordered_set<std::string> * dep_set = new std::unordered_set<std::string>();
+    for (std::string cell_dep : *deps)
+      dep_set->insert(cell_dep);
+
+    dependencies->ReplaceDependents(cell, *dep_set);
+    
   }
   
   // Return the current top contents
@@ -190,21 +232,50 @@ int spreadsheet::cell_to_index(std::string cell)
   return ret_idx;
 }
 
+/*
+ * Returns a list of all cells in the given formula
+ */
+std::vector<std::string> *  spreadsheet::cells_from_formula(std::string formula)
+{
+  std::vector<std::string> * dependencies = new std::vector<std::string>();
+
+  // Find any letter occurances
+  int idx = formula.find_first_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+  while(idx != -1)
+    {
+      int num_idx;
+      
+      // Find length of digits (Finds inclusive index of last num)
+      for (num_idx = formula.find_first_of("0123456789", idx + 1); 
+	   (formula.find_first_of("0123456789", num_idx + 1) - num_idx) == 1; num_idx++);
+
+      // Get cell as substring
+      std::string cell = formula.substr(idx, num_idx + 1);
+      
+      // Push back cell, find next cell
+      dependencies->push_back(cell);
+      idx = formula.find_first_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", idx + 1);
+    }
+  
+  return &(*dependencies);
+  
+}
+
 //Function that detects circular dependcies in the spreadsheet
-bool spreadsheet::CircularDependency(std::string cell, std::string Formula)
+bool spreadsheet::CircularDependency(std::string cell, std::vector<std::string> * dependencies)
 {
   //https://stackoverflow.com/questions/16029324/c-splitting-a-string-into-an-array
   
-  std::string string_tokens[Formula.length()];
+  /*std::string string_tokens[Formula.length()];
   int j = 0;
   std:: stringstream read_tokens(Formula);
   while (read_tokens.good() && j < Formula.length())
   {
     read_tokens >> string_tokens[j];
     j++;
-  }
+    } */
   
-  for (std::string s : string_tokens)
+  for (std::string s : *dependencies)
   {
     if (Visit(s, cell))
       return true;

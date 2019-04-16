@@ -1,6 +1,6 @@
 /*
  * Authors: Thomas Ady, Pranav Rajan
- * Last revision: 3/30/19
+ * Last revision: 4/15/19
  *
  * Contains all function definitions for networking code
  * to be used with server client connections
@@ -70,6 +70,7 @@ void socket_connections::WaitForClientConnections(volatile socks * sock_list, st
       struct sockaddr_in cli_addr;
       socklen_t clilen = sizeof(cli_addr);
       int fd = accept((*socket_list)[0], (struct sockaddr *) &cli_addr, &clilen);
+      std::cout << "connected" << std::endl;
 
       lock->lock();
       socket_list->push_back(fd);
@@ -81,9 +82,13 @@ void socket_connections::WaitForClientConnections(volatile socks * sock_list, st
 	  continue;
 	}
 
+      std::cout << "new socket connected" << std::endl;
+
       // set new connection
       sock_list->new_socket_connected = true;
       lock->unlock();
+
+      std::cout << "unlocked" << std::endl;
     }
   }
   
@@ -111,7 +116,7 @@ void socket_connections::WaitForDataTimer(char* buf, int vec_idx, std::mutex* lo
   while (std::chrono::duration_cast<std::chrono::minutes>(std::chrono::steady_clock::now() - begin).count() < 5);
 
   // If there is data after the time, return
-  if(buf[0])
+  if(buf[0] || buf[0] < 0)
     return;
 
   // Set disconnect to true if no data has been found yet
