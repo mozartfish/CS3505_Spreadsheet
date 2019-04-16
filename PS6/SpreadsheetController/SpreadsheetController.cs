@@ -1,6 +1,6 @@
-﻿///Joanna Lowry && Cole Jacobs
-///Version 1.0; 4/15/2019
-///A spreadsheet controller for the client for a server-based spreadsheet
+﻿//Joanna Lowry and Cole Jacobs
+//Version 1.0; 4/15/2019
+//A spreadsheet controller for the client for a server-based spreadsheet
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +15,9 @@ using System.Windows.Forms;
 
 namespace Controller
 { 
+    /// <summary>
+    /// SpreadsheetController class is a controller for the server-based spreadsheet
+    /// </summary>
     public class SpreadsheetController
     {
         /// <summary>
@@ -176,7 +179,7 @@ namespace Controller
             {
                 server = Networking.ConnectToServer(hostName, FirstContact);
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 NetworkError();
             }

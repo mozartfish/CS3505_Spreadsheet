@@ -27,10 +27,10 @@ namespace Display
     public partial class SpreadsheetForm : Form
     {
 
-        //Added for server-based spreadsheet
+       /// <summary>
+       /// The controller for the spreadsheet
+       /// </summary>
         private Controller.SpreadsheetController controller;
-
-
 
         /// <summary>
         /// This is the spreadsheet that we use as most of our model.
@@ -47,10 +47,6 @@ namespace Display
         /// </summary>
         private bool KillForm;
 
-        /// <summary>
-        /// This string is used to store the cell value, because the background worker stopped before updating it.
-        /// </summary>
-        private string selectedCellValue;
 
         //TODO: Delete
         /// <summary>
@@ -58,12 +54,6 @@ namespace Display
         /// </summary>
         private Boolean currentlyWorking = false;
 
-        //TODO: Delete
-        /// <summary>
-        /// Used by the background worker to not change value and contents if cell isn't selected.
-        /// </summary>
-        private string startWorkCellName = "";
-        private string finishWorkCellName = "";
 
         /// <summary>
         /// This is a generic constructor used to initialize a new spreadsheet or be used to load one

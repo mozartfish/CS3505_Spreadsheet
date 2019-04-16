@@ -1,5 +1,5 @@
-﻿/// Written by Cole Jacobs for CS 3500, September 2018
-/// 
+﻿// Written by Cole Jacobs for CS 3500, September 2018
+// 
 
 
 using System;
@@ -124,6 +124,9 @@ namespace SS
         /// 
         /// Otherwise, returns the contents (as opposed to the value) of the named cell.  The return
         /// value should be either a string, a double, or a Formula.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public override object GetCellContents(string name)
         {
             string norm_name = Normalize(name);
@@ -658,6 +661,9 @@ namespace SS
             set => this._content = value;
         }
 
+        /// <summary>
+        /// Get and Set the Value of the cell
+        /// </summary>
         public object Value
         {
             get => _value;
