@@ -22,6 +22,16 @@ namespace Model
         [JsonProperty]
         private List<string> users;
 
+        /// <summary>
+        /// Status code for spreadsheet
+        /// -1 - Delete
+        /// 0 - No Change
+        /// 1 - Create
+        /// 2 - Edit
+        /// </summary>
+        [JsonProperty]
+        private int status;
+
         public Spreadsheet()
         {
             users = new List<string>();
@@ -58,6 +68,16 @@ namespace Model
             {
                 users.Remove(name);
             }
+        }
+
+        public int GetStatus()
+        {
+            return status;
+        }
+
+        public void SetStatus(int newStatus)
+        {
+            status = newStatus;
         }
     }
 }

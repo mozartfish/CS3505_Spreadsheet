@@ -1,11 +1,10 @@
 ﻿using JsonClasses;
-//using Newtonsoft.Json;
+using System.Collections.Generic;
 using System;
 using System.Text;
 using System.Windows.Forms;
 using Controller;
-
-//using AdminModel;
+using Model;
 
 namespace WindowsFormsApp1
 {
@@ -13,20 +12,70 @@ namespace WindowsFormsApp1
     {
         public delegate void NameEventHandle();
         public event NameEventHandle OpenNewAcctMan;
-
-
-
-        AdminController controller;
         SpreadsheetManagement ssMan;
         ManageUsers userMan;
-
+        private AdminController controller;
+        
         public Form1()
         {
             InitializeComponent();
+
             controller = new AdminController();
+
+            // Register handlers
+            controller.UpdateInterface += HandleUpdateInterface;
+
+            // Test Scrolling Function - CurrentStatusList
+            //for (int i = 0; i < 1000; i++)
+            //{
+            //    currentStatusList.Items.Add(i.ToString());
+            //}
 
             // Testing connection
             controller.Connect("localhost");
+        }
+
+        /// <summary>
+        /// Event handler receiving User and Spreadsheet data from Admin Controller
+        /// Update the GUI with new data
+        /// </summary>
+        /// <param name="users"></param>
+        /// <param name="spreadsheet"></param>
+        private void HandleUpdateInterface(Dictionary<string, User> users, Dictionary<string, Spreadsheet> spreadsheets)
+        {
+            // Update the Current Status column with User data
+            this.Invoke(new MethodInvoker(() =>
+            {
+                currentStatusList.Items.Clear();
+                foreach(string username in users.Keys)
+                {
+                    Console.WriteLine(username);
+                    currentStatusList.Items.Add(username);
+                }
+            }));
+
+            // Update the Update column with Spreadsheet data
+            this.Invoke(new MethodInvoker(() =>
+            {
+                updateList.Items.Clear();
+                foreach(Spreadsheet ss in spreadsheets.Values)
+                {
+                    if(ss.GetStatus() == 2)
+                    {
+                        Console.WriteLine(ss.GetName());
+                        updateList.Items.Add(ss.GetName());
+                    }
+                }
+            }));
+        }
+
+        private void UpdateList(Dictionary<string, User> users)
+        {
+            foreach(string username in users.Keys)
+            {
+                Console.WriteLine(username);
+                currentStatusList.Items.Add(username);
+            }
         }
 
         private void ShutDown(object sender, EventArgs e)

@@ -25,7 +25,6 @@ namespace Controller
         private Socket server;
 
         private AdminModel model;
-
         #endregion Controller Definitions
 
 
@@ -35,6 +34,11 @@ namespace Controller
         private bool acctManOpen, ssManOpen;
 
         #endregion Gui Definitions
+        #region Events
+        public delegate void UpdateInterfaceHandler(Dictionary<string, User> users, Dictionary<string, Spreadsheet> spreadsheets);
+
+        public event UpdateInterfaceHandler UpdateInterface;
+        #endregion
 
         /// <summary>
         /// Default constructor for Admin Controller
@@ -57,6 +61,12 @@ namespace Controller
             //spreadsheet.SetName("ss1");
             //spreadsheet.AddUsers("Peter Jensen");
             //model.SetSS("ss1", spreadsheet);
+            User user = new User();
+            user.SetUsername("Peter Jensen");
+            user.SetPassword("12345678");
+            user.SetActive(1);
+            user.AddWorkingOn("ss1.sprd");
+            user.SetStatus(0);
         }
 
         #region NetworkControl
@@ -151,6 +161,8 @@ namespace Controller
                     //Console.WriteLine("User: " + model.GetSS("ss1").GetUsers());
                 }
             }
+
+            UpdateInterface?.Invoke(model.GetUsersDict(), model.GetSSDict());
         }
 
         /// <summary>

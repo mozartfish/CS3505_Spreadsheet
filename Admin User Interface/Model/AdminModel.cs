@@ -20,7 +20,12 @@ namespace Model
             usersDict = new Dictionary<string, User>();
         }
 
-        #region Getters
+        #region 
+        public Dictionary<string, User> GetUsersDict()
+        {
+            return usersDict;
+        }
+
         public List<Spreadsheet> GetSSList()
         {
             return ssDict.Values.ToList();
@@ -29,6 +34,11 @@ namespace Model
         public Spreadsheet GetSS(string ssName)
         {
             return ssDict[ssName];
+        }
+
+        public Dictionary<string, Spreadsheet> GetSSDict()
+        {
+            return ssDict;
         }
 
         public List<User> GetUsersList()
