@@ -33,7 +33,11 @@ namespace Model
 
         public Spreadsheet GetSS(string ssName)
         {
-            return ssDict[ssName];
+            if (ssDict.ContainsKey(ssName))
+            {
+                return ssDict[ssName];
+            }
+            return new Spreadsheet();
         }
 
         public Dictionary<string, Spreadsheet> GetSSDict()
@@ -94,9 +98,47 @@ namespace Model
             return activeList;
         }
 
+
+
+        public List<string> GetOrderedSSList()
+        {
+
+            List<string> activeList = new List<string>();
+            List<string> inactiveList = new List<string>();
+
+            foreach (KeyValuePair<string, User> entry in usersDict)
+            {
+                if (usersDict[entry.Key].GetActive() == 1)
+                {
+
+                    string user = entry.Value.GetUsername() + "  " + entry.Value.GetPassword() + "   " + entry.Value.GetActive() + " " + entry.Value.GetWorkingOn().ToString();
+
+                    activeList.Add(user);
+
+                }
+                else
+                {
+                    string user = entry.Value.GetUsername() + "  " + entry.Value.GetPassword() + "   " + entry.Value.GetActive();
+
+                    inactiveList.Add(user);
+                }
+            }
+
+            activeList.AddRange(inactiveList);
+
+            return activeList;
+        }
+
+
+
+
         public User GetUser(string username)
         {
-            return usersDict[username];
+            if (usersDict.ContainsKey(username))
+            {
+                return usersDict[username];
+            }
+            return new User(username);
         }
         #endregion
 
@@ -120,6 +162,19 @@ namespace Model
 
             usersDict.Add(user, use);
         }
+
+        public void TESTAddSSs(string name)
+        {
+            Spreadsheet ss = new Spreadsheet();
+
+            ss.SetName(name);
+            ss.SetStatus(0);
+            List<string> list = new List<string> { "ssUser1"};
+            ss.SetUsers(list);
+
+            ssDict.Add(name, ss);
+        }
+
         #endregion
 
 

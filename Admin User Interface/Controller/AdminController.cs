@@ -245,13 +245,20 @@ namespace Controller
             Networking.Send(server, messageBuilder.ToString());
         }
         
-
-        public void SendUserChangePass(string username, string newPass, int active)
+        
+        /// <summary>
+        /// Made public so that account manager can acces the send
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="pass"></param>
+        /// <param name="status"></param>
+        public void SendUserChangePass(string username, string pass, int status)
         {
             StringBuilder messageBuilder = new StringBuilder();
 
             User user = model.GetUser(username);
-            user.SetPassword(newPass);
+            user.SetPassword(pass);
+            user.SetStatus(status);
             string serializedObj = JsonConvert.SerializeObject(user) + "\n\n";
             messageBuilder.Append(serializedObj);
 
@@ -259,24 +266,11 @@ namespace Controller
         }
 
 
-        //public void SendUserDelete(string username, string newPass)
-        //{
-        //    StringBuilder messageBuilder = new StringBuilder();
-
-        //    User user = model.GetUser(username);
-        //    user.SetActive(-1);
-        //    string serializedObj = JsonConvert.SerializeObject(user) + "\n\n";
-        //    messageBuilder.Append(serializedObj);
-
-        //    Networking.Send(server, messageBuilder.ToString());
-        //}
-
-
         /// <summary>
         /// Helper method to send spreadsheet status change (creation/deletion)
         /// </summary>
         /// <param name="SSname"></param>
-        private void SendSSChange(string SSname)
+        public void SendSSChange(string SSname, int status)
         {
             StringBuilder messageBuilder = new StringBuilder();
 
@@ -356,12 +350,16 @@ namespace Controller
             return model.GetOrderedUsersList();
         }
 
-
         public void TestAddUse(string user)
         {
             model.TESTAddUser(user);
         }
 
+
+        public void TestAddSS(string user)
+        {
+            model.TESTAddSSs(user);
+        }
 
 
         #endregion Account Management
@@ -389,6 +387,11 @@ namespace Controller
             ssManOpen = state;
         }
 
+
+        public List<string> GetAllSS()
+        {
+            return model.GetOrderedSSList();
+        }
 
         #endregion Spreadsheet Management
 

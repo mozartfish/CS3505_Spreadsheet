@@ -15,21 +15,35 @@ namespace WindowsFormsApp1
         SpreadsheetManagement ssMan;
         ManageUsers userMan;
         private AdminController controller;
-        
-        public Form1()
+        static WelcomePage welcome;
+
+        private bool formClosed;
+
+        public Form1(AdminController contr)
         {
             InitializeComponent();
-
-            controller = new AdminController();
+            formClosed = false;
+            controller = contr;
 
             // Register handlers
             controller.UpdateInterface += HandleUpdateInterface;
 
-            // Test Scrolling Function - CurrentStatusList
-            //for (int i = 0; i < 1000; i++)
-            //{
-            //    currentStatusList.Items.Add(i.ToString());
-            //}
+            // Testing connection
+            controller.Connect("localhost");
+        }
+
+        public Form1()
+        {
+            InitializeComponent();
+            formClosed = false;
+            controller = new AdminController();
+
+
+            controller.UpdateInterface += HandleUpdateInterface;
+
+
+            // Register handlers
+            //controller.UpdateInterface += HandleUpdateInterface;
 
             // Testing connection
             controller.Connect("localhost");
@@ -45,22 +59,22 @@ namespace WindowsFormsApp1
         {
             // Update the Current Status column with User data
             this.Invoke(new MethodInvoker(() =>
-            {
-                currentStatusList.Items.Clear();
-                foreach(string username in users.Keys)
-                {
-                    Console.WriteLine(username);
-                    currentStatusList.Items.Add(username);
-                }
-            }));
+           {
+               currentStatusList.Items.Clear();
+               foreach (string username in users.Keys)
+               {
+                   Console.WriteLine(username);
+                   currentStatusList.Items.Add(username);
+               }
+           }));
 
             // Update the Update column with Spreadsheet data
             this.Invoke(new MethodInvoker(() =>
             {
                 updateList.Items.Clear();
-                foreach(Spreadsheet ss in spreadsheets.Values)
+                foreach (Spreadsheet ss in spreadsheets.Values)
                 {
-                    if(ss.GetStatus() == 2)
+                    if (ss.GetStatus() == 2)
                     {
                         Console.WriteLine(ss.GetName());
                         updateList.Items.Add(ss.GetName());
@@ -71,7 +85,7 @@ namespace WindowsFormsApp1
 
         private void UpdateList(Dictionary<string, User> users)
         {
-            foreach(string username in users.Keys)
+            foreach (string username in users.Keys)
             {
                 Console.WriteLine(username);
                 currentStatusList.Items.Add(username);
@@ -106,29 +120,39 @@ namespace WindowsFormsApp1
             }
         }
 
-        private void button4_Click(object sender, EventArgs e)
-        {
 
+
+        private void RedrawUsersList()
+        {
+            if (currentStatusList.Items.Count > 0)
+            {
+                currentStatusList.Items.Clear();
+            }
+
+            List<string> userList = new List<string>();
+            userList = controller.GetAllUsers();
+
+            foreach (string user in userList)
+            {
+                currentStatusList.Items.Add(user);
+            }
         }
 
-        private void textBox1_TextChanged_1(object sender, EventArgs e)
+
+        private void RedrawSSList()
         {
+            if (updateList.Items.Count > 0)
+            {
+                updateList.Items.Clear();
+            }
 
-        }
+            List<string> SSList = new List<string>();
+            SSList = controller.GetAllSS();
 
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void listBox2_SelectedIndexChanged_1(object sender, EventArgs e)
-        {
-
+            foreach (string user in SSList)
+            {
+                updateList.Items.Add(user);
+            }
         }
 
 
@@ -153,6 +177,33 @@ namespace WindowsFormsApp1
             //    //jsonData = JsonConvert.SerializeObject(jsonBuilder);
             //    //ConvertJsonToString("");
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            RedrawSSList();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                controller.TestAddUse(i.ToString());
+
+                //listBox1.Items.Add("Hi");
+                //listBox1.DataSource += "Hi";
+            }
+        }
+
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (!formClosed)
+            {
+                formClosed = true;
+                this.Close();
+            }
+        }
+        
 
         //private string[] ParseString(string input)
         //{

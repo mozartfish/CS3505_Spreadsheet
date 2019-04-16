@@ -49,7 +49,7 @@ namespace WindowsFormsApp1
         }
 
 
-        #region events from admin
+        #region Admin Clicking Buttons
 
         /// <summary>
         /// inform the controller that the user man page is closing
@@ -65,32 +65,23 @@ namespace WindowsFormsApp1
         {
             string username = CreateUser_User.Text;
             string password = CreateUser_Pass.Text;
-            controller.SendUserChangePass(username,  password, 1);
+            controller.SendUserChangePass(username, password, 1);
         }
 
         private void ChangePassword_button(object sender, EventArgs e)
         {
-            string username = CreateUser_User.Text;
-            string password = CreateUser_Pass.Text;
+            string username = ChangeUser_User.Text;
+            string password = ChangeUser_Pass.Text;
             controller.SendUserChangePass(username, password, 0);
-
-            //logic.ChangeUserPass(ChangeUser_User.Text, ChangeUser_OldPass.Text, ChangeUser_newPass.Text);
         }
 
         private void DeleteUser_button(object sender, EventArgs e)
         {
-            string username = CreateUser_User.Text;
-            string password = CreateUser_Pass.Text;
+            string username = DeleteUser_User.Text;
+            string password = DeleteUser_Pass.Text;
             controller.SendUserChangePass(username, password, -1);
-
-
-            //logic.DeleteUser(DeleteUser_User.Text, DeleteUser_Pass.Text);
         }
-
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
+        
 
         #endregion events form admin
 
@@ -100,15 +91,10 @@ namespace WindowsFormsApp1
         /// </summary>
         private void RedrawUsersList()
         {
-
             if (listBox1.Items.Count > 0)
             {
-                //ClearListBox();
                 listBox1.Items.Clear();
             }
-
-            //TEST
-
 
             List<string> userList = new List<string>();
             userList = controller.GetAllUsers();
@@ -117,24 +103,25 @@ namespace WindowsFormsApp1
             {
                 listBox1.Items.Add(user);
             }
-
-
-            //currentStatusList.Items.Add(i.ToString());
         }
 
-        //private void ClearListBox()
-        //{
-        //    BindingSource bindingSource = (BindingSource)listBox1.DataSource;
-        //    IList SourceList = (IList)bindingSource.List;
 
-        //    SourceList.Clear();
-        //}
-
+        /// <summary>
+        /// Test redraw for when network sends an update
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button1_Click(object sender, EventArgs e)
         {
             RedrawUsersList();
         }
 
+
+        /// <summary>
+        /// Test to fill the model with stupid values to check the redraw function
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button5_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < 10; i++)

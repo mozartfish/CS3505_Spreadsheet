@@ -47,6 +47,13 @@ namespace Model
         {
             workingOn = new List<string>();
         }
+
+        public User(string name)
+        {
+            workingOn = new List<string>();
+            SetUsername(name);
+        }
+
         public string GetUsername()
         {
             return username;

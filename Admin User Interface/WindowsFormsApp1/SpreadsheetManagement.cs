@@ -42,9 +42,16 @@ namespace WindowsFormsApp1
 
         }
 
+
+        /// <summary>
+        /// Tells the 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CreateSS_button(object sender, EventArgs e)
         {
-
+            string name = CreateSS_Name.Text;
+            controller.SendSSChange(name, 1);
         }
 
         /// <summary>
@@ -54,7 +61,41 @@ namespace WindowsFormsApp1
         /// <param name="e"></param>
         private void DeleteSS_button(object sender, EventArgs e)
         {
+            string name = DeleteSS_Name.Text;
+            controller.SendSSChange(name, -1);
+        }
 
+
+        private void RedrawSSList()
+        {
+            if (listBox1.Items.Count > 0)
+            {
+                listBox1.Items.Clear();
+            }
+
+            List<string> SSList = new List<string>();
+            SSList = controller.GetAllSS();
+
+            foreach (string user in SSList)
+            {
+                listBox1.Items.Add(user);
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            RedrawSSList();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                controller.TestAddUse(i.ToString());
+
+                //listBox1.Items.Add("Hi");
+                //listBox1.DataSource += "Hi";
+            }
         }
     }
 }
