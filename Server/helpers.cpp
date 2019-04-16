@@ -10,6 +10,7 @@
 #include "message.h"
 #include <string.h>
 #include <vector>
+#include <iostream> // for debugging purposes
 
 using namespace std;
 
@@ -78,24 +79,33 @@ message & server_helpers::json_to_message(std::string & mess)
   
   char *pch;
   message *m;
-  pch = strtok (&mess[0], "\"");
+  pch = strtok (&mess[0], "\""); // split on quotations
+
+  //cout << "message separated into tokens" << endl;
   std::vector<std::string> message_tokens = std::vector<std::string>(); // vector for storing all the tokens in the message for processing
-  
+ 
   while (pch != NULL)
   {
     std::string message_contents(pch);
+    cout << message_contents << endl;
     message_tokens.push_back(message_contents);
     pch = strtok(NULL, "\"");
   }
   
   if (message_tokens[1] == "type")
   {
-    if (message_tokens[4] == "open")
+    //cout << "type index is correct" << endl;
+    if (message_tokens[3] == "open")
     {
+      // cout << "type keyword index is correct" << endl;
       m = new message("open");
-      m->name = message_tokens[10];
-      m->username = message_tokens[16];
-      m->password = message_tokens[22];
+      //cout << "created a new message" << endl;
+      m->name = message_tokens[8];
+      //cout << "set the name" << endl;
+      m->username = message_tokens[13];
+      //cout << "set the username" << endl;
+      m->password = message_tokens[18];
+      //cout << "set the password" << endl;
     }
     else if (message_tokens[4] == "edit")
     {
