@@ -1,4 +1,4 @@
-﻿namespace SpreadsheetGUI
+﻿namespace Display
 {
     partial class SpreadsheetForm
     {
@@ -47,8 +47,8 @@
             // 
             // spreadsheetPanel1
             // 
-            this.spreadsheetPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.spreadsheetPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.spreadsheetPanel1.Location = new System.Drawing.Point(8, 85);
             this.spreadsheetPanel1.Name = "spreadsheetPanel1";
@@ -57,7 +57,7 @@
             // 
             // contentTextBox
             // 
-            this.contentTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.contentTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.contentTextBox.Location = new System.Drawing.Point(85, 50);
             this.contentTextBox.Margin = new System.Windows.Forms.Padding(2);
@@ -68,7 +68,7 @@
             // 
             // valueTextBox
             // 
-            this.valueTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.valueTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.valueTextBox.BackColor = System.Drawing.Color.White;
             this.valueTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;

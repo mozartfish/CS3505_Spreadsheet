@@ -4,8 +4,9 @@
 // can be used for any networking, but in this instance are
 // used for the Space Wars game
 
-//Joanna Lowry && Cole Jacobs
-//Version 1.2 (04/07/2019)
+/// Joanna Lowry && Cole Jacobs
+/// Version 1.2 (04/07/2019)
+/// Updated Networking to be compatable for the client of a server-based spreadsheet
 
 using System;
 using System.Collections.Generic;
@@ -24,47 +25,6 @@ namespace Controller
     /// <param name="ss"></param>
     public delegate void NetworkAction(SocketState ss);
 
-
-
-
-    /// <summary>
-    /// The state the server connection is held in.
-    /// Contains a TCPListener and a messageProcessor
-    /// </summary>
-    //public class ConnectionState
-    //{
-    //    /// <summary>
-    //    /// Listener for the ConnectionState
-    //    /// </summary>
-    //    private TcpListener listener;
-
-    //    /// <summary>
-    //    /// Processes messages received by the ConnectionState
-    //    /// </summary>
-    //    private NetworkAction serverMessageProcessor;
-
-    //    /// <summary>
-    //    /// Creates a new ConnectionState
-    //    /// </summary>
-    //    /// <param name="listener">listener for the ConnectionState</param>
-    //    /// <param name="action">processes the messages received by the ConnectionState</param>
-    //    public ConnectionState(TcpListener listener, NetworkAction action)
-    //    {
-    //        this.listener = listener;
-    //        serverMessageProcessor = action;
-    //    }
-
-    //    /// <summary>
-    //    /// Returns the listener for the ConnectionState
-    //    /// </summary>
-    //    public TcpListener Listener { get { return listener; } }
-
-    //    /// <summary>
-    //    /// Returns or sets the message processor for the ConnectionState
-    //    /// </summary>
-    //    public NetworkAction ServerMessageProcessor
-    //    { get { return serverMessageProcessor; } set { serverMessageProcessor = value; } }
-    //}
 
     /// <summary>
     /// This class holds all the necessary state to hold a socket connection
@@ -127,6 +87,7 @@ namespace Controller
             get { return messageProcessor; }
             set { messageProcessor = value; }
         }
+
         /// <summary>
         /// Returns the socket in the socket state
         /// </summary>
@@ -172,9 +133,6 @@ namespace Controller
             ipAddress = IPAddress.None;
             socket = null;
 
-
-
-
             //Establish the remote endpoint for the socket
             IPHostEntry ipHostInfo;
 
@@ -214,7 +172,6 @@ namespace Controller
 
             // Disable Nagle's algorithm
             socket.NoDelay = true;
-
 
         }
 
@@ -349,44 +306,6 @@ namespace Controller
             }
         }
 
-
-
-        /// <summary>
-        /// Starts listening for new connections on the specified port and
-        /// handles incoming data from the client
-        /// </summary>
-        /// <param name="HandleNewClient">handler for client data</param>
-        /// <param name="port">port the connection will be started on</param>
-        //public static void ServerAwaitingClientLoop(NetworkAction HandleNewClient, int port)
-        //{
-        //    TcpListener listener = new TcpListener(IPAddress.Any, port);
-        //    listener.Start();
-        //    ConnectionState connectionState = new ConnectionState(listener, HandleNewClient);
-        //    listener.BeginAcceptSocket(AcceptNewClient, connectionState);
-        //}
-
-        ///// <summary>
-        ///// Handles new connection requests and processes data from the new connection
-        ///// </summary>
-        ///// <param name="ar"></param>
-        //public static void AcceptNewClient(IAsyncResult ar)
-        //{
-        //    ConnectionState connectionState = (ConnectionState)ar.AsyncState;
-        //    Socket socket = connectionState.Listener.EndAcceptSocket(ar);
-
-        //    SocketState socketState = new SocketState(socket, 0, connectionState.ServerMessageProcessor);
-        //    try
-        //    {
-        //        socketState.MessageProcessor(socketState);
-        //        connectionState.Listener.BeginAcceptSocket(AcceptNewClient, connectionState);
-        //    }
-        //    catch (SocketException)
-        //    {
-        //        socketState.Disconnected = true;
-        //        socketState.MessageProcessor(socketState);
-        //    }
-
-        //}
     }
 }
 

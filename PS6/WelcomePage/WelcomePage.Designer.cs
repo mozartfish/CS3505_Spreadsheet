@@ -1,4 +1,4 @@
-﻿namespace WelcomePage
+﻿namespace Display
 {
     partial class WelcomePage
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SpreadsheetGUI
+namespace Display
 {
     /// <summary>
     /// Keeps track of how many top-level forms are running

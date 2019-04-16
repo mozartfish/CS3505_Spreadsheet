@@ -1,5 +1,6 @@
 ﻿///Version 1.1 
 ///Joanna Lowry && Cole Jacobs (04/06/2019)
+///WelcomePage GUI for a server based spreadsheet
 using Controller;
 using System;
 using System.Collections.Generic;
@@ -11,21 +12,34 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace WelcomePage
+namespace Display
 {
+    /// <summary>
+    /// Form for the WelcomePage GUI
+    /// </summary>
     public partial class WelcomePage : Form
     {
+        /// <summary>
+        /// The controller for the spreadsheet
+        /// </summary>
         private SpreadsheetController controller;
 
         public WelcomePage()
         {
             InitializeComponent();
             controller = new SpreadsheetController();
+
+            //Registers event handlers
             controller.RegisterListUpdateHandler(UpdateListView);
             controller.RegisterErrorHandler(UpdateError);
             controller.RegisterNetworkErrorHandler(NetworkError);
         }
 
+
+        /// <summary>
+        /// Event handler for the network error event.
+        /// Displays a warning dialog box when a NetworkError occurs
+        /// </summary>
         private void NetworkError()
         {
             string mssg = "An error occured with the connection to the server. Please try again.";
@@ -47,7 +61,7 @@ namespace WelcomePage
 
         /// <summary>
         /// Displays the spreadsheets available on the connected server in the list view of
-        /// the welcome page.
+        /// the welcome page. 
         /// </summary>
         /// <param name="list"></param>
         private void AddLists(List<string> list)
@@ -58,9 +72,8 @@ namespace WelcomePage
             }
         }
 
-
         /// <summary>
-        /// 
+        /// Handler for the ErrorUpdate event. Displays a warning dialog with the appropriate error message
         /// </summary>
         /// <param name="e"></param>
         private void UpdateError(int errorCode, string source)
@@ -78,12 +91,20 @@ namespace WelcomePage
             }
         }
 
+        /// <summary>
+        /// Connects to the server on connectButton click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void connectButton_Click(object sender, EventArgs e)
         {
             ConnectToServer(ServerAddress.Text);
         }
 
-
+        /// <summary>
+        /// Helper method for the connectButton_Click that connects to the server
+        /// </summary>
+        /// <param name="hostName"></param>
         private void ConnectToServer(string hostName)
         {
             //Error checking
@@ -99,6 +120,11 @@ namespace WelcomePage
             }
         }
 
+        /// <summary>
+        /// Opens the selected spreadsheet
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void spreadsheetList_SelectedIndexChanged(object sender, EventArgs e)
         {
             if(spreadsheetList.SelectedItem != null) // make sure a spreadsheet has been selected
@@ -109,9 +135,9 @@ namespace WelcomePage
 
                 string currSpreadsheet = spreadsheetList.SelectedItem.ToString();
             
-                SpreadsheetGUI.SpreadsheetForm ssForm = new SpreadsheetGUI.SpreadsheetForm();
-                SpreadsheetGUI.SpreadsheetApplicationContext appContext = 
-                    SpreadsheetGUI.SpreadsheetApplicationContext.getAppContext();
+                Display.SpreadsheetForm ssForm = new Display.SpreadsheetForm();
+                Display.SpreadsheetApplicationContext appContext = 
+                    Display.SpreadsheetApplicationContext.getAppContext();
                 appContext.RunForm(ssForm);
                 
             }
@@ -121,6 +147,11 @@ namespace WelcomePage
             //this.Close();
         }
 
+        /// <summary>
+        /// Opens and creates a new spreadsheet
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NewSpreadsheet_Click(object sender, EventArgs e)
         {
             //option to name the spreadsheet via dialog box

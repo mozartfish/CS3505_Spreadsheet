@@ -15,7 +15,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-namespace SpreadsheetGUI
+namespace Display
 {
     /// <summary>
     /// This is a user driven spreadsheet interface for the Spreadsheet Utilities libraries.

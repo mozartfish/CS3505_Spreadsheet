@@ -1,4 +1,6 @@
-﻿// Written by Cole Jacobs for CS 3500, September 2018
+﻿/// Written by Cole Jacobs for CS 3500, September 2018
+/// 
+
 
 using System;
 using System.Collections.Generic;
@@ -83,8 +85,6 @@ namespace SS
             ReadXml(filename);  // populates the new spreadsheet 
         }
 
-
-
          /// <summary>
          /// 
          /// </summary>
@@ -117,10 +117,6 @@ namespace SS
             }
 
         }
-
-
-
-
 
 
         /// <summary>
