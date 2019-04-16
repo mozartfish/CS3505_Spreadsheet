@@ -14,19 +14,20 @@ namespace WindowsFormsApp1
     public partial class WelcomePage : Form
     {
         AdminController controller;
-        public WelcomePage(AdminController contr)
+        Form1 form;
+
+        public WelcomePage()
         {
             InitializeComponent();
-            controller = contr;
+            controller = new AdminController();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string hostname = textBox1.Text;
+            string hostname = IP.Text;
+            string port = Port.Text;//TODO: NOT USED YET!!
 
             //begin first connection
-
-
             //STUB: controller must inform welcomepage that theres a connection success, to fire the connection successful
             //hostname = "localhost";
             //controller.Connect(hostname);
@@ -40,15 +41,26 @@ namespace WindowsFormsApp1
         /// </summary>
         private void ConnectSuccessful()
         {
-            Form1 form = new Form1(controller);
+            form = new Form1(controller);
             form.Show();
 
-            Hide();
+            this.Hide();//hide the welcome page until the admin wants to switch servers
         }
 
-        public static void KillProgram()
+        /// <summary>
+        /// Should be invoked by an event of admin clicking the top right x
+        /// </summary>
+        public void KillProgram()
         {
-            //form.Close();
+            this.Close();
+        }
+
+        public void SwitchServer()
+        {
+            //kill the previous gui
+            form.Close();
+            //allow the user to establish connection to another server.
+            this.Show();
         }
 
     }

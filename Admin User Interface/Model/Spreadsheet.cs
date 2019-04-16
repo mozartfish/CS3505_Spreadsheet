@@ -17,7 +17,7 @@ namespace Model
         private string SSname;
 
         /// <summary>
-        /// List of users working on spreadsheet
+        /// List of usernames representing all users working on spreadsheet
         /// </summary>
         [JsonProperty]
         private List<string> users;
@@ -27,7 +27,6 @@ namespace Model
         /// -1 - Delete
         /// 0 - No Change
         /// 1 - Create
-        /// 2 - Edit
         /// </summary>
         [JsonProperty]
         private int status;

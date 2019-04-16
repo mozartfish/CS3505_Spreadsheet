@@ -15,7 +15,6 @@ namespace WindowsFormsApp1
         SpreadsheetManagement ssMan;
         ManageUsers userMan;
         private AdminController controller;
-        static WelcomePage welcome;
 
         private bool formClosed;
 
@@ -60,10 +59,13 @@ namespace WindowsFormsApp1
             // Update the Current Status column with User data
             this.Invoke(new MethodInvoker(() =>
            {
-               currentStatusList.Items.Clear();
+               if (currentStatusList.Items.Count > 0)
+               {
+                   currentStatusList.Items.Clear();
+               }
                foreach (string username in users.Keys)
                {
-                   Console.WriteLine(username);
+                   //Console.WriteLine(username);
                    currentStatusList.Items.Add(username);
                }
            }));
@@ -71,12 +73,15 @@ namespace WindowsFormsApp1
             // Update the Update column with Spreadsheet data
             this.Invoke(new MethodInvoker(() =>
             {
-                updateList.Items.Clear();
+                if (updateList.Items.Count > 0)
+                {
+                    updateList.Items.Clear();
+                }
                 foreach (Spreadsheet ss in spreadsheets.Values)
                 {
                     if (ss.GetStatus() == 2)
                     {
-                        Console.WriteLine(ss.GetName());
+                        //Console.WriteLine(ss.GetName());
                         updateList.Items.Add(ss.GetName());
                     }
                 }
@@ -94,7 +99,6 @@ namespace WindowsFormsApp1
 
         private void ShutDown(object sender, EventArgs e)
         {
-            //logic.ShutDownServer();
             controller.ShutDown();
         }
 
@@ -122,21 +126,7 @@ namespace WindowsFormsApp1
 
 
 
-        private void RedrawUsersList()
-        {
-            if (currentStatusList.Items.Count > 0)
-            {
-                currentStatusList.Items.Clear();
-            }
-
-            List<string> userList = new List<string>();
-            userList = controller.GetAllUsers();
-
-            foreach (string user in userList)
-            {
-                currentStatusList.Items.Add(user);
-            }
-        }
+        
 
 
         private void RedrawSSList()
@@ -155,29 +145,6 @@ namespace WindowsFormsApp1
             }
         }
 
-
-        //#region Json Shtuff
-
-        ///// <summary>
-        ///// This test is to try to send an open Json
-        ///// </summary>
-        ///// <param name="sender"></param>
-        ///// <param name="e"></param>
-        private void PretendSendToServer(object sender, EventArgs e)
-        {
-            //    string json = OpenMessageToJson("cool.sprd", "pajensen", "Doofus");
-            //    string nonJson = JsonToString(json);
-
-            //    Console.WriteLine(ParseString(nonJson));
-
-
-            //    //old version made strings, but they were dropping the last thing added to the string somehow, may still be used later 
-
-            //    //string jsonString = ConvertStringToJson("\"type\": \"open\",   \"name\": \"cool.sprd\",   \"username\": \"pajensen\",   \"password\": \"Doofus\"");
-            //    //jsonData = JsonConvert.SerializeObject(jsonBuilder);
-            //    //ConvertJsonToString("");
-        }
-
         private void button4_Click(object sender, EventArgs e)
         {
             RedrawSSList();
@@ -188,146 +155,14 @@ namespace WindowsFormsApp1
             for (int i = 0; i < 10; i++)
             {
                 controller.TestAddUse(i.ToString());
-
-                //listBox1.Items.Add("Hi");
-                //listBox1.DataSource += "Hi";
             }
         }
 
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (!formClosed)
-            {
-                formClosed = true;
-                this.Close();
-            }
+            //Fire an event to the WelcomePage to 
+            //KillProgram();
         }
-        
-
-        //private string[] ParseString(string input)
-        //{
-        //    string[] line_array = input.Split('"');
-        //    string[] keeper = new string[8]; //8 because thats the max number of feilds there could be
-        //    int count = 0;
-
-        //    for (int i = 0; i < line_array.Length; i++)
-        //    {
-        //        //all the important bits
-        //        if (line_array[i] != "\r\n}" || line_array[i] != ",\r\n  " || line_array[i] != "{\r\n  " || line_array[i] != ": ")
-        //        {
-        //            keeper[count] = line_array[i];
-        //            count++;
-        //        }
-        //    }
-        //    return keeper;
-        //}
-
-
-        //private string OpenMessageToJson(string name, string username, string password)
-        //{
-        //    Open message = new Open()
-        //    {
-        //        Type = "open",
-        //        Name = name,
-        //        Username = username,
-        //        Password = password
-        //    };
-        //    string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
-        //    return jsonOpen;
-        //}
-
-        //private string EditMessageToJson(string cell, string value, string dep)
-        //{
-        //    Edit message = new Edit()
-        //    {
-        //        Type = "edit",
-        //        Cell = cell,
-        //        Value = value,
-        //        Dependencies = dep
-        //    };
-        //    string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
-        //    return jsonOpen;
-        //}
-
-        //private string UndoMessageToJson()
-        //{
-        //    //may need a Type = "undo"
-        //    Undo message = new Undo();
-        //    string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
-        //    return jsonOpen;
-        //}
-
-        //private string RevertMessageToJson(string cell)
-        //{
-        //    Revert message = new Revert()
-        //    {
-        //        Type = "revert",
-        //        Cell = cell
-        //    };
-        //    string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
-        //    return jsonOpen;
-        //}
-
-        //private string ErrorMessageToJson(string code, string source)
-        //{
-        //    Error message = new Error()
-        //    {
-        //        Type = "error",
-        //        Code = code,
-        //        Source = source,
-        //    };
-        //    string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
-        //    return jsonOpen;
-        //}
-
-        ///// <summary>
-        ///// Very general, returns the json in the form that the client is expecting
-        ///// </summary>
-        ///// <param name="json"></param>
-        ///// <returns></returns>
-        //private string JsonToString(string json)
-        //{
-        //    object WriteIntoStudent = JsonConvert.DeserializeObject(json);
-        //    string result = WriteIntoStudent.ToString();
-        //    return result;
-        //}
-
-
-        ////private string ConvertStringToJson(string input)
-        ////{
-        ////    StringBuilder jsonBuilder = new StringBuilder();
-        ////    jsonBuilder.Append(input);
-
-        ////    return JsonConvert.SerializeObject(jsonBuilder);
-        ////}
-
-        ////private void ConvertJsonToString(string json)
-        ////{
-        ////    //string[] stuff1 = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-        ////    //return stuff1;
-        ////   //StringBuilder jsonBuilder = new StringBuilder();
-        ////    //jsonBuilder.Append(input);
-
-        ////   // return JsonConvert.SerializeObject(jsonBuilder);
-        ////}
-
-
-
-
-
-
-
-
-
-
-        ////NETWORKING
-        //private void Network()
-        //{
-
-        //}
-
-        //#endregion Json Shtuff
-
     }
 }
