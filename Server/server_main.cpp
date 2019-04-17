@@ -16,6 +16,7 @@
 #include <strings.h>
 #include <fstream>
 #include <chrono>
+#include "jsoncpp-master/dist/json/json.h"
 #include "spreadsheet.h"
 #include "message.h"
 #include "helpers.h"
@@ -93,6 +94,7 @@ int process_spreadsheets_from_file()
 	      delete token_str;
 	      token_str = new string (token);
 	      curr_sheet = new spreadsheet(*token_str);
+	      sheet_names->push_back(*token_str);
 	    }
 	  
 	  ++part_idx;
@@ -323,75 +325,89 @@ void process_updates()
       string serialized_update(token);
       
       //Deserialize
-      message * deserialized = &(server_helpers::json_to_message(serialized_update));
-
-      message * to_client;
+      Json::CharReaderBuilder des_builder;
+      Json::CharReader * deserializer = des_builder.newCharReader();
+      Json::Value deserialized;
+      
+      // Try to read message
+      if (!deserializer->parse(serialized_update.c_str(), serialized_update.c_str() + serialized_update.size(), &deserialized, NULL))
+	{
+	  cout << "Bad message received from socket " << fd << endl;
+	  continue;
+	}
+      
       string json_to_client;
       
       //Process update
       // Open
-      if (deserialized->type == "open")
+      if (NULL)
 	{
 	  
 	  
 	  // Send the full spreadsheet to the client
-	  if (check_sprd(deserialized->name, deserialized->username, deserialized->password, fd))
+	  if (check_sprd(deserialized["name"].asString(), deserialized["username"].asString(), deserialized["password"].asString(), fd))
 	    {
-	      to_client = new message("full send");
+	      
 	    }
 
 	  // Send error message for bad login
 	  else
 	    {
-	      to_client = new message("error");
+	      
 	    }
 	  
 	}
       
       // Edit
-      else if (deserialized->type == "edit")
+      else if (NULL)
 	{
+	  vector<string> * dependencies = new vector<string>();
+
+	  // Add each dependency from json to a string vector
+	  Json::Value json_deps = deserialized["dependencies"];
+	  for (int i = 0; i < json_deps.size(); i++)
+	    dependencies->push_back(json_deps[i].asString());
 	  
 	  // Try to change cell
-	  if(sheet->change_cell(deserialized->cell, deserialized->value, deserialized->dependencies))
+	  if(sheet->change_cell(deserialized["cell"].asString(), deserialized["value"].asString(), dependencies))
 	    {
-	      to_client = new message("full send");
+	      
 	    }
 	  
 	  // If there is a failure
 	  else
 	    {
-	      to_client = new message("error");
+	      
 	    }
 	}
       
       // Undo
-      else if (deserialized->type == "undo")
+      else if (NULL)
 	{
 	  string result = sheet->undo();
 	  // Nothing needed for an empty undo
 	  if (result == "")
 	    continue;
 
-	  to_client = new message("full_send");
+	  
 	}
       
       // Revert
-      else if (deserialized->type == "revert")
+      else if (NULL)
 	{
-	  string result = sheet->revert(deserialized->cell);
+	  string result = sheet->revert(deserialized["cell"].asString());
 
 	  // Good revert
 	  if (result != "\t")
 	    {
-	      to_client = new message("full_send");
+	      
 
 	    }
 
 	  // Result returned \t, error character (choice was arbitrary)
 	  else
 	    {
-	      to_client = new message("error");
+	      
 	    }
 	}
 	     
@@ -525,13 +541,14 @@ int main(int argc, char ** argv)
 
       	  std::cout << "A new client has connected" << std::endl;
 	  
-	  // Make message of all spreadsheet names
-	  message name_mess("list");
-	  name_mess.spreadsheets = sheet_names;
-	  cout << "Converting message" << endl;
-	  string json_message = server_helpers::message_to_json(name_mess);
-	  cout << "Converting string" << endl;
-	  char * json_primitive = strcpy(new char[json_message.size() + 1], json_message.c_str());
+	  // Get all spreadsheets as a json object
+	  Json::Value json_sheets;
+	  string type("list");
+	  json_sheets["type"] = type;
+	  json_sheets.append("spreadsheets");
+	  for (string ind_sheet : *sheet_names)
+	    json_sheets["spreadsheets"].append(ind_sheet);
+
 
 	  // Iterate over each new client, and send required start data, and wait for data from them
 	  for (int idx = connections.size_before_update; idx < connections.sockets->size(); idx++)
@@ -545,7 +562,7 @@ int main(int argc, char ** argv)
 
 	      
 	      // Send list of spreadsheet names
-	      socket_connections::SendData((*connections.sockets)[idx], json_primitive, (int)json_message.size());
+	      socket_connections::SendData((*connections.sockets)[idx], json_sheets.asCString(), (int)json_sheets.asString().size());
 
 	      cout << "Data wait section" << endl;
 	      std::async(std::launch::async, socket_connections::WaitForData,
