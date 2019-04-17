@@ -38,7 +38,7 @@ namespace Model
         /// This is an array of strings because a user may be logged onto multiple spreadsheets at once
         /// </summary>
         [JsonProperty]
-        private List<string> workingOn;
+        private string workingOn;
 
         /// <summary>
         /// Status of the User
@@ -100,7 +100,7 @@ namespace Model
             active = act;
         }
 
-        public List<string> GetWorkingOn()
+        public string GetWorkingOn()
         {
             return workingOn;
         }

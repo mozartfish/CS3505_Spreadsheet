@@ -74,11 +74,10 @@ namespace WindowsFormsApp1
             }
 
             List<string> SSList = controller.GetAllSS();
-            SSList = controller.GetAllSS();
 
-            foreach (string user in SSList)
+            foreach (string ss in SSList)
             {
-                listBox1.Items.Add(user);
+                listBox1.Items.Add(ss);
             }
         }
 

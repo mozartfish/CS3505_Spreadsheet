@@ -25,6 +25,7 @@ namespace WindowsFormsApp1
 
             //Populate the lists with anything in the model
             RedrawSSList();
+            RedrawUserList();
 
 
 
@@ -91,15 +92,6 @@ namespace WindowsFormsApp1
             }));
         }
 
-        private void UpdateList(Dictionary<string, User> users)
-        {
-            foreach (string username in users.Keys)
-            {
-                Console.WriteLine(username);
-                currentStatusList.Items.Add(username);
-            }
-        }
-
         private void ShutDown(object sender, EventArgs e)
         {
             controller.ShutDown();
@@ -127,11 +119,6 @@ namespace WindowsFormsApp1
             }
         }
 
-
-
-        
-
-
         private void RedrawSSList()
         {
             if (updateList.Items.Count > 0)
@@ -146,7 +133,33 @@ namespace WindowsFormsApp1
             {
                 updateList.Items.Add(user);
             }
+        }
 
+        private void RedrawUserList()
+        {
+            if (currentStatusList.Items.Count > 0)
+            {
+                currentStatusList.Items.Clear();
+            }
+
+            List<string> SSList = new List<string>();
+            SSList = controller.GetAllUsers();
+
+            foreach (string user in SSList)
+            {
+                currentStatusList.Items.Add(user);
+            }
+        }
+
+
+
+        private void UpdateList(Dictionary<string, User> users)
+        {
+            foreach (string username in users.Keys)
+            {
+                Console.WriteLine(username);
+                currentStatusList.Items.Add(username);
+            }
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -167,6 +180,15 @@ namespace WindowsFormsApp1
         {
             //Fire an event to the WelcomePage to 
             //KillProgram();
+        }
+
+
+
+        public static int counter = 0;
+        private void TESTinsertingTopOfList(object sender, EventArgs e)
+        {
+            updateList.Items.Insert(0, "ssname" + counter);
+            counter++;
         }
     }
 }

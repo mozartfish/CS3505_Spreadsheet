@@ -364,7 +364,13 @@ namespace Controller
         /// <returns></returns>
         public List<string> GetAllUsers()
         {
-            return model.GetOrderedUsersList();
+            List<string> list = new List<string>();
+            foreach (User user in model.GetUsersList())
+            {
+                list.Add(user.GetUsername() + "  ||  " + user.GetPassword() + "  ||  " + user.GetWorkingOn());
+            }
+            return list;
+            //return model.GetUsersList();
         }
 
         public void TestAddUse(string user)
@@ -413,8 +419,8 @@ namespace Controller
             {
                 stringList.Add(ss.GetName());
             }
-
-            return model.GetOrderedSSList();
+            return stringList;
+            //return model.GetOrderedSSList();
         }
 
         #endregion Spreadsheet Management
