@@ -217,7 +217,7 @@ namespace Controller
 
             string msg = "admin\n";
             ShutAndAdmin shut = new ShutAndAdmin();
-            shut.SetType(msg);
+            shut.SetShutAndAdminType(msg);
 
             string serializedObj = JsonConvert.SerializeObject(shut) + "\n\n";
             messageBuilder.Append(serializedObj);
@@ -229,9 +229,9 @@ namespace Controller
         {
             StringBuilder messageBuilder = new StringBuilder();
 
-            string msg = "Shutdown\n";
+            string msg = "Shutdown";
             ShutAndAdmin shut = new ShutAndAdmin();
-            shut.SetType(msg);
+            shut.SetShutAndAdminType(msg);
 
             string serializedObj = JsonConvert.SerializeObject(shut) + "\n\n";
             messageBuilder.Append(serializedObj);
@@ -271,6 +271,7 @@ namespace Controller
             StringBuilder messageBuilder = new StringBuilder();
 
             User user = model.GetUser(username);
+            user.SetUserType("user");
             user.SetPassword(pass);
             user.SetStatus(status);
             string serializedObj = JsonConvert.SerializeObject(user) + "\n\n";
@@ -289,6 +290,7 @@ namespace Controller
             StringBuilder messageBuilder = new StringBuilder();
 
             Spreadsheet spreadsheet = model.GetSS(SSname);
+            spreadsheet.SetSSType("user");
             string serializedObj = JsonConvert.SerializeObject(spreadsheet) + "\n\n";
             messageBuilder.Append(serializedObj);
 
@@ -323,6 +325,7 @@ namespace Controller
             if (result == DialogResult.OK)
             {
                 //Send message to the server telling it to shut down 
+                SendShutDownMessage();
             }
         }
 
@@ -404,6 +407,13 @@ namespace Controller
 
         public List<string> GetAllSS()
         {
+            List<Spreadsheet> list = model.GetSSList();
+            List<string> stringList = new List<string>();
+            foreach (Spreadsheet ss in list)
+            {
+                stringList.Add(ss.GetName());
+            }
+
             return model.GetOrderedSSList();
         }
 

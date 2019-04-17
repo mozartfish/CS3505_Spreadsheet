@@ -11,6 +11,12 @@ namespace Model
     public class User
     {
         /// <summary>
+        /// used to tell the server the message type
+        /// </summary>
+        [JsonProperty]
+        private string type;
+
+        /// <summary>
         /// Username
         /// </summary>
         [JsonProperty]
@@ -52,6 +58,16 @@ namespace Model
         {
             workingOn = new List<string>();
             SetUsername(name);
+        }
+
+        public string GetUserType()
+        {
+            return type;
+        }
+
+        public void SetUserType(string t)
+        {
+            type = t;
         }
 
         public string GetUsername()

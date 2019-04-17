@@ -11,10 +11,16 @@ namespace Model
     public class Spreadsheet
     {
         /// <summary>
+        /// used to inform the server the message type
+        /// </summary>
+        [JsonProperty]
+        private string type;
+
+        /// <summary>
         /// Spreadsheet name
         /// </summary>
         [JsonProperty]
-        private string SSname;
+        private string ssName;
 
         /// <summary>
         /// List of usernames representing all users working on spreadsheet
@@ -36,14 +42,24 @@ namespace Model
             users = new List<string>();
         }
 
+        public string GetSSType()
+        {
+            return type;
+        }
+
+        public void SetSSType(string t)
+        {
+            type = t;
+        }
+
         public string GetName()
         {
-            return SSname;
+            return ssName;
         }
 
         public void SetName(string newName)
         {
-            SSname = newName;
+            ssName = newName;
         }
 
         public List<string> GetUsers()

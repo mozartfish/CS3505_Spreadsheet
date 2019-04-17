@@ -44,7 +44,7 @@
             // textBox2
             // 
             this.textBox2.Location = new System.Drawing.Point(7, 31);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.textBox2.Margin = new System.Windows.Forms.Padding(2);
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
             this.textBox2.Size = new System.Drawing.Size(46, 20);
@@ -54,7 +54,7 @@
             // CreateSS_Name
             // 
             this.CreateSS_Name.Location = new System.Drawing.Point(54, 31);
-            this.CreateSS_Name.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.CreateSS_Name.Margin = new System.Windows.Forms.Padding(2);
             this.CreateSS_Name.Name = "CreateSS_Name";
             this.CreateSS_Name.Size = new System.Drawing.Size(240, 20);
             this.CreateSS_Name.TabIndex = 46;
@@ -62,7 +62,7 @@
             // textBox4
             // 
             this.textBox4.Location = new System.Drawing.Point(429, 31);
-            this.textBox4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.textBox4.Margin = new System.Windows.Forms.Padding(2);
             this.textBox4.Name = "textBox4";
             this.textBox4.ReadOnly = true;
             this.textBox4.Size = new System.Drawing.Size(46, 20);
@@ -72,7 +72,7 @@
             // DeleteSS_Name
             // 
             this.DeleteSS_Name.Location = new System.Drawing.Point(476, 31);
-            this.DeleteSS_Name.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.DeleteSS_Name.Margin = new System.Windows.Forms.Padding(2);
             this.DeleteSS_Name.Name = "DeleteSS_Name";
             this.DeleteSS_Name.Size = new System.Drawing.Size(300, 20);
             this.DeleteSS_Name.TabIndex = 42;
@@ -80,7 +80,7 @@
             // richTextBox3
             // 
             this.richTextBox3.Location = new System.Drawing.Point(429, 6);
-            this.richTextBox3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.richTextBox3.Margin = new System.Windows.Forms.Padding(2);
             this.richTextBox3.Name = "richTextBox3";
             this.richTextBox3.ReadOnly = true;
             this.richTextBox3.Size = new System.Drawing.Size(348, 23);
@@ -90,7 +90,7 @@
             // richTextBox1
             // 
             this.richTextBox1.Location = new System.Drawing.Point(6, 6);
-            this.richTextBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.richTextBox1.Margin = new System.Windows.Forms.Padding(2);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.ReadOnly = true;
             this.richTextBox1.Size = new System.Drawing.Size(288, 23);
@@ -100,7 +100,7 @@
             // button2
             // 
             this.button2.Location = new System.Drawing.Point(778, 7);
-            this.button2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button2.Margin = new System.Windows.Forms.Padding(2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(86, 50);
             this.button2.TabIndex = 33;
@@ -111,7 +111,7 @@
             // button4
             // 
             this.button4.Location = new System.Drawing.Point(296, 7);
-            this.button4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button4.Margin = new System.Windows.Forms.Padding(2);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(87, 40);
             this.button4.TabIndex = 32;
@@ -123,7 +123,7 @@
             // 
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Location = new System.Drawing.Point(6, 66);
-            this.listBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.listBox1.Margin = new System.Windows.Forms.Padding(2);
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(860, 498);
             this.listBox1.TabIndex = 31;
@@ -132,7 +132,7 @@
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(690, 124);
-            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(72, 38);
             this.button1.TabIndex = 49;
@@ -143,7 +143,7 @@
             // button3
             // 
             this.button3.Location = new System.Drawing.Point(690, 198);
-            this.button3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button3.Margin = new System.Windows.Forms.Padding(2);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(72, 36);
             this.button3.TabIndex = 50;
@@ -167,7 +167,7 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.listBox1);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "SpreadsheetManagement";
             this.Text = "SpreadsheetManagement";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SpreadsheetManagement_FormClosing);

@@ -25,12 +25,12 @@ namespace Model
         /// 
         /// </summary>
         /// <returns></returns>
-        public string GetStringType()
+        public string GetShutAndAdminType()
         {
             return type;
         }
 
-        public void SetType(string t)
+        public void SetShutAndAdminType(string t)
         {
             type = t;
         }

@@ -55,9 +55,10 @@ namespace WindowsFormsApp1
         /// <summary>
         /// Should be invoked by an event of admin clicking the top right x
         /// </summary>
-        public void KillProgram()
+        public void KillForm()
         {
-            this.Close();
+            form.Close();
+            this.Show();
         }
 
         public void SwitchServer()
