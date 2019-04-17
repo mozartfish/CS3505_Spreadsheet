@@ -324,15 +324,28 @@ void process_updates()
       
       //Deserialize
       message * deserialized = &(server_helpers::json_to_message(serialized_update));
+
+      message * to_client;
+      string json_to_client;
       
       //Process update
       // Open
       if (deserialized->type == "open")
 	{
-	  // if (check_sprd(deserialized->name, deserialized->username, deserialized->password, fd))
-	  //TODO FULL SEND OF SPREADSHEET TO CLIENT
-	       //  else
-	  //TODO SEND ERROR MESSAGE
+	  
+	  
+	  // Send the full spreadsheet to the client
+	  if (check_sprd(deserialized->name, deserialized->username, deserialized->password, fd))
+	    {
+	      to_client = new message("full send");
+	    }
+
+	  // Send error message for bad login
+	  else
+	    {
+	      to_client = new message("error");
+	    }
+	  
 	}
       
       // Edit
@@ -342,13 +355,13 @@ void process_updates()
 	  // Try to change cell
 	  if(sheet->change_cell(deserialized->cell, deserialized->value, deserialized->dependencies))
 	    {
-
+	      to_client = new message("full send");
 	    }
 	  
 	  // If there is a failure
 	  else
 	    {
-
+	      to_client = new message("error");
 	    }
 	}
       
@@ -359,12 +372,27 @@ void process_updates()
 	  // Nothing needed for an empty undo
 	  if (result == "")
 	    continue;
+
+	  to_client = new message("full_send");
 	}
       
       // Revert
       else if (deserialized->type == "revert")
 	{
-	  
+	  string result = sheet->revert(deserialized->cell);
+
+	  // Good revert
+	  if (result != "\t")
+	    {
+	      to_client = new message("full_send");
+
+	    }
+
+	  // Result returned \t, error character (choice was arbitrary)
+	  else
+	    {
+	      to_client = new message("error");
+	    }
 	}
 	     
       // Send updates to all that should be notified if successful
@@ -500,7 +528,9 @@ int main(int argc, char ** argv)
 	  // Make message of all spreadsheet names
 	  message name_mess("list");
 	  name_mess.spreadsheets = sheet_names;
+	  cout << "Converting message" << endl;
 	  string json_message = server_helpers::message_to_json(name_mess);
+	  cout << "Converting string" << endl;
 	  char * json_primitive = strcpy(new char[json_message.size() + 1], json_message.c_str());
 
 	  // Iterate over each new client, and send required start data, and wait for data from them

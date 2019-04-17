@@ -116,26 +116,25 @@ bool spreadsheet::change_cell(std::string cell, std::string contents, std::vecto
   if (cell_idx < 0 || cell_idx >= DEFAULT_CELL_COUNT)
     return false;
 
+  std::unordered_set<std::string> * dep_set = new std::unordered_set<std::string>();
+
   //check for circular dependencies
   if (contents[0] == '=')
   {
     if (CircularDependency(cell, dep_list))
       return false;
     
-    std::unordered_set<std::string> * dep_set = new std::unordered_set<std::string>();
     for (std::string cell_dep : *dep_list)
       dep_set->insert(cell_dep);
+    
+  }
 
-    dependencies->ReplaceDependents(cell, *dep_set);
-    
-  }
-  else
-  {
-    spd_history->push_back(cell);
-    cell_history[cell_idx]->push_back(contents);
-    
-    return true;
-  }
+  dependencies->ReplaceDependents(cell, *dep_set);
+  
+  spd_history->push_back(cell);
+  cell_history[cell_idx]->push_back(contents);
+  
+  return true;
 }
 
 /*
@@ -158,16 +157,17 @@ std::string spreadsheet::undo()
 
 /*
  * Reverts the contents of a cell to what they previously were, 
- * returning those contents, or NULL if the revert failed
+ * returning those contents, or \t (unusable character for clients) if the revert failed
  */
 std::string spreadsheet::revert(std::string cell)
 {
   int cell_idx = cell_to_index(cell);
   if (cell_idx < 0 || cell_idx >= DEFAULT_CELL_COUNT)
-    return NULL;
+    return "\t";
 
   std::vector<std::string> * cell_hist = cell_history[cell_idx];
-  
+  std::unordered_set<std::string> * dep_set = new std::unordered_set<std::string>();
+
   //TODO use dependency graph to make sure circ dep won't exist
   std::string curr_cont = cell_hist->back();
   cell_hist->pop_back();
@@ -177,16 +177,15 @@ std::string spreadsheet::revert(std::string cell)
     if (CircularDependency(cell, deps))
     {
       cell_hist[cell_idx].push_back(curr_cont);
-      return NULL;
+      return "\t";
     }
 
-    std::unordered_set<std::string> * dep_set = new std::unordered_set<std::string>();
     for (std::string cell_dep : *deps)
       dep_set->insert(cell_dep);
-
-    dependencies->ReplaceDependents(cell, *dep_set);
     
   }
+
+  dependencies->ReplaceDependents(cell, *dep_set);
   
   // Return the current top contents
   return cell_hist->back();

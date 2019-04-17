@@ -92,22 +92,24 @@ message & server_helpers::json_to_message(std::string & mess)
     pch = strtok(NULL, "\"");
   }
   
+  // Correctly formatted messages follow a pattern of
+    // Type at idx i, and the actual value at i + 2
   if (message_tokens[1] == "type")
   {
-    //cout << "type index is correct" << endl;
+    // If "Open message" grab sheet name, username, pass
     if (message_tokens[3] == "open")
     {
-      // cout << "type keyword index is correct" << endl;
+      
       m = new message("open");
-      //cout << "created a new message" << endl;
-      m->name = message_tokens[8];
-      //cout << "set the name" << endl;
-      m->username = message_tokens[13];
-      //cout << "set the username" << endl;
-      m->password = message_tokens[18];
-      //cout << "set the password" << endl;
+      
+      m->name = message_tokens[7];
+      
+      m->username = message_tokens[11];
+      
+      m->password = message_tokens[15];
+      
     }
-    else if (message_tokens[4] == "edit")
+    else if (message_tokens[3] == "edit")
     {
       m = new message("edit");
       m->cell = message_tokens[10];
@@ -129,4 +131,6 @@ message & server_helpers::json_to_message(std::string & mess)
   {
     return *new message("");
   }
+
+  return *m;
 }
