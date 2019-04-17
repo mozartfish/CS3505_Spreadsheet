@@ -213,16 +213,30 @@ namespace Controller
         /// </summary>
         private void SendOpenMessage()
         {
-            string msg = "admin\n";
+            StringBuilder messageBuilder = new StringBuilder();
 
-            Networking.Send(server, msg);
+            string msg = "admin\n";
+            ShutAndAdmin shut = new ShutAndAdmin();
+            shut.SetType(msg);
+
+            string serializedObj = JsonConvert.SerializeObject(shut) + "\n\n";
+            messageBuilder.Append(serializedObj);
+
+            Networking.Send(server, messageBuilder.ToString());
         }
 
         private void SendShutDownMessage()
         {
-            string msg = "ShutDown\n";
+            StringBuilder messageBuilder = new StringBuilder();
 
-            Networking.Send(server, msg);
+            string msg = "Shutdown\n";
+            ShutAndAdmin shut = new ShutAndAdmin();
+            shut.SetType(msg);
+
+            string serializedObj = JsonConvert.SerializeObject(shut) + "\n\n";
+            messageBuilder.Append(serializedObj);
+
+            Networking.Send(server, messageBuilder.ToString());
         }
 
         private void SendMessage()

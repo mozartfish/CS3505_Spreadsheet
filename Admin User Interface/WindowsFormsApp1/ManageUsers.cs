@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Controller;
+using Model;
 
 namespace WindowsFormsApp1
 {
@@ -40,6 +41,8 @@ namespace WindowsFormsApp1
         {
             InitializeComponent();
             controller = contr;
+
+            controller.UpdateInterface += HandleUpdateInterface;
 
             RedrawUsersList();
 
@@ -131,6 +134,33 @@ namespace WindowsFormsApp1
                 //listBox1.Items.Add("Hi");
                 //listBox1.DataSource += "Hi";
             }
+        }
+
+        /// <summary>
+        /// Event handler receiving User and Spreadsheet data from Admin Controller
+        /// Update the GUI with new data    
+        /// </summary>
+        /// <param name="users"></param>
+        /// <param name="spreadsheet"></param>
+        public void HandleUpdateInterface(Dictionary<string, User> users, Dictionary<string, Spreadsheet> spreadsheets)
+        {
+
+            // Update the Update column with Spreadsheet data
+            this.Invoke(new MethodInvoker(() =>
+            {
+                if (listBox1.Items.Count > 0)
+                {
+                    listBox1.Items.Clear();
+                }
+                foreach (Spreadsheet ss in spreadsheets.Values)
+                {
+                    if (ss.GetStatus() == 2)
+                    {
+                        //Console.WriteLine(ss.GetName());
+                        listBox1.Items.Add(ss.GetName());
+                    }
+                }
+            }));
         }
     }
 }

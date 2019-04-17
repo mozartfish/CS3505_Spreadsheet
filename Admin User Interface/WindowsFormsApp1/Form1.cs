@@ -10,8 +10,9 @@ namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
-        public delegate void NameEventHandle();
-        public event NameEventHandle OpenNewAcctMan;
+        //public delegate void NameEventHandle();
+        //public event NameEventHandle OpenNewAcctMan;
+
         SpreadsheetManagement ssMan;
         ManageUsers userMan;
         private AdminController controller;
