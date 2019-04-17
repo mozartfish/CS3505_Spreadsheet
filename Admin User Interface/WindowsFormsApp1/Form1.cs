@@ -63,32 +63,38 @@ namespace WindowsFormsApp1
             // Update the Current Status column with User data
             this.Invoke(new MethodInvoker(() =>
            {
-               if (currentStatusList.Items.Count > 0)
-               {
-                   currentStatusList.Items.Clear();
-               }
-               foreach (string username in users.Keys)
-               {
-                   //Console.WriteLine(username);
-                   currentStatusList.Items.Add(username);
-               }
+
+               RedrawUserList();
+
+               //if (currentStatusList.Items.Count > 0)
+               //{
+               //    currentStatusList.Items.Clear();
+               //}
+               //foreach (string username in users.Keys)
+               //{
+               //    //Console.WriteLine(username);
+               //    currentStatusList.Items.Add(username);
+               //}
            }));
 
             // Update the Update column with Spreadsheet data
             this.Invoke(new MethodInvoker(() =>
             {
-                if (updateList.Items.Count > 0)
-                {
-                    updateList.Items.Clear();
-                }
-                foreach (Spreadsheet ss in spreadsheets.Values)
-                {
-                    if (ss.GetStatus() == 2)
-                    {
-                        //Console.WriteLine(ss.GetName());
-                        updateList.Items.Add(ss.GetName());
-                    }
-                }
+
+                RedrawSSList();
+
+                //if (updateList.Items.Count > 0)
+                //{
+                //    updateList.Items.Clear();
+                //}
+                //foreach (Spreadsheet ss in spreadsheets.Values)
+                //{
+                //    if (ss.GetStatus() == 2)
+                //    {
+                //        //Console.WriteLine(ss.GetName());
+                //        updateList.Items.Add(ss.GetName());
+                //    }
+                //}
             }));
         }
 

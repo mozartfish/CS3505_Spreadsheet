@@ -21,6 +21,7 @@ namespace WindowsFormsApp1
             InitializeComponent();
             controller = new AdminController();
 
+            //Testing TODO: remove this
             for (int i = 0; i < 10; i++)
             {
                 controller.TestAddUse(i.ToString());
@@ -36,7 +37,7 @@ namespace WindowsFormsApp1
             //begin first connection
             //STUB: controller must inform welcomepage that theres a connection success, to fire the connection successful
             //hostname = "localhost";
-            //controller.Connect(hostname);
+            controller.Connect(hostname);
 
             ConnectSuccessful();
         }

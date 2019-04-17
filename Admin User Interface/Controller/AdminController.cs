@@ -56,16 +56,12 @@ namespace Controller
 
             #endregion Gui Var Initialize
 
-            // testing
-            //Spreadsheet spreadsheet = new Spreadsheet();
-            //spreadsheet.SetName("ss1");
-            //spreadsheet.AddUsers("Peter Jensen");
-            //model.SetSS("ss1", spreadsheet);
+            // testing TODO: remove this 
             User user = new User();
             user.SetUsername("Peter Jensen");
             user.SetPassword("12345678");
             user.SetActive(1);
-            user.AddWorkingOn("ss1.sprd");
+            user.SetWorkingOn("ss1.sprd");
             user.SetStatus(0);
         }
 
