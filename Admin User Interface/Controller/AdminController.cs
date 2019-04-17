@@ -306,7 +306,7 @@ namespace Controller
             string text = "YOU ARE ABOUT TO SHUTDOWN THE SERVER,\nCLICK OK TO SHUT DOWN";
 
             DialogResult result = MessageBox.Show(text, title, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-            if (result == DialogResult.Yes)
+            if (result == DialogResult.OK)
             {
                 //Send message to the server telling it to shut down 
             }

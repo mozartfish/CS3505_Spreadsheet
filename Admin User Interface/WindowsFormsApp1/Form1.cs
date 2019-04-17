@@ -16,37 +16,39 @@ namespace WindowsFormsApp1
         ManageUsers userMan;
         private AdminController controller;
 
-        private bool formClosed;
 
         public Form1(AdminController contr)
         {
             InitializeComponent();
-            formClosed = false;
             controller = contr;
 
-            // Register handlers
-            controller.UpdateInterface += HandleUpdateInterface;
+            //Populate the lists with anything in the model
+            RedrawSSList();
 
-            // Testing connection
-            controller.Connect("localhost");
-        }
-
-        public Form1()
-        {
-            InitializeComponent();
-            formClosed = false;
-            controller = new AdminController();
-
-
-            controller.UpdateInterface += HandleUpdateInterface;
 
 
             // Register handlers
-            //controller.UpdateInterface += HandleUpdateInterface;
+            controller.UpdateInterface += HandleUpdateInterface;
 
-            // Testing connection
-            controller.Connect("localhost");
+            // Testing connection TODO: remove this here
+            //controller.Connect("localhost");
         }
+
+        //public Form1()
+        //{
+        //    InitializeComponent();
+        //    controller = new AdminController();
+
+
+        //    controller.UpdateInterface += HandleUpdateInterface;
+
+
+        //    // Register handlers
+        //    //controller.UpdateInterface += HandleUpdateInterface;
+
+        //    // Testing connection
+        //    //controller.Connect("localhost");
+        //}
 
         /// <summary>
         /// Event handler receiving User and Spreadsheet data from Admin Controller
@@ -54,7 +56,7 @@ namespace WindowsFormsApp1
         /// </summary>
         /// <param name="users"></param>
         /// <param name="spreadsheet"></param>
-        private void HandleUpdateInterface(Dictionary<string, User> users, Dictionary<string, Spreadsheet> spreadsheets)
+        public void HandleUpdateInterface(Dictionary<string, User> users, Dictionary<string, Spreadsheet> spreadsheets)
         {
             // Update the Current Status column with User data
             this.Invoke(new MethodInvoker(() =>
@@ -143,6 +145,7 @@ namespace WindowsFormsApp1
             {
                 updateList.Items.Add(user);
             }
+
         }
 
         private void button4_Click(object sender, EventArgs e)

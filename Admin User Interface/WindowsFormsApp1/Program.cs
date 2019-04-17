@@ -21,9 +21,9 @@ namespace WindowsFormsApp1
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new WelcomePage());
-            Form1 form = new Form1();
-            Application.Run(form);
+            Application.Run(new WelcomePage());
+            //Form1 form = new Form1();
+            //Application.Run(form);
         }
     }
 }

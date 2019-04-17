@@ -20,9 +20,14 @@ namespace WindowsFormsApp1
         {
             InitializeComponent();
             controller = new AdminController();
+
+            for (int i = 0; i < 10; i++)
+            {
+                controller.TestAddUse(i.ToString());
+            }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void ConnectButton_click(object sender, EventArgs e)
         {
             string hostname = IP.Text;
             string port = Port.Text;//TODO: NOT USED YET!!
