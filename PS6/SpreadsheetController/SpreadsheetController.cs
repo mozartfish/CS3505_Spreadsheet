@@ -218,7 +218,7 @@ namespace Controller
             }
 
             // parse socket state for the list of spreadsheets
-            string[] messages = Regex.Split(ss.sb.ToString(), @"(?^<=[\n\n])");
+            string[] messages = Regex.Split(ss.sb.ToString(), @"(?<=[\n\n])");
 
             foreach(string message in messages)
             {
@@ -331,7 +331,7 @@ namespace Controller
                 return;
             }
 
-            string[] messages = Regex.Split(ss.sb.ToString(), @"(?^<=[\n\n])");
+            string[] messages = Regex.Split(ss.sb.ToString(), @"(?<=[\n\n])");
 
             foreach (string message in messages)
             {
