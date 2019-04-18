@@ -302,6 +302,10 @@ int write_sheets_to_file()
  */
 void process_updates()
 {
+
+  Json::CharReaderBuilder des_builder;
+  Json::CharReader * deserializer = des_builder.newCharReader();
+
   while (updates->size() != 0)
     {
       // Get individual message
@@ -323,10 +327,7 @@ void process_updates()
       string serialized_update(token);
       
       //Deserialize
-      Json::CharReaderBuilder des_builder;
-      Json::CharReader * deserializer = des_builder.newCharReader();
       Json::Value deserialized;
-
       Json::Value send_back;
       
       // Try to read message
@@ -341,12 +342,31 @@ void process_updates()
       // Open
       if (deserialized["type"].asString() == "open")
 	{
-	  
+	  send_back["type"] = "full_send";
 	  
 	  // Send the full spreadsheet to the client
 	  if (check_sprd(deserialized["name"].asString(), deserialized["username"].asString(), deserialized["password"].asString(), fd))
 	    {
+	      // Get every cell with data
+	      for (char c = 'A'; c <= 'Z'; c++)
+		for (int i = 1; i <= 100; i++)
+		  {
+		    // Get current cell
+		    string cell = "" + c;
+		    cell += to_string(i);
+		    string contents = (*sheets)[spread_name]->get_cell_contents(cell);
+
+		    // We can ignore empty cells
+		    if (contents == "")
+		      continue;
+
+		    // Otherwise add contents to the list
+		    send_back["spreadsheet"][cell] = contents;
+		  }
 	      
+	      // Send back the data, only to the client that requested the open
+	      socket_connections::SendData(fd, send_back.asCString(), send_back.asString().size());
+	      continue;
 	    }
 
 	  // Send error message for bad login
@@ -356,7 +376,9 @@ void process_updates()
 	      send_back["code"] = 1;
 	      send_back["source"] = "";
 
-	      //TODO SEND
+	      //Send error back only to client that sent the bad request
+	      socket_connections::SendData(fd, send_back.asCString(), send_back.asString().size());
+	      continue;
 	    }
 	  
 	}
@@ -373,7 +395,8 @@ void process_updates()
 	  // Try to change cell
 	  if(sheet->change_cell(deserialized["cell"].asString(), deserialized["value"].asString(), dependencies))
 	    {
-	      
+	      send_back["type"] = "full_send";
+	      send_back["spreadsheet"][deserialized["cell"].asString()] = deserialized["value"].asString();
 	    }
 	  
 	  // If there is a failure
@@ -383,7 +406,9 @@ void process_updates()
 	      send_back["code"] = 2;
 	      send_back["source"] = deserialized["cell"].asString();
 
-	      //TODO SEND
+	      //Send error back only to client that sent the bad request
+	      socket_connections::SendData(fd, send_back.asCString(), send_back.asString().size());
+	      continue;
 	    }
 	}
       
@@ -395,6 +420,12 @@ void process_updates()
 	  if (result == "")
 	    continue;
 
+	  int idx = result.find('\t');
+	  string cell = result.substr(0, idx);
+	  string contents = result.substr(idx + 1);
+
+	  send_back["type"] = "full_send";
+	  send_back["spreadsheet"][cell] = contents;
 	  
 	}
       
@@ -406,8 +437,8 @@ void process_updates()
 	  // Good revert
 	  if (result != "\t")
 	    {
-	      
-
+	      send_back["type"] = "full_send";
+	      send_back["spreadsheet"][deserialized["cell"].asString()] = result;
 	    }
 
 	  // Result returned \t, error character (choice was arbitrary)
@@ -417,12 +448,23 @@ void process_updates()
 	      send_back["code"] = 2;
 	      send_back["source"] = deserialized["cell"].asString();
 
-	      //TODO SEND
+	      //Send error back only to client that sent the bad request
+	      socket_connections::SendData(fd, send_back.asCString(), send_back.asString().size());
+	      continue;
 	    }
 	}
+
+      int data_size = send_back.asString().size();
+      const char * data = send_back.asCString();
 	     
       // Send updates to all that should be notified if successful
+      for (int client : (*sheets)[spread_name]->get_listeners())
+	{
+	  socket_connections::SendData(client, data, data_size);
+	}
     }
+
+  delete deserializer;
 }
 
 /*
