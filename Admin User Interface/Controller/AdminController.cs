@@ -61,7 +61,6 @@ namespace Controller
             User user = new User();
             user.SetUsername("Peter Jensen");
             user.SetPassword("12345678");
-            user.SetActive(1);
             user.SetWorkingOn("ss1.sprd");
             user.SetStatus(0);
         }
@@ -180,8 +179,11 @@ namespace Controller
                 //deserialize user
                 return JsonConvert.DeserializeObject<User>(jsonString);
             }
+            else
+            {
+                return JsonConvert.DeserializeObject<ShutAndAdmin>(jsonString);
+            }
 
-            throw new ArgumentException();
         }
 
         /// <summary>
@@ -212,7 +214,7 @@ namespace Controller
         {
             StringBuilder messageBuilder = new StringBuilder();
 
-            string msg = "admin\n";
+            string msg = "admin";
             ShutAndAdmin shut = new ShutAndAdmin();
             shut.SetShutAndAdminType(msg);
 
@@ -226,7 +228,7 @@ namespace Controller
         {
             StringBuilder messageBuilder = new StringBuilder();
 
-            string msg = "Shutdown\n";
+            string msg = "shutdown";
             ShutAndAdmin shut = new ShutAndAdmin();
             shut.SetShutAndAdminType(msg);
 
