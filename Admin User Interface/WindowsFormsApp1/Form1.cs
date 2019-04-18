@@ -229,7 +229,7 @@ namespace WindowsFormsApp1
             {
                 hostname = IP.Text;
             }
-            int port = 2112;
+            int port = 11000;// 2112;
             if (Port.Text != "")
             {
                 int.TryParse(Port.Text, out port);

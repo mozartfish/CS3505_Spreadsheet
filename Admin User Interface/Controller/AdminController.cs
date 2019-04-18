@@ -180,6 +180,11 @@ namespace Controller
                 //deserialize user
                 return JsonConvert.DeserializeObject<User>(jsonString);
             }
+            else if (!(jsonObject["type"] is null))
+            {
+                return JsonConvert.DeserializeObject<ShutAndAdmin>(jsonString);
+
+            }
 
             throw new ArgumentException();
         }

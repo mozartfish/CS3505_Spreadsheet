@@ -199,7 +199,8 @@ namespace Controller
                 Networking.MakeSocket(hostName, out socket, out ipAddress);
                 ss = new SocketState(socket, -1, MessageProcessor);
 
-                socket.BeginConnect(ipAddress, port, ConnectedCallback, ss);
+                socket.BeginConnect(ipAddress, DEFAULT_PORT, ConnectedCallback, ss);
+                //socket.BeginConnect(ipAddress, port, ConnectedCallback, ss);
                 return socket;
             }
             catch (SocketException)
