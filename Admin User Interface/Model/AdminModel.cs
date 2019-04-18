@@ -20,6 +20,12 @@ namespace Model
             usersDict = new Dictionary<string, User>();
         }
 
+        public void CleanModel()
+        {
+            ssDict.Clear();
+            usersDict.Clear();
+        }
+
         #region Getters
 
         public Spreadsheet GetSS(string ssName)

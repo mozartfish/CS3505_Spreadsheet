@@ -13,24 +13,29 @@ namespace WindowsFormsApp1
         //public delegate void NameEventHandle();
         //public event NameEventHandle OpenNewAcctMan;
 
-        SpreadsheetManagement ssMan;
-        ManageUsers userMan;
+        private SpreadsheetManagement ssMan;
+        private ManageUsers userMan;
         private AdminController controller;
 
 
-        public Form1(AdminController contr)
+        public Form1()
         {
             InitializeComponent();
-            controller = contr;
+            controller = new AdminController();
 
             //Populate the lists with anything in the model
             RedrawSSList();
             RedrawUserList();
-
-
-
+            
             // Register handlers
             controller.UpdateInterface += HandleUpdateInterface;
+
+            //Testing TODO: remove this
+            for (int i = 0; i < 10; i++)
+            {
+                controller.TestAddUse(i.ToString());
+                controller.TestAddSS(i.ToString());
+            }
 
             // Testing connection TODO: remove this here
             //controller.Connect("localhost");
@@ -101,6 +106,26 @@ namespace WindowsFormsApp1
         private void ShutDown(object sender, EventArgs e)
         {
             controller.ShutDown();
+        }
+
+        private void RecieveShutDownEcho()
+        {
+            currentStatusList.Items.Clear();
+            updateList.Items.Clear();
+
+            //check if the user man is open
+            if (userMan != null)
+            {
+                userMan.Close();
+            }
+
+            //check if the ssman is open
+            if (ssMan != null)
+            {
+                ssMan.Close();
+            }
+
+            controller.CleanModel();
         }
 
         private void AccountManagementButton(object sender, EventArgs e)
@@ -195,6 +220,22 @@ namespace WindowsFormsApp1
         {
             updateList.Items.Insert(0, "ssname" + counter);
             counter++;
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            string hostname = "localhost";
+            if (IP.Text != "")
+            {
+                hostname = IP.Text;
+            }
+            int port = 2112;
+            if (Port.Text != "")
+            {
+                int.TryParse(Port.Text, out port);
+            }
+
+            controller.Connect(hostname, port);
         }
     }
 }

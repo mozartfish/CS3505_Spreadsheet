@@ -31,15 +31,15 @@ namespace WindowsFormsApp1
 
         private void ConnectButton_click(object sender, EventArgs e)
         {
-            string hostname = IP.Text;
-            string port = Port.Text;//TODO: NOT USED YET!!
+            //    string hostname = IP.Text;
+            //    string port = Port.Text;//TODO: NOT USED YET!!
 
-            //begin first connection
-            //STUB: controller must inform welcomepage that theres a connection success, to fire the connection successful
-            //hostname = "localhost";
-            controller.Connect(hostname);
+            //    //begin first connection
+            //    //STUB: controller must inform welcomepage that theres a connection success, to fire the connection successful
+            //    //hostname = "localhost";
+            //    controller.Connect(hostname);
 
-            ConnectSuccessful();
+            //    ConnectSuccessful();
         }
 
 
@@ -48,10 +48,10 @@ namespace WindowsFormsApp1
         /// </summary>
         private void ConnectSuccessful()
         {
-            form = new Form1(controller);
-            form.Show();
+            //form = new Form1(controller);
+            //form.Show();
 
-            this.Hide();//hide the welcome page until the admin wants to switch servers
+            //this.Hide();//hide the welcome page until the admin wants to switch servers
         }
 
         /// <summary>
@@ -59,16 +59,16 @@ namespace WindowsFormsApp1
         /// </summary>
         public void KillForm()
         {
-            form.Close();
-            this.Show();
+            //form.Close();
+            //this.Show();
         }
 
         public void SwitchServer()
         {
-            //kill the previous gui
-            form.Close();
-            //allow the user to establish connection to another server.
-            this.Show();
+            ////kill the previous gui
+            //form.Close();
+            ////allow the user to establish connection to another server.
+            //this.Show();
         }
 
     }

@@ -68,21 +68,24 @@ namespace WindowsFormsApp1
         {
             string username = CreateUser_User.Text;
             string password = CreateUser_Pass.Text;
-            controller.SendUserChangePass(username, password, 1);
+            string workingOn = "";// CreateUser_WorkingOn.Text;
+            controller.SendUserChange(username, password, workingOn, 1);
         }
 
         private void ChangePassword_button(object sender, EventArgs e)
         {
             string username = ChangeUser_User.Text;
             string password = ChangeUser_Pass.Text;
-            controller.SendUserChangePass(username, password, 0);
+            string workingOn = "";// ChangeUser_WorkingOn.Text;
+            controller.SendUserChange(username, password, workingOn, 0);
         }
 
         private void DeleteUser_button(object sender, EventArgs e)
         {
             string username = DeleteUser_User.Text;
             string password = DeleteUser_Pass.Text;
-            controller.SendUserChangePass(username, password, -1);
+            string workingOn = "";// DeleteUser_WorkingOn.Text;
+            controller.SendUserChange(username, password, workingOn, -1);
         }
         
 

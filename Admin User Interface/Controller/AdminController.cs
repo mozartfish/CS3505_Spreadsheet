@@ -38,6 +38,7 @@ namespace Controller
         public delegate void UpdateInterfaceHandler(Dictionary<string, User> users, Dictionary<string, Spreadsheet> spreadsheets);
 
         public event UpdateInterfaceHandler UpdateInterface;
+
         #endregion
 
         /// <summary>
@@ -71,9 +72,9 @@ namespace Controller
         /// Start the network connection
         /// </summary>
         /// <param name="hostName"></param>
-        public void Connect(string hostName)
+        public void Connect(string hostName, int port)
         {
-            this.server = Networking.ConnectToServer(hostName, FirstContact);
+            this.server = Networking.ConnectToServer(hostName, port, FirstContact);
         }
 
         /// <summary>
@@ -225,7 +226,7 @@ namespace Controller
         {
             StringBuilder messageBuilder = new StringBuilder();
 
-            string msg = "Shutdown";
+            string msg = "Shutdown\n";
             ShutAndAdmin shut = new ShutAndAdmin();
             shut.SetShutAndAdminType(msg);
 
@@ -248,7 +249,8 @@ namespace Controller
         {
             StringBuilder messageBuilder = new StringBuilder();
 
-            User user = model.GetUser(username);
+            User user = new User();
+            user.SetUsername(username);
             string serializedObj = JsonConvert.SerializeObject(user) + "\n\n";
             messageBuilder.Append(serializedObj);
 
@@ -262,13 +264,15 @@ namespace Controller
         /// <param name="username"></param>
         /// <param name="pass"></param>
         /// <param name="status"></param>
-        public void SendUserChangePass(string username, string pass, int status)
+        public void SendUserChange(string username, string pass, string workingOn, int status)
         {
             StringBuilder messageBuilder = new StringBuilder();
 
-            User user = model.GetUser(username);
+            User user = new User();
+            user.SetUsername(username);
             user.SetUserType("user");
             user.SetPassword(pass);
+            user.SetWorkingOn(workingOn);
             user.SetStatus(status);
             string serializedObj = JsonConvert.SerializeObject(user) + "\n\n";
             messageBuilder.Append(serializedObj);
@@ -285,8 +289,10 @@ namespace Controller
         {
             StringBuilder messageBuilder = new StringBuilder();
 
-            Spreadsheet spreadsheet = model.GetSS(SSname);
+            Spreadsheet spreadsheet = new Spreadsheet();
+            spreadsheet.SetName(SSname);// model.GetSS(SSname);
             spreadsheet.SetSSType("user");
+            spreadsheet.SetStatus(status);
             string serializedObj = JsonConvert.SerializeObject(spreadsheet) + "\n\n";
             messageBuilder.Append(serializedObj);
 
@@ -309,11 +315,6 @@ namespace Controller
         /// </summary>
         public void ShutDown()
         {
-            //TODO: stub! should contact the server and wait for a responce, then return and allow the gui to close
-
-
-
-
             string title = "WARNING";
             string text = "YOU ARE ABOUT TO SHUTDOWN THE SERVER,\nCLICK OK TO SHUT DOWN";
 
@@ -321,8 +322,14 @@ namespace Controller
             if (result == DialogResult.OK)
             {
                 //Send message to the server telling it to shut down 
-                SendShutDownMessage();
+                //SendShutDownMessage();
+                CleanModel();
             }
+        }
+
+        public void CleanModel()
+        {
+            model.CleanModel();
         }
 
 
@@ -433,7 +440,6 @@ namespace Controller
 
 //HELP:
 /*
- * Shut down needs to send a message to the server to shut down, while blocking!!!
  * 
  * killing admin form should tell the server to close socket
  * 
