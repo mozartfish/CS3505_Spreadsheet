@@ -341,7 +341,7 @@ std::string spreadsheet::get_cell_contents(std::string cell)
     return NULL;
 
   if (cell_history[index]->size() == 0)
-    return NULL;
+    return "";
 
   return cell_history[index]->back();
 }
