@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WelcomePage", "WelcomePage\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadsheetController", "SpreadsheetController\SpreadsheetController.csproj", "{A2C58484-1CFD-45C8-9E05-65E071EDAFD7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spreadsheet", "Spreadsheet1\Spreadsheet.csproj", "{99856BBB-84BE-474C-BDFB-1822A5DE1A1A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkController", "NetworkController\NetworkController.csproj", "{521EF6E4-11C2-42EE-BE02-0EAA5023527E}"
 EndProject
 Global
@@ -40,10 +38,6 @@ Global
 		{A2C58484-1CFD-45C8-9E05-65E071EDAFD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2C58484-1CFD-45C8-9E05-65E071EDAFD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2C58484-1CFD-45C8-9E05-65E071EDAFD7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{99856BBB-84BE-474C-BDFB-1822A5DE1A1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{99856BBB-84BE-474C-BDFB-1822A5DE1A1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{99856BBB-84BE-474C-BDFB-1822A5DE1A1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{99856BBB-84BE-474C-BDFB-1822A5DE1A1A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{521EF6E4-11C2-42EE-BE02-0EAA5023527E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{521EF6E4-11C2-42EE-BE02-0EAA5023527E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{521EF6E4-11C2-42EE-BE02-0EAA5023527E}.Release|Any CPU.ActiveCfg = Release|Any CPU

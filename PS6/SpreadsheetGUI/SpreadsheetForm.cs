@@ -27,15 +27,15 @@ namespace Display
     public partial class SpreadsheetForm : Form
     {
 
-       /// <summary>
-       /// The controller for the spreadsheet
-       /// </summary>
+        /// <summary>
+        /// The controller for the spreadsheet
+        /// </summary>
         private Controller.SpreadsheetController controller;
 
         /// <summary>
         /// This is the spreadsheet that we use as most of our model.
         /// </summary>
-        private AbstractSpreadsheet spreadsheet;
+        private Spreadsheet spreadsheet;
 
         /// <summary>
         /// This dictionary helps convert cell names to row and column numbers.
@@ -48,11 +48,7 @@ namespace Display
         private bool KillForm;
 
 
-        //TODO: Delete
-        /// <summary>
-        /// Used for the background worker to prevent other work from happening.
-        /// </summary>
-        private Boolean currentlyWorking = false;
+
 
 
         /// <summary>
@@ -82,7 +78,7 @@ namespace Display
                 char uppercharshouldbestring = (char)(i + 65);
                 LetterToNumber.Add(uppercharshouldbestring.ToString(), i);
             }
-           
+
         }
 
         private void NetworkError()
@@ -95,7 +91,7 @@ namespace Display
             //update the spreadsheet view
             IEnumerable<string> cells = ss.GetNamesOfAllNonemptyCells();
 
-            foreach(string cell in cells)
+            foreach (string cell in cells)
             {
                 DisplayCellPanelValue(cell, ss.GetCellValue(cell).ToString());
             }
@@ -127,7 +123,7 @@ namespace Display
             PressEnter(e);
         }
 
-        
+
         /// <summary>
         /// Handles closing the spreadsheet from the menu bar.
         /// </summary>
@@ -150,7 +146,7 @@ namespace Display
             ClickHelp();
         }
 
-       
+
         /// <summary>
         /// Handles closing the current spreadsheet.
         /// </summary>
@@ -168,8 +164,7 @@ namespace Display
         #region Spreadsheet Helpers
 
 
-        //TODO: Move to Spreadsheet controller
-        
+
 
         /// <summary>
         /// This converts the index of the row and column to a string representation
@@ -206,7 +201,7 @@ namespace Display
             string name = ColRowToCellName(col, row);
             string content = spreadsheet.GetCellContents(name).ToString();
             string value = spreadsheet.GetCellValue(name).ToString();
-            
+
             contentTextBox.Text = content;
             valueTextBox.Text = value;
             nameTextBox.Text = name;
@@ -345,136 +340,30 @@ namespace Display
         /// <param name="e"></param>
         private void PressEnter(KeyEventArgs e)
         {
-            // TODO: what happens here if currentlyWorking? Why have a background worker??
-            //if there is an available background worker
-            if (!currentlyWorking)
+            //if enter was pressed while control was on panel
+            if (e.KeyValue == 13)
             {
-                //if enter was pressed while control was on panel
-                if (e.KeyValue == 13)
+                int col, row;
+                spreadsheetPanel1.GetSelection(out col, out row);
+                string cellName = ColRowToCellName(col, row);
+
+                string contents = contentTextBox.Text;
+
+                try
                 {
-                    //currentlyWorking = true;
-                    //backgroundWorker1.RunWorkerAsync();
-
-                    int col, row;
-                    spreadsheetPanel1.GetSelection(out col, out row);
-                    string cellName = ColRowToCellName(col, row);
-
-                    string contents = contentTextBox.Text;
-
                     //  process update
                     controller.ProcessEdit(cellName, contents);
-                    
+                }
+                catch(SpreadsheetUtilities.FormulaFormatException)
+                {
+                    MessageBox.Show("The formula entered in cell" + cellName + " is invalid. Please check that all formulas are formatted " +
+                        "correctly." , "Formula Format Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+
         }
-
-
-       
 
         #endregion
-
-        ///TODO: figure out what goes in controller and what goes in form
-        /// <summary>
-        /// This private method is called when enter is pressed allowing for updates to take place while
-        /// the user still has access to the spreadsheet.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BackgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
-        {
-        //    int col;
-        //    int row;
-        //    string cellName;
-            
-        //    spreadsheetPanel1.GetSelection(out col, out row);
-        //    cellName = ColRowToCellName(col, row);
-            
-        //    ////this allows the selection to be checked after the work is done so the text boxes are not updated if the selection changes
-        //    //startWorkCellName = cellName;
-        //    //string content = contentTextBox.Text;
-        //    //string currentCellEvaluating = cellName;
-
-        //    //this updates the spreadsheet panel and spreadsheet values of all the dependent cells
-        //    try
-        //    {
-        //        // spreadsheet.GetDirectDependents 
-        //        // spreadsheet.SetContentsOfCell(cellName, contentTextBox.Text) updates the backing spreadsheet and returns set of changed cells
-        //        // We want the return value of this method, but we don't want it to actually change the backing spreadsheet
-        //        // We only want the backing spreadsheet to change when the server tells us to change it
-        //        // send those changes to the server
-
-        //        // Parse the content of the cell, check for errors, and update the dependency graph
-               
-
-        //        // Get the dependents
-
-        //        // Send to the server
-
-        //        // (might) need this foreach
-        //        //Should we be keeping a local copy of the spreadsheet that the server does not have?
-        //        foreach (string newCellName in spreadsheet.SetContentsOfCell(cellName, contentTextBox.Text))
-        //        {
-        //           // currentCellEvaluating = newCellName;
-        //            string value = spreadsheet.GetCellValue(newCellName).ToString();
-        //            controller.FormulaErrorCheck(ref value);
-
-        //            //first cell
-        //            if (cellName.Equals(newCellName))
-        //            {
-        //                selectedCellValue = value;
-        //            }
-
-        //            // TODO: remove -- we should only display what the server sends to us(?)
-        //            DisplayCellPanelValue(newCellName, value);
-        //        }
-
-                
-        //    }
-        //    // TODO: let server detect circular dependency
-        //    catch (CircularException)
-        //    {
-        //        WarningDialogBox("The formula entered would cause a circular dependency at cell " + cellName, "CircularException at cell: " + cellName);
-        //    }
-        //    catch (SpreadsheetUtilities.FormulaFormatException)
-        //    {
-        //        WarningDialogBox("The formula at " + cellName + " entered was not formatted correctly", "FormulaFormatException at cell: " + cellName);
-        //    }
-        }
-
-        ///// TODO: get rid of background worker
-        ///// <summary>
-        ///// this background worker does all the work required for async evaluating
-        ///// </summary>
-        ///// <param name="sender"></param>
-        ///// <param name="e"></param>
-       private void BackgroundWorker1_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
-        {
-        //    //get the col and row of the selected cell
-        //    spreadsheetPanel1.GetSelection(out int col, out int row);
-        //    finishWorkCellName = ColRowToCellName(col, row);
-
-        //    //if the selection has not changed since the start of the work
-        //    if (startWorkCellName.Equals(finishWorkCellName))
-        //    {
-        //        //change content and value 
-        //        contentTextBox.SelectionStart = contentTextBox.Text.Length;
-        //        valueTextBox.Text = selectedCellValue;
-               
-        //        // moves the cursor down
-        //        if (row != 98)
-        //        {
-        //            spreadsheetPanel1.SetSelection(col, row + 1);
-        //            row = row + 1;
-        //        }
-                
-        //        DisplaySelection(spreadsheetPanel1);
-        //        contentTextBox.SelectionStart = contentTextBox.Text.Length;
-        //    }
-
-        //    //now more work can be done!
-        //    currentlyWorking = false;
-        }
- 
 
         /// <summary>
         /// this event is fired when the 
@@ -486,11 +375,29 @@ namespace Display
             controller.SendUndo();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void RevertButton_Click(object sender, EventArgs e)
         {
             spreadsheetPanel1.GetSelection(out int col, out int row);
             string cellName = ColRowToCellName(col, row);
             controller.SendRevert(cellName);
+        }
+
+        /// <summary>
+        /// Event handler for the TextChanged event
+        /// Displays the content box elements in the spreadsheet as they are being typed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void contentTextBox_TextChanged(object sender, EventArgs e)
+        {
+            spreadsheetPanel1.GetSelection(out int col, out int row);
+            string cellName = ColRowToCellName(col, row);
+            DisplayCellPanelValue(cellName, contentTextBox.Text);
         }
     }
 }

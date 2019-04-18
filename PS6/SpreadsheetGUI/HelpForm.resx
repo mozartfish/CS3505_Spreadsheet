@@ -122,60 +122,51 @@
   </metadata>
   <data name="richTextBox1.Text" xml:space="preserve">
     <value>Spreadsheet Help
-Authors: Carina Imburgia and Aaron Carlisle
+Authors: Carina Imburgia, Aaron Carlisle, Joanna Lowry, Cole Jacobs
 
 Table of Contents:
 
 a. Introduction
 b. Basic spreadsheet functionality
 c. Mathematical functionality
-d. Open/Save
-e. Undo
-f. Verison
+d. Undo
+e. Revert
 
 
 a. Introduction
 
    This app provides a basic spreadsheet to the user with the ability to add and update data within
-cells, perform mathamatical operations with built-in formula evaluation, and save data for later use.
-Read/write functionality is also included. Contents of cells will be error checked and updated 
-accordingly along with any dependent cells. 
+cells, perform mathematical operations with built-in formula evaluation, and save data to a server for later use.
+Contents of cells will be error checked and updated accordingly along with any dependent cells. 
 
 b. Basic spreadsheet functionality
 
    Click on or toggle through cells using the arrow keys. To update a cell's contents, simply edit the 
 "contents" text bar (pre-selected) and when finished press enter. Cell name and value are pre-populated in 
-the upper part of the spreadsheet. Error checking is incoperated in the spreadsheet and the user will be
+the upper part of the spreadsheet. Error checking is incorperated in the spreadsheet and the user will be
 notified of any invaid updates.
 
 c. Mathematical functionality
 
-   Cells may be updated with formulas. All formulas must obide by valid order of operations and may
-contain and real number or scientific notation (i.e 5E-3). Formulas may refernce other formulas via use
-of variables. A valid variable must directly or indirectly refernece a cell with a number as its contents. 
-For example, a valid vaiable must contain one case insensitive letter followed by one number 1-99. To 
+   Cells may be updated with formulas. All formulas must abide by valid order of operations and may
+contain any real number or scientific notation (i.e 5E-3). Formulas may reference other formulas with the use
+of variables. A valid variable must directly or indirectly reference a cell with a number as its contents. 
+For example, a valid variable must contain one case insensitive letter followed by one number 1-99. To 
 obtain an evaluated cell value, formulas must be prefaced with "=", e.g =A1+5. Evaluation will then happen
 upon pressing enter. Value will be displayed above and also in the cell itself. Divide by zero and undefined
 varibale operations are not supported and will result in a spreadsheet error.
 
-d.Open/Save
+d. Undo
 
-   File save and open functionality is supported through the menu bar. Load saved work or save updated
-work by pressing the corresponding drop downs in the file menu. File type SPRD is default, however most 
-txt formats are supported. Error checking and overwrite notifications will ensure no unintential data loss. 
+   The Undo button reverses changes one at at time. This  functionality is usable once you add data 
+to the spreadsheet, by pressing the Undo button in the top right. You are able to undo all the way back to the 
+first change made to the spreadsheet.
 
-e. Undo
-
-   This  functionality is usable once you add data to the spreadsheet, by pressing the Undo button in the
- top right. You are able to revert all the way back to the first change made to the spreadsheet.
-
-f. Visualizer
-
-  This is a fun relaxing bonus feature to try out. To begin the program, simply select "Visualize" from the 
-menu bar. Click on or arrow-key through any cell you want to fill in the background with a randomly
-generated color. In that same menu, click on clear to revert back to a plain spreadsheet. Data will not 
-be lost with this feature.
+e. Revert
+  The Revert button reverts the contents of the selelected cell.  
   
-g. Version 1.0 10/21/2018</value>
+  
+Version 1.0 10/21/2018
+Version 1.1 04/16/2019</value>
   </data>
 </root>

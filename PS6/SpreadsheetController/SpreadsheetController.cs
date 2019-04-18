@@ -234,9 +234,9 @@ namespace Controller
                 if(message[0] == '{' && message[message.Length - 3] == '}')
                 {
                     JObject obj = JObject.Parse(message);
-                    JToken listToken = obj["list"]; 
+                    JToken listToken = obj["type"]; 
                     
-                    if(listToken != null)
+                    if(listToken.ToString() == "list")
                     {
                         SpreadsheetList list = JsonConvert.DeserializeObject<SpreadsheetList>(message);
                         foreach(string spreadsheet in list.spreadsheets)
@@ -286,9 +286,9 @@ namespace Controller
                 if (message[0] == '{' && message[message.Length - 3] == '}')
                 {
                     JObject obj = JObject.Parse(message);
-                    JToken errorToken = obj["error"]; 
+                    JToken messageToken = obj["type"]; 
 
-                    if (errorToken != null) // Invalid authorization error occurred! 
+                    if (messageToken.ToString() == "error") // Invalid authorization error occurred! 
                     {
                         Error error = JsonConvert.DeserializeObject<Error>(message);
 
@@ -298,9 +298,8 @@ namespace Controller
                     
                     else
                     {
-                        JToken sendToken = obj["full send"];
 
-                        if (sendToken != null)
+                        if (messageToken.ToString() == "full send")
                         {
                             FullSend fullSend = JsonConvert.DeserializeObject<FullSend>(message);
 
@@ -348,17 +347,16 @@ namespace Controller
                 if (message[0] == '{' && message[message.Length - 3] == '}')
                 {
                     JObject obj = JObject.Parse(message);
-                    JToken sendToken = obj["full send"]; 
-                    JToken errorToken = obj["error"];
+                    JToken messageToken = obj["type"]; 
 
-                    if(errorToken !=null)
+                    if(messageToken.ToString() == "error")
                     {
                         Error error = JsonConvert.DeserializeObject<Error>(message);
                         ErrorOccured(error.code, error.source);
                         Networking.GetData(ss);
                         return;
                     }
-                    else if(sendToken != null)
+                    else if(messageToken.ToString() == "full send")
                     {
                         FullSend fullSend = JsonConvert.DeserializeObject<FullSend>(message);
 
@@ -384,16 +382,17 @@ namespace Controller
         /// <param name="contents"></param>
         public void ProcessEdit(string cellName, string contents)
         {
+            IEnumerable<string> dependents = new HashSet<string>();
             try
             {
-                IEnumerable<string> dependents = new HashSet<string>();
                 dependents = spreadsheet.ParseContents(cellName, contents);
-                SendEdit(cellName, contents, dependents);
             }
             catch (SpreadsheetUtilities.FormulaFormatException e) 
             {
                 throw new SpreadsheetUtilities.FormulaFormatException(e.Message);
             }
+
+            SendEdit(cellName, contents, dependents);
         }
 
         /// <summary>
@@ -486,12 +485,10 @@ namespace Controller
         /// Checks if the updated value is a formula error and displays that if necessary.
         /// </summary>
         /// <param name="value">The cell value to check.</param>
-        public void FormulaErrorCheck(ref String value)
+        public bool FormulaErrorCheck(ref String value)
         {
-            if (value.Equals("SpreadsheetUtilities.FormulaError"))
-            {
-                value = "FormulaError";
-            }
+           
+            return value.Equals("SpreadsheetUtilities.FormulaError");
         }
         #endregion
     }
