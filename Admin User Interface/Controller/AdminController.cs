@@ -39,6 +39,10 @@ namespace Controller
 
         public event UpdateInterfaceHandler UpdateInterface;
 
+        public delegate void ShutdownHandler();
+
+        public event ShutdownHandler ShutdownServer;
+
         #endregion
 
         /// <summary>
@@ -169,15 +173,21 @@ namespace Controller
         private object Deserialize(string jsonString)
         {
             JObject jsonObject = JObject.Parse(jsonString);
-            if (!(jsonObject["SSname"] is null))
+            if ((string)jsonObject["type"] == "SS")
             {
                 //deserialize spreadsheet
                 return JsonConvert.DeserializeObject<Spreadsheet>(jsonString);
             }
-            else if (!(jsonObject["username"] is null))
+            else if ((string)jsonObject["type"] == "user")
             {
                 //deserialize user
                 return JsonConvert.DeserializeObject<User>(jsonString);
+
+            }
+            else if ((string)jsonObject["type"] == "shutdown")
+            {
+                ShutdownServer?.Invoke();
+                return null;
             }
             else
             {

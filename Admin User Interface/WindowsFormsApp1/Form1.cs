@@ -30,6 +30,8 @@ namespace WindowsFormsApp1
             // Register handlers
             controller.UpdateInterface += HandleUpdateInterface;
 
+            controller.ShutdownServer += RecieveShutDownEcho;
+
             //Testing TODO: remove this
             for (int i = 0; i < 10; i++)
             {
@@ -110,8 +112,11 @@ namespace WindowsFormsApp1
 
         private void RecieveShutDownEcho()
         {
-            currentStatusList.Items.Clear();
-            updateList.Items.Clear();
+            this.Invoke(new MethodInvoker(() =>
+            {
+                currentStatusList.Items.Clear();
+                updateList.Items.Clear();
+            }));            
 
             //check if the user man is open
             if (userMan != null)
