@@ -68,7 +68,7 @@ namespace WindowsFormsApp1
         {
             string username = CreateUser_User.Text;
             string password = CreateUser_Pass.Text;
-            string workingOn = "";// CreateUser_WorkingOn.Text;
+            string workingOn = CreateUser_WorkingOn.Text;
             controller.SendUserChange(username, password, workingOn, 1);
         }
 
@@ -76,7 +76,7 @@ namespace WindowsFormsApp1
         {
             string username = ChangeUser_User.Text;
             string password = ChangeUser_Pass.Text;
-            string workingOn = "";// ChangeUser_WorkingOn.Text;
+            string workingOn = ChangeUser_WorkingOn.Text;
             controller.SendUserChange(username, password, workingOn, 0);
         }
 
@@ -84,7 +84,7 @@ namespace WindowsFormsApp1
         {
             string username = DeleteUser_User.Text;
             string password = DeleteUser_Pass.Text;
-            string workingOn = "";// DeleteUser_WorkingOn.Text;
+            string workingOn = DeleteUser_WorkingOn.Text;
             controller.SendUserChange(username, password, workingOn, -1);
         }
         

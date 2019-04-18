@@ -50,9 +50,11 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.CreateUser_WorkingOn = new System.Windows.Forms.TextBox();
             this.textBox6 = new System.Windows.Forms.TextBox();
-            this.textBox9 = new System.Windows.Forms.TextBox();
+            this.ChangeUser_WorkingOn = new System.Windows.Forms.TextBox();
+            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.DeleteUser_WorkingOn = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // listBox1
@@ -88,7 +90,7 @@
             // 
             // DeleteUser_Pass
             // 
-            this.DeleteUser_Pass.Location = new System.Drawing.Point(496, 285);
+            this.DeleteUser_Pass.Location = new System.Drawing.Point(496, 290);
             this.DeleteUser_Pass.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DeleteUser_Pass.Name = "DeleteUser_Pass";
             this.DeleteUser_Pass.Size = new System.Drawing.Size(192, 20);
@@ -96,7 +98,7 @@
             // 
             // DeleteUser_User
             // 
-            this.DeleteUser_User.Location = new System.Drawing.Point(496, 266);
+            this.DeleteUser_User.Location = new System.Drawing.Point(496, 242);
             this.DeleteUser_User.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.DeleteUser_User.Name = "DeleteUser_User";
             this.DeleteUser_User.Size = new System.Drawing.Size(192, 20);
@@ -128,17 +130,19 @@
             // 
             // richTextBox2
             // 
+            this.richTextBox2.BackColor = System.Drawing.SystemColors.ControlDark;
             this.richTextBox2.Enabled = false;
-            this.richTextBox2.Location = new System.Drawing.Point(448, 231);
+            this.richTextBox2.Location = new System.Drawing.Point(448, 220);
             this.richTextBox2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.richTextBox2.Name = "richTextBox2";
             this.richTextBox2.ReadOnly = true;
-            this.richTextBox2.Size = new System.Drawing.Size(348, 33);
+            this.richTextBox2.Size = new System.Drawing.Size(348, 18);
             this.richTextBox2.TabIndex = 17;
             this.richTextBox2.Text = "Delete User";
             // 
             // richTextBox3
             // 
+            this.richTextBox3.BackColor = System.Drawing.SystemColors.ControlDark;
             this.richTextBox3.Enabled = false;
             this.richTextBox3.Location = new System.Drawing.Point(448, 121);
             this.richTextBox3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
@@ -151,7 +155,7 @@
             // textBox7
             // 
             this.textBox7.Enabled = false;
-            this.textBox7.Location = new System.Drawing.Point(448, 266);
+            this.textBox7.Location = new System.Drawing.Point(448, 242);
             this.textBox7.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBox7.Name = "textBox7";
             this.textBox7.ReadOnly = true;
@@ -162,7 +166,7 @@
             // textBox8
             // 
             this.textBox8.Enabled = false;
-            this.textBox8.Location = new System.Drawing.Point(448, 285);
+            this.textBox8.Location = new System.Drawing.Point(448, 290);
             this.textBox8.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBox8.Name = "textBox8";
             this.textBox8.ReadOnly = true;
@@ -279,13 +283,13 @@
             this.textBox3.TabIndex = 34;
             this.textBox3.Text = "SS:";
             // 
-            // textBox5
+            // CreateUser_WorkingOn
             // 
-            this.textBox5.Location = new System.Drawing.Point(496, 65);
-            this.textBox5.Margin = new System.Windows.Forms.Padding(2);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(192, 20);
-            this.textBox5.TabIndex = 33;
+            this.CreateUser_WorkingOn.Location = new System.Drawing.Point(496, 65);
+            this.CreateUser_WorkingOn.Margin = new System.Windows.Forms.Padding(2);
+            this.CreateUser_WorkingOn.Name = "CreateUser_WorkingOn";
+            this.CreateUser_WorkingOn.Size = new System.Drawing.Size(192, 20);
+            this.CreateUser_WorkingOn.TabIndex = 33;
             // 
             // textBox6
             // 
@@ -298,23 +302,44 @@
             this.textBox6.TabIndex = 36;
             this.textBox6.Text = "SS:";
             // 
-            // textBox9
+            // ChangeUser_WorkingOn
             // 
-            this.textBox9.Location = new System.Drawing.Point(496, 165);
-            this.textBox9.Margin = new System.Windows.Forms.Padding(2);
-            this.textBox9.Name = "textBox9";
-            this.textBox9.Size = new System.Drawing.Size(192, 20);
-            this.textBox9.TabIndex = 35;
+            this.ChangeUser_WorkingOn.Location = new System.Drawing.Point(496, 165);
+            this.ChangeUser_WorkingOn.Margin = new System.Windows.Forms.Padding(2);
+            this.ChangeUser_WorkingOn.Name = "ChangeUser_WorkingOn";
+            this.ChangeUser_WorkingOn.Size = new System.Drawing.Size(192, 20);
+            this.ChangeUser_WorkingOn.TabIndex = 35;
+            // 
+            // textBox5
+            // 
+            this.textBox5.Enabled = false;
+            this.textBox5.Location = new System.Drawing.Point(448, 266);
+            this.textBox5.Margin = new System.Windows.Forms.Padding(2);
+            this.textBox5.Name = "textBox5";
+            this.textBox5.ReadOnly = true;
+            this.textBox5.Size = new System.Drawing.Size(46, 20);
+            this.textBox5.TabIndex = 38;
+            this.textBox5.Text = "SS:";
+            // 
+            // DeleteUser_WorkingOn
+            // 
+            this.DeleteUser_WorkingOn.Location = new System.Drawing.Point(496, 266);
+            this.DeleteUser_WorkingOn.Margin = new System.Windows.Forms.Padding(2);
+            this.DeleteUser_WorkingOn.Name = "DeleteUser_WorkingOn";
+            this.DeleteUser_WorkingOn.Size = new System.Drawing.Size(192, 20);
+            this.DeleteUser_WorkingOn.TabIndex = 37;
             // 
             // ManageUsers
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.textBox6);
-            this.Controls.Add(this.textBox9);
-            this.Controls.Add(this.textBox3);
             this.Controls.Add(this.textBox5);
+            this.Controls.Add(this.DeleteUser_WorkingOn);
+            this.Controls.Add(this.textBox6);
+            this.Controls.Add(this.ChangeUser_WorkingOn);
+            this.Controls.Add(this.textBox3);
+            this.Controls.Add(this.CreateUser_WorkingOn);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox13);
@@ -368,8 +393,10 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox CreateUser_WorkingOn;
         private System.Windows.Forms.TextBox textBox6;
-        private System.Windows.Forms.TextBox textBox9;
+        private System.Windows.Forms.TextBox ChangeUser_WorkingOn;
+        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox DeleteUser_WorkingOn;
     }
 }
