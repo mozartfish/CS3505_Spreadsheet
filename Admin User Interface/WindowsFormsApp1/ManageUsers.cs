@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Controller;
+using Model;
 
 namespace WindowsFormsApp1
 {
@@ -41,6 +42,8 @@ namespace WindowsFormsApp1
             InitializeComponent();
             controller = contr;
 
+            controller.UpdateInterface += HandleUpdateInterface;
+
             RedrawUsersList();
 
             //TODO: initialize all the data for the acct man here!!
@@ -65,21 +68,24 @@ namespace WindowsFormsApp1
         {
             string username = CreateUser_User.Text;
             string password = CreateUser_Pass.Text;
-            controller.SendUserChangePass(username, password, 1);
+            string workingOn = CreateUser_WorkingOn.Text;
+            controller.SendUserChange(username, password, workingOn, 1);
         }
 
         private void ChangePassword_button(object sender, EventArgs e)
         {
             string username = ChangeUser_User.Text;
             string password = ChangeUser_Pass.Text;
-            controller.SendUserChangePass(username, password, 0);
+            string workingOn = ChangeUser_WorkingOn.Text;
+            controller.SendUserChange(username, password, workingOn, 0);
         }
 
         private void DeleteUser_button(object sender, EventArgs e)
         {
             string username = DeleteUser_User.Text;
             string password = DeleteUser_Pass.Text;
-            controller.SendUserChangePass(username, password, -1);
+            string workingOn = DeleteUser_WorkingOn.Text;
+            controller.SendUserChange(username, password, workingOn, -1);
         }
         
 
@@ -131,6 +137,33 @@ namespace WindowsFormsApp1
                 //listBox1.Items.Add("Hi");
                 //listBox1.DataSource += "Hi";
             }
+        }
+
+        /// <summary>
+        /// Event handler receiving User and Spreadsheet data from Admin Controller
+        /// Update the GUI with new data    
+        /// </summary>
+        /// <param name="users"></param>
+        /// <param name="spreadsheet"></param>
+        public void HandleUpdateInterface(Dictionary<string, User> users, Dictionary<string, Spreadsheet> spreadsheets)
+        {
+
+            // Update the Update column with Spreadsheet data
+            this.Invoke(new MethodInvoker(() =>
+            {
+                if (listBox1.Items.Count > 0)
+                {
+                    listBox1.Items.Clear();
+                }
+                foreach (Spreadsheet ss in spreadsheets.Values)
+                {
+                    if (ss.GetStatus() == 2)
+                    {
+                        //Console.WriteLine(ss.GetName());
+                        listBox1.Items.Add(ss.GetName());
+                    }
+                }
+            }));
         }
     }
 }

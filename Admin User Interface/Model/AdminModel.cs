@@ -20,16 +20,13 @@ namespace Model
             usersDict = new Dictionary<string, User>();
         }
 
-        #region 
-        public Dictionary<string, User> GetUsersDict()
+        public void CleanModel()
         {
-            return usersDict;
+            ssDict.Clear();
+            usersDict.Clear();
         }
 
-        public List<Spreadsheet> GetSSList()
-        {
-            return ssDict.Values.ToList();
-        }
+        #region Getters
 
         public Spreadsheet GetSS(string ssName)
         {
@@ -44,90 +41,99 @@ namespace Model
         {
             return ssDict;
         }
+        public List<Spreadsheet> GetSSList()
+        {
+            return ssDict.Values.ToList();
+        }
 
         public List<User> GetUsersList()
         {
             return usersDict.Values.ToList();
         }
 
+        public Dictionary<string, User> GetUsersDict()
+        {
+            return usersDict;
+        }
+
         //public List<User> GetOrderedUsersList()
-        public List<string> GetOrderedUsersList()
-        {
-            //List<User> activeList = new List<User>();
-            //List<User> inactiveList = new List<User>();
+        //public List<string> GetOrderedUsersList()
+        //{
+        //    //List<User> activeList = new List<User>();
+        //    //List<User> inactiveList = new List<User>();
 
-            //foreach (KeyValuePair<string, User> entry in usersDict)
-            //{
-            //    if (usersDict[entry.Key].GetActive() == 1)
-            //    {
-            //        activeList.Add(entry.Value);
-            //    }
-            //    else
-            //    {
-            //        inactiveList.Add(entry.Value);
-            //    }
-            //}
+        //    //foreach (KeyValuePair<string, User> entry in usersDict)
+        //    //{
+        //    //    if (usersDict[entry.Key].GetActive() == 1)
+        //    //    {
+        //    //        activeList.Add(entry.Value);
+        //    //    }
+        //    //    else
+        //    //    {
+        //    //        inactiveList.Add(entry.Value);
+        //    //    }
+        //    //}
 
-            //activeList.AddRange(inactiveList);
+        //    //activeList.AddRange(inactiveList);
 
-            //return activeList;
+        //    //return activeList;
 
-            List<string> activeList = new List<string>();
-            List<string> inactiveList = new List<string>();
+        //    List<string> activeList = new List<string>();
+        //    List<string> inactiveList = new List<string>();
 
-            foreach (KeyValuePair<string, User> entry in usersDict)
-            {
-                if (usersDict[entry.Key].GetActive() == 1)
-                {
+        //    foreach (KeyValuePair<string, User> entry in usersDict)
+        //    {
+        //        if (usersDict[entry.Key].GetActive() == 1)
+        //        {
 
-                    string user = entry.Value.GetUsername() + "  " + entry.Value.GetPassword() + "   " + entry.Value.GetActive() + " " + entry.Value.GetWorkingOn().ToString();
+        //            string user = entry.Value.GetUsername() + "  " + entry.Value.GetPassword() + "   " + entry.Value.GetActive() + " " + entry.Value.GetWorkingOn().ToString();
                     
-                    activeList.Add(user);
+        //            activeList.Add(user);
 
-                }
-                else
-                {
-                    string user = entry.Value.GetUsername() + "  " + entry.Value.GetPassword() + "   " + entry.Value.GetActive();
+        //        }
+        //        else
+        //        {
+        //            string user = entry.Value.GetUsername() + "  " + entry.Value.GetPassword() + "   " + entry.Value.GetActive();
 
-                    inactiveList.Add(user);
-                }
-            }
+        //            inactiveList.Add(user);
+        //        }
+        //    }
 
-            activeList.AddRange(inactiveList);
+        //    activeList.AddRange(inactiveList);
 
-            return activeList;
-        }
+        //    return activeList;
+        //}
 
 
 
-        public List<string> GetOrderedSSList()
-        {
+        //public List<string> GetOrderedSSList()
+        //{
 
-            List<string> activeList = new List<string>();
-            List<string> inactiveList = new List<string>();
+        //    List<string> activeList = new List<string>();
+        //    List<string> inactiveList = new List<string>();
 
-            foreach (KeyValuePair<string, User> entry in usersDict)
-            {
-                if (usersDict[entry.Key].GetActive() == 1)
-                {
+        //    foreach (KeyValuePair<string, User> entry in usersDict)
+        //    {
+        //        if (usersDict[entry.Key].GetActive() == 1)
+        //        {
 
-                    string user = entry.Value.GetUsername() + "  " + entry.Value.GetPassword() + "   " + entry.Value.GetActive() + " " + entry.Value.GetWorkingOn().ToString();
+        //            string user = entry.Value.GetUsername() + "  " + entry.Value.GetPassword() + "   " + entry.Value.GetActive() + " " + entry.Value.GetWorkingOn().ToString();
 
-                    activeList.Add(user);
+        //            activeList.Add(user);
 
-                }
-                else
-                {
-                    string user = entry.Value.GetUsername() + "  " + entry.Value.GetPassword() + "   " + entry.Value.GetActive();
+        //        }
+        //        else
+        //        {
+        //            string user = entry.Value.GetUsername() + "  " + entry.Value.GetPassword() + "   " + entry.Value.GetActive();
 
-                    inactiveList.Add(user);
-                }
-            }
+        //            inactiveList.Add(user);
+        //        }
+        //    }
 
-            activeList.AddRange(inactiveList);
+        //    activeList.AddRange(inactiveList);
 
-            return activeList;
-        }
+        //    return activeList;
+        //}
 
 
 
@@ -140,7 +146,7 @@ namespace Model
             }
             return new User(username);
         }
-        #endregion
+        #endregion Getters
 
         #region Setters
         public void SetSS(string ssName, Spreadsheet ss)
@@ -158,6 +164,7 @@ namespace Model
             User use = new User();
             use.SetUsername("user");
             use.SetPassword("pass");
+            use.SetWorkingOn("working on this one");
             use.SetActive(1);
 
             usersDict.Add(user, use);

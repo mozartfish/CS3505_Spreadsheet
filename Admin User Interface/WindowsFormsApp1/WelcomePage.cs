@@ -21,23 +21,25 @@ namespace WindowsFormsApp1
             InitializeComponent();
             controller = new AdminController();
 
+            //Testing TODO: remove this
             for (int i = 0; i < 10; i++)
             {
                 controller.TestAddUse(i.ToString());
+                controller.TestAddSS(i.ToString());
             }
         }
 
         private void ConnectButton_click(object sender, EventArgs e)
         {
-            string hostname = IP.Text;
-            string port = Port.Text;//TODO: NOT USED YET!!
+            //    string hostname = IP.Text;
+            //    string port = Port.Text;//TODO: NOT USED YET!!
 
-            //begin first connection
-            //STUB: controller must inform welcomepage that theres a connection success, to fire the connection successful
-            hostname = "localhost";
-            controller.Connect(hostname);
+            //    //begin first connection
+            //    //STUB: controller must inform welcomepage that theres a connection success, to fire the connection successful
+            //    //hostname = "localhost";
+            //    controller.Connect(hostname);
 
-            ConnectSuccessful();
+            //    ConnectSuccessful();
         }
 
 
@@ -46,26 +48,27 @@ namespace WindowsFormsApp1
         /// </summary>
         private void ConnectSuccessful()
         {
-            form = new Form1(controller);
-            form.Show();
+            //form = new Form1(controller);
+            //form.Show();
 
-            this.Hide();//hide the welcome page until the admin wants to switch servers
+            //this.Hide();//hide the welcome page until the admin wants to switch servers
         }
 
         /// <summary>
         /// Should be invoked by an event of admin clicking the top right x
         /// </summary>
-        public void KillProgram()
+        public void KillForm()
         {
-            this.Close();
+            //form.Close();
+            //this.Show();
         }
 
         public void SwitchServer()
         {
-            //kill the previous gui
-            form.Close();
-            //allow the user to establish connection to another server.
-            this.Show();
+            ////kill the previous gui
+            //form.Close();
+            ////allow the user to establish connection to another server.
+            //this.Show();
         }
 
     }

@@ -38,6 +38,7 @@ namespace Controller
         public delegate void UpdateInterfaceHandler(Dictionary<string, User> users, Dictionary<string, Spreadsheet> spreadsheets);
 
         public event UpdateInterfaceHandler UpdateInterface;
+
         #endregion
 
         /// <summary>
@@ -56,16 +57,12 @@ namespace Controller
 
             #endregion Gui Var Initialize
 
-            // testing
-            //Spreadsheet spreadsheet = new Spreadsheet();
-            //spreadsheet.SetName("ss1");
-            //spreadsheet.AddUsers("Peter Jensen");
-            //model.SetSS("ss1", spreadsheet);
+            // testing TODO: remove this 
             User user = new User();
             user.SetUsername("Peter Jensen");
             user.SetPassword("12345678");
             user.SetActive(1);
-            user.AddWorkingOn("ss1.sprd");
+            user.SetWorkingOn("ss1.sprd");
             user.SetStatus(0);
         }
 
@@ -75,9 +72,9 @@ namespace Controller
         /// Start the network connection
         /// </summary>
         /// <param name="hostName"></param>
-        public void Connect(string hostName)
+        public void Connect(string hostName, int port)
         {
-            this.server = Networking.ConnectToServer(hostName, FirstContact);
+            this.server = Networking.ConnectToServer(hostName, port, FirstContact);
         }
 
         /// <summary>
@@ -213,16 +210,30 @@ namespace Controller
         /// </summary>
         private void SendOpenMessage()
         {
-            string msg = "admin\n";
+            StringBuilder messageBuilder = new StringBuilder();
 
-            Networking.Send(server, msg);
+            string msg = "admin\n";
+            ShutAndAdmin shut = new ShutAndAdmin();
+            shut.SetShutAndAdminType(msg);
+
+            string serializedObj = JsonConvert.SerializeObject(shut) + "\n\n";
+            messageBuilder.Append(serializedObj);
+
+            Networking.Send(server, messageBuilder.ToString());
         }
 
         private void SendShutDownMessage()
         {
-            string msg = "ShutDown\n";
+            StringBuilder messageBuilder = new StringBuilder();
 
-            Networking.Send(server, msg);
+            string msg = "Shutdown\n";
+            ShutAndAdmin shut = new ShutAndAdmin();
+            shut.SetShutAndAdminType(msg);
+
+            string serializedObj = JsonConvert.SerializeObject(shut) + "\n\n";
+            messageBuilder.Append(serializedObj);
+
+            Networking.Send(server, messageBuilder.ToString());
         }
 
         private void SendMessage()
@@ -238,7 +249,8 @@ namespace Controller
         {
             StringBuilder messageBuilder = new StringBuilder();
 
-            User user = model.GetUser(username);
+            User user = new User();
+            user.SetUsername(username);
             string serializedObj = JsonConvert.SerializeObject(user) + "\n\n";
             messageBuilder.Append(serializedObj);
 
@@ -252,12 +264,15 @@ namespace Controller
         /// <param name="username"></param>
         /// <param name="pass"></param>
         /// <param name="status"></param>
-        public void SendUserChangePass(string username, string pass, int status)
+        public void SendUserChange(string username, string pass, string workingOn, int status)
         {
             StringBuilder messageBuilder = new StringBuilder();
 
-            User user = model.GetUser(username);
+            User user = new User();
+            user.SetUsername(username);
+            user.SetUserType("user");
             user.SetPassword(pass);
+            user.SetWorkingOn(workingOn);
             user.SetStatus(status);
             string serializedObj = JsonConvert.SerializeObject(user) + "\n\n";
             messageBuilder.Append(serializedObj);
@@ -274,7 +289,10 @@ namespace Controller
         {
             StringBuilder messageBuilder = new StringBuilder();
 
-            Spreadsheet spreadsheet = model.GetSS(SSname);
+            Spreadsheet spreadsheet = new Spreadsheet();
+            spreadsheet.SetName(SSname);// model.GetSS(SSname);
+            spreadsheet.SetSSType("user");
+            spreadsheet.SetStatus(status);
             string serializedObj = JsonConvert.SerializeObject(spreadsheet) + "\n\n";
             messageBuilder.Append(serializedObj);
 
@@ -297,11 +315,6 @@ namespace Controller
         /// </summary>
         public void ShutDown()
         {
-            //TODO: stub! should contact the server and wait for a responce, then return and allow the gui to close
-
-
-
-
             string title = "WARNING";
             string text = "YOU ARE ABOUT TO SHUTDOWN THE SERVER,\nCLICK OK TO SHUT DOWN";
 
@@ -309,7 +322,14 @@ namespace Controller
             if (result == DialogResult.OK)
             {
                 //Send message to the server telling it to shut down 
+                //SendShutDownMessage();
+                CleanModel();
             }
+        }
+
+        public void CleanModel()
+        {
+            model.CleanModel();
         }
 
 
@@ -347,7 +367,13 @@ namespace Controller
         /// <returns></returns>
         public List<string> GetAllUsers()
         {
-            return model.GetOrderedUsersList();
+            List<string> list = new List<string>();
+            foreach (User user in model.GetUsersList())
+            {
+                list.Add(user.GetUsername() + "  ||  " + user.GetPassword() + "  ||  " + user.GetWorkingOn());
+            }
+            return list;
+            //return model.GetUsersList();
         }
 
         public void TestAddUse(string user)
@@ -390,7 +416,14 @@ namespace Controller
 
         public List<string> GetAllSS()
         {
-            return model.GetOrderedSSList();
+            List<Spreadsheet> list = model.GetSSList();
+            List<string> stringList = new List<string>();
+            foreach (Spreadsheet ss in list)
+            {
+                stringList.Add(ss.GetName());
+            }
+            return stringList;
+            //return model.GetOrderedSSList();
         }
 
         #endregion Spreadsheet Management
@@ -407,7 +440,6 @@ namespace Controller
 
 //HELP:
 /*
- * Shut down needs to send a message to the server to shut down, while blocking!!!
  * 
  * killing admin form should tell the server to close socket
  * 

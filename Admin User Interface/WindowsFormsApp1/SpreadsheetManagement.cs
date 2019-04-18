@@ -27,9 +27,9 @@ namespace WindowsFormsApp1
             InitializeComponent();
             controller = contr;
 
+            RedrawSSList();
 
             //TODO: set up the SSman here! looking at all the data structures and grabbing SS information
-
         }
 
         private void SpreadsheetManagement_FormClosing(object sender, FormClosingEventArgs e)
@@ -73,12 +73,11 @@ namespace WindowsFormsApp1
                 listBox1.Items.Clear();
             }
 
-            List<string> SSList = new List<string>();
-            SSList = controller.GetAllSS();
+            List<string> SSList = controller.GetAllSS();
 
-            foreach (string user in SSList)
+            foreach (string ss in SSList)
             {
-                listBox1.Items.Add(user);
+                listBox1.Items.Add(ss);
             }
         }
 
