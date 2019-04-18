@@ -16,12 +16,13 @@ namespace Controller
         }
 
 
-
+        //TODO: What is this? Why is this second AdminController class here?
 
 
 
         public void ShutDown()
         {
+
             //TODO: stub! should contact the server and wait for a responce, then return and allow the gui to close
         }
     }
