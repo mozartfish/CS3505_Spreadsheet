@@ -6,7 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AdminController
+namespace Controller
 {
 
     /// <summary>
@@ -109,7 +109,8 @@ namespace AdminController
     /// </summary>
     public static class Networking
     {
-        public const int DEFAULT_PORT = 2112;
+        //public const int DEFAULT_PORT = 2112;
+        public const int DEFAULT_PORT = 11000; // To test connection with fancy chat system
 
         /// <summary>
         /// Event that handles network errors
@@ -183,7 +184,7 @@ namespace AdminController
         /// <param name="hostName">server to connect to</param>
         /// <param name="MessageProcessor">message handler</param>
         /// <returns></returns>
-        public static Socket ConnectToServer(string hostName, NetworkAction MessageProcessor)
+        public static Socket ConnectToServer(string hostName, int port, NetworkAction MessageProcessor)
         {
             SocketState ss = new SocketState(null, -1, MessageProcessor);
 
@@ -198,7 +199,7 @@ namespace AdminController
                 Networking.MakeSocket(hostName, out socket, out ipAddress);
                 ss = new SocketState(socket, -1, MessageProcessor);
 
-                socket.BeginConnect(ipAddress, Networking.DEFAULT_PORT, ConnectedCallback, ss);
+                socket.BeginConnect(ipAddress, port, ConnectedCallback, ss);
                 return socket;
             }
             catch (SocketException)
@@ -307,6 +308,7 @@ namespace AdminController
         public static bool Send(Socket socket, string data)
         {
             byte[] messageBytes = Encoding.UTF8.GetBytes(data);
+            Console.WriteLine(data);
             try
             {
                 socket.BeginSend(messageBytes, 0, messageBytes.Length, SocketFlags.None, SendCallback, socket);

@@ -1,219 +1,241 @@
 ﻿using JsonClasses;
-//using Newtonsoft.Json;
+using System.Collections.Generic;
 using System;
 using System.Text;
 using System.Windows.Forms;
-
-//using AdminModel;
+using Controller;
+using Model;
 
 namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
-        public delegate void NameEventHandle();
-        public event NameEventHandle OpenNewAcctMan;
-        //public AdminLogic logic;
+        //public delegate void NameEventHandle();
+        //public event NameEventHandle OpenNewAcctMan;
+
+        private SpreadsheetManagement ssMan;
+        private ManageUsers userMan;
+        private AdminController controller;
+
 
         public Form1()
         {
             InitializeComponent();
-            //logic = new AdminLogic();
+            controller = new AdminController();
+
+            //Populate the lists with anything in the model
+            RedrawSSList();
+            RedrawUserList();
+            
+            // Register handlers
+            controller.UpdateInterface += HandleUpdateInterface;
+
+            //Testing TODO: remove this
+            for (int i = 0; i < 10; i++)
+            {
+                controller.TestAddUse(i.ToString());
+                controller.TestAddSS(i.ToString());
+            }
+
+            // Testing connection TODO: remove this here
+            //controller.Connect("localhost");
+        }
+
+        //public Form1()
+        //{
+        //    InitializeComponent();
+        //    controller = new AdminController();
 
 
-            // Test Scrolling Function - CurrentStatusList
-            //for (int i = 0; i < 1000; i++)
-            //{
-            //    currentStatusList.Items.Add(i.ToString());
-            //}
+        //    controller.UpdateInterface += HandleUpdateInterface;
+
+
+        //    // Register handlers
+        //    //controller.UpdateInterface += HandleUpdateInterface;
+
+        //    // Testing connection
+        //    //controller.Connect("localhost");
+        //}
+
+        /// <summary>
+        /// Event handler receiving User and Spreadsheet data from Admin Controller
+        /// Update the GUI with new data
+        /// </summary>
+        /// <param name="users"></param>
+        /// <param name="spreadsheet"></param>
+        public void HandleUpdateInterface(Dictionary<string, User> users, Dictionary<string, Spreadsheet> spreadsheets)
+        {
+            // Update the Current Status column with User data
+            this.Invoke(new MethodInvoker(() =>
+           {
+
+               RedrawUserList();
+
+               //if (currentStatusList.Items.Count > 0)
+               //{
+               //    currentStatusList.Items.Clear();
+               //}
+               //foreach (string username in users.Keys)
+               //{
+               //    //Console.WriteLine(username);
+               //    currentStatusList.Items.Add(username);
+               //}
+           }));
+
+            // Update the Update column with Spreadsheet data
+            this.Invoke(new MethodInvoker(() =>
+            {
+
+                RedrawSSList();
+
+                //if (updateList.Items.Count > 0)
+                //{
+                //    updateList.Items.Clear();
+                //}
+                //foreach (Spreadsheet ss in spreadsheets.Values)
+                //{
+                //    if (ss.GetStatus() == 2)
+                //    {
+                //        //Console.WriteLine(ss.GetName());
+                //        updateList.Items.Add(ss.GetName());
+                //    }
+                //}
+            }));
         }
 
         private void ShutDown(object sender, EventArgs e)
         {
-            //logic.ShutDownServer();
+            controller.ShutDown();
+        }
+
+        private void RecieveShutDownEcho()
+        {
+            currentStatusList.Items.Clear();
+            updateList.Items.Clear();
+
+            //check if the user man is open
+            if (userMan != null)
+            {
+                userMan.Close();
+            }
+
+            //check if the ssman is open
+            if (ssMan != null)
+            {
+                ssMan.Close();
+            }
+
+            controller.CleanModel();
         }
 
         private void AccountManagementButton(object sender, EventArgs e)
         {
-            //logic.OpenAcctManPage();
-            
+            if (controller.OpenAcctManPage())
+            {
+                userMan = new ManageUsers(controller);
+                userMan.Show();
+                controller.SetAcctManPageState(true);
+            }
         }
 
         private void SpreadsheetManagmentButton(object sender, EventArgs e)
         {
-            
+
+            //Copied from ^ switch to work for spreadhseet
+            if (controller.OpenSSManPage())
+            {
+                ssMan = new SpreadsheetManagement(controller);
+                ssMan.Show();
+                controller.SetSSManPageState(true);
+            }
+        }
+
+        private void RedrawSSList()
+        {
+            if (updateList.Items.Count > 0)
+            {
+                updateList.Items.Clear();
+            }
+
+            List<string> SSList = new List<string>();
+            SSList = controller.GetAllSS();
+
+            foreach (string user in SSList)
+            {
+                updateList.Items.Add(user);
+            }
+        }
+
+        private void RedrawUserList()
+        {
+            if (currentStatusList.Items.Count > 0)
+            {
+                currentStatusList.Items.Clear();
+            }
+
+            List<string> SSList = new List<string>();
+            SSList = controller.GetAllUsers();
+
+            foreach (string user in SSList)
+            {
+                currentStatusList.Items.Add(user);
+            }
+        }
+
+
+
+        private void UpdateList(Dictionary<string, User> users)
+        {
+            foreach (string username in users.Keys)
+            {
+                Console.WriteLine(username);
+                currentStatusList.Items.Add(username);
+            }
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-
+            RedrawSSList();
         }
 
-        private void textBox1_TextChanged_1(object sender, EventArgs e)
+        private void button6_Click(object sender, EventArgs e)
         {
-
+            for (int i = 0; i < 10; i++)
+            {
+                controller.TestAddUse(i.ToString());
+            }
         }
 
-        private void textBox2_TextChanged(object sender, EventArgs e)
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-
+            //Fire an event to the WelcomePage to 
+            //KillProgram();
         }
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+
+
+        public static int counter = 0;
+        private void TESTinsertingTopOfList(object sender, EventArgs e)
         {
-
+            updateList.Items.Insert(0, "ssname" + counter);
+            counter++;
         }
 
-        private void listBox2_SelectedIndexChanged_1(object sender, EventArgs e)
+        private void button8_Click(object sender, EventArgs e)
         {
+            string hostname = "localhost";
+            if (IP.Text != "")
+            {
+                hostname = IP.Text;
+            }
+            int port = 2112;
+            if (Port.Text != "")
+            {
+                int.TryParse(Port.Text, out port);
+            }
 
+            controller.Connect(hostname, port);
         }
-
-
-        //#region Json Shtuff
-
-        ///// <summary>
-        ///// This test is to try to send an open Json
-        ///// </summary>
-        ///// <param name="sender"></param>
-        ///// <param name="e"></param>
-        private void PretendSendToServer(object sender, EventArgs e)
-        {
-            //    string json = OpenMessageToJson("cool.sprd", "pajensen", "Doofus");
-            //    string nonJson = JsonToString(json);
-
-            //    Console.WriteLine(ParseString(nonJson));
-
-
-            //    //old version made strings, but they were dropping the last thing added to the string somehow, may still be used later 
-
-            //    //string jsonString = ConvertStringToJson("\"type\": \"open\",   \"name\": \"cool.sprd\",   \"username\": \"pajensen\",   \"password\": \"Doofus\"");
-            //    //jsonData = JsonConvert.SerializeObject(jsonBuilder);
-            //    //ConvertJsonToString("");
-        }
-
-        //private string[] ParseString(string input)
-        //{
-        //    string[] line_array = input.Split('"');
-        //    string[] keeper = new string[8]; //8 because thats the max number of feilds there could be
-        //    int count = 0;
-
-        //    for (int i = 0; i < line_array.Length; i++)
-        //    {
-        //        //all the important bits
-        //        if (line_array[i] != "\r\n}" || line_array[i] != ",\r\n  " || line_array[i] != "{\r\n  " || line_array[i] != ": ")
-        //        {
-        //            keeper[count] = line_array[i];
-        //            count++;
-        //        }
-        //    }
-        //    return keeper;
-        //}
-
-
-        //private string OpenMessageToJson(string name, string username, string password)
-        //{
-        //    Open message = new Open()
-        //    {
-        //        Type = "open",
-        //        Name = name,
-        //        Username = username,
-        //        Password = password
-        //    };
-        //    string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
-        //    return jsonOpen;
-        //}
-
-        //private string EditMessageToJson(string cell, string value, string dep)
-        //{
-        //    Edit message = new Edit()
-        //    {
-        //        Type = "edit",
-        //        Cell = cell,
-        //        Value = value,
-        //        Dependencies = dep
-        //    };
-        //    string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
-        //    return jsonOpen;
-        //}
-
-        //private string UndoMessageToJson()
-        //{
-        //    //may need a Type = "undo"
-        //    Undo message = new Undo();
-        //    string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
-        //    return jsonOpen;
-        //}
-
-        //private string RevertMessageToJson(string cell)
-        //{
-        //    Revert message = new Revert()
-        //    {
-        //        Type = "revert",
-        //        Cell = cell
-        //    };
-        //    string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
-        //    return jsonOpen;
-        //}
-
-        //private string ErrorMessageToJson(string code, string source)
-        //{
-        //    Error message = new Error()
-        //    {
-        //        Type = "error",
-        //        Code = code,
-        //        Source = source,
-        //    };
-        //    string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
-        //    return jsonOpen;
-        //}
-
-        ///// <summary>
-        ///// Very general, returns the json in the form that the client is expecting
-        ///// </summary>
-        ///// <param name="json"></param>
-        ///// <returns></returns>
-        //private string JsonToString(string json)
-        //{
-        //    object WriteIntoStudent = JsonConvert.DeserializeObject(json);
-        //    string result = WriteIntoStudent.ToString();
-        //    return result;
-        //}
-
-
-        ////private string ConvertStringToJson(string input)
-        ////{
-        ////    StringBuilder jsonBuilder = new StringBuilder();
-        ////    jsonBuilder.Append(input);
-
-        ////    return JsonConvert.SerializeObject(jsonBuilder);
-        ////}
-
-        ////private void ConvertJsonToString(string json)
-        ////{
-        ////    //string[] stuff1 = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-        ////    //return stuff1;
-        ////   //StringBuilder jsonBuilder = new StringBuilder();
-        ////    //jsonBuilder.Append(input);
-
-        ////   // return JsonConvert.SerializeObject(jsonBuilder);
-        ////}
-
-
-
-
-
-
-
-
-
-
-        ////NETWORKING
-        //private void Network()
-        //{
-
-        //}
-
-        //#endregion Json Shtuff
-
     }
 }

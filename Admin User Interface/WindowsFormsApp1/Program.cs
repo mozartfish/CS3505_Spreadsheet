@@ -10,8 +10,8 @@ namespace WindowsFormsApp1
     {
         public static Form1 form;
 
-        public delegate void PassForm(Form1 formpassed);
-        public static event PassForm FormPass;
+        //public delegate void PassForm(Form1 formpassed);
+        //public static event PassForm FormPass;
 
         /// <summary>
         /// The main entry point for the application.
@@ -21,9 +21,9 @@ namespace WindowsFormsApp1
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            form = new Form1();
-            //FormPass(form);
-            Application.Run(form);
+            //Application.Run(new WelcomePage());
+            //Form1 form = new Form1();
+            Application.Run(new Form1());
         }
     }
 }

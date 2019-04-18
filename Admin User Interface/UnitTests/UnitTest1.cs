@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AdminModel;
+using Model;
 
 namespace UnitTests
 {
@@ -17,7 +17,7 @@ namespace UnitTests
         //    }
         //}
 
-        #region Model Tests
+        //#region Model Tests
 
 
         //#region Hash Testing
@@ -96,106 +96,91 @@ namespace UnitTests
 
         //#endregion Hash Testing
         
-        #region Users
+        //#region Users
 
-        #region Count Test
+        //#region Count Test
 
-        //
-        [TestMethod]
-        public void TestCount()
-        {
-            OldUsers users = new OldUsers();
+        ////
+        //[TestMethod]
+        //public void TestCount()
+        //{
+        //    OldUsers users = new OldUsers();
 
-            int counter = users.Count();
-            Assert.AreEqual(0, counter);
+        //    int counter = users.Count();
+        //    Assert.AreEqual(0, counter);
 
-            users.Add("","");
-            counter = users.Count();
-            Assert.AreEqual(1, counter);
+        //    users.Add("","");
+        //    counter = users.Count();
+        //    Assert.AreEqual(1, counter);
 
-            users.Remove("","");
-            counter = users.Count();
-            Assert.AreEqual(0, counter);
-        }
+        //    users.Remove("","");
+        //    counter = users.Count();
+        //    Assert.AreEqual(0, counter);
+        //}
 
-        #endregion Count Test
-
-
+        //#endregion Count Test
 
 
 
-        #region Test Contains
-
-        //
-        [TestMethod]
-        public void TestContains()
-        {
-            OldUsers users = new OldUsers();
-            bool contain = users.Contains("","");
-            Assert.IsFalse(contain);
-
-            users.Add("","");
-            contain = users.Contains("", "");
-            Assert.IsTrue(contain);
-        }
-
-        //
-        [TestMethod]
-        public void TestContainsAfterRemove()
-        {
-            OldUsers users = new OldUsers();
-
-            users.Add("", "");
-            bool contain = users.Contains("", "");
-            Assert.IsTrue(contain);
-            users.Remove("","");
-
-            contain = users.Contains("", "");
-            Assert.IsFalse(contain);
-        }
-
-        #endregion Test Contains
 
 
-        #region Adding User
+        //#region Test Contains
+
+        ////
+        //[TestMethod]
+        //public void TestContains()
+        //{
+        //    OldUsers users = new OldUsers();
+        //    bool contain = users.Contains("","");
+        //    Assert.IsFalse(contain);
+
+        //    users.Add("","");
+        //    contain = users.Contains("", "");
+        //    Assert.IsTrue(contain);
+        //}
+
+        ////
+        //[TestMethod]
+        //public void TestContainsAfterRemove()
+        //{
+        //    OldUsers users = new OldUsers();
+
+        //    users.Add("", "");
+        //    bool contain = users.Contains("", "");
+        //    Assert.IsTrue(contain);
+        //    users.Remove("","");
+
+        //    contain = users.Contains("", "");
+        //    Assert.IsFalse(contain);
+        //}
+
+        //#endregion Test Contains
 
 
-
-        //
-        [TestMethod]
-        public void TestAdd()
-        {
-            OldUsers users = new OldUsers();
-            users.Add("user", "pass");
+        //#region Adding User
 
 
 
-            int first = users.GetActive("user", "pass");
-            int second = users.GetActive("user", "pass");
-            Assert.AreEqual(first, second);
-        }
-
-        #endregion Adding User
-
-
-        #endregion Users
+        ////
+        //[TestMethod]
+        //public void TestAdd()
+        //{
+        //    OldUsers users = new OldUsers();
+        //    users.Add("user", "pass");
 
 
-        #endregion Model Tests
+
+        //    int first = users.GetActive("user", "pass");
+        //    int second = users.GetActive("user", "pass");
+        //    Assert.AreEqual(first, second);
+        //}
+
+        //#endregion Adding User
+
+
+        //#endregion Users
+
+
+        //#endregion Model Tests
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -36,13 +36,21 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.currentStatusList = new System.Windows.Forms.ListBox();
             this.updateList = new System.Windows.Forms.ListBox();
+            this.button4 = new System.Windows.Forms.Button();
+            this.button6 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
+            this.IP = new System.Windows.Forms.TextBox();
+            this.Port = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 12);
+            this.button1.Location = new System.Drawing.Point(807, 209);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(625, 36);
+            this.button1.Size = new System.Drawing.Size(175, 83);
             this.button1.TabIndex = 0;
             this.button1.Text = "Account Manegment";
             this.button1.UseVisualStyleBackColor = true;
@@ -51,18 +59,18 @@
             // button3
             // 
             this.button3.BackColor = System.Drawing.SystemColors.MenuText;
-            this.button3.Location = new System.Drawing.Point(643, 12);
+            this.button3.Location = new System.Drawing.Point(807, 494);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(325, 78);
+            this.button3.Size = new System.Drawing.Size(175, 78);
             this.button3.TabIndex = 2;
             this.button3.Text = "SHUT\r\nDOWN";
             this.button3.UseVisualStyleBackColor = false;
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(12, 54);
+            this.button2.Location = new System.Drawing.Point(807, 342);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(625, 36);
+            this.button2.Size = new System.Drawing.Size(175, 83);
             this.button2.TabIndex = 3;
             this.button2.Text = "SS management";
             this.button2.UseVisualStyleBackColor = true;
@@ -70,57 +78,138 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(681, 25);
+            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button5.Location = new System.Drawing.Point(831, 504);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(254, 52);
+            this.button5.Size = new System.Drawing.Size(124, 56);
             this.button5.TabIndex = 10;
-            this.button5.Text = "SHUT\r\nDOWN";
+            this.button5.Text = "SHUTDOWN\r\nSERVER";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.ShutDown);
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(12, 96);
+            this.textBox1.Location = new System.Drawing.Point(12, 21);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(625, 20);
+            this.textBox1.Size = new System.Drawing.Size(425, 20);
             this.textBox1.TabIndex = 11;
-            this.textBox1.Text = "Current Status";
+            this.textBox1.Text = "Active Users";
             this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(643, 96);
+            this.textBox2.Location = new System.Drawing.Point(443, 21);
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
             this.textBox2.Size = new System.Drawing.Size(325, 20);
             this.textBox2.TabIndex = 12;
-            this.textBox2.Text = "Update";
+            this.textBox2.Text = "Spreadsheet Updates";
             this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // currentStatusList
             // 
             this.currentStatusList.FormattingEnabled = true;
-            this.currentStatusList.Location = new System.Drawing.Point(12, 132);
+            this.currentStatusList.Location = new System.Drawing.Point(12, 54);
             this.currentStatusList.Name = "currentStatusList";
-            this.currentStatusList.Size = new System.Drawing.Size(625, 472);
+            this.currentStatusList.Size = new System.Drawing.Size(425, 563);
             this.currentStatusList.TabIndex = 13;
-            this.currentStatusList.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
             // updateList
             // 
             this.updateList.FormattingEnabled = true;
-            this.updateList.Location = new System.Drawing.Point(643, 132);
+            this.updateList.Location = new System.Drawing.Point(443, 53);
             this.updateList.Name = "updateList";
-            this.updateList.Size = new System.Drawing.Size(325, 472);
+            this.updateList.Size = new System.Drawing.Size(325, 563);
             this.updateList.TabIndex = 14;
-            this.updateList.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged_1);
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(598, 254);
+            this.button4.Margin = new System.Windows.Forms.Padding(2);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(66, 38);
+            this.button4.TabIndex = 15;
+            this.button4.Text = "redraw";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(598, 194);
+            this.button6.Margin = new System.Windows.Forms.Padding(2);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(66, 36);
+            this.button6.TabIndex = 16;
+            this.button6.Text = "populate model";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(598, 312);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(66, 63);
+            this.button7.TabIndex = 17;
+            this.button7.Text = "test Inserting at top";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.TESTinsertingTopOfList);
+            // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(804, 102);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(175, 45);
+            this.button8.TabIndex = 18;
+            this.button8.Text = "Connect To Server";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // IP
+            // 
+            this.IP.Location = new System.Drawing.Point(804, 37);
+            this.IP.Name = "IP";
+            this.IP.Size = new System.Drawing.Size(175, 20);
+            this.IP.TabIndex = 19;
+            // 
+            // Port
+            // 
+            this.Port.Location = new System.Drawing.Point(804, 76);
+            this.Port.Name = "Port";
+            this.Port.Size = new System.Drawing.Size(175, 20);
+            this.Port.TabIndex = 20;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(874, 60);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(29, 13);
+            this.label1.TabIndex = 21;
+            this.label1.Text = "Port:";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(874, 21);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(20, 13);
+            this.label2.TabIndex = 22;
+            this.label2.Text = "IP:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1003, 603);
+            this.ClientSize = new System.Drawing.Size(991, 624);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.Port);
+            this.Controls.Add(this.IP);
+            this.Controls.Add(this.button8);
+            this.Controls.Add(this.button7);
+            this.Controls.Add(this.button6);
+            this.Controls.Add(this.button4);
             this.Controls.Add(this.updateList);
             this.Controls.Add(this.currentStatusList);
             this.Controls.Add(this.textBox2);
@@ -131,7 +220,8 @@
             this.Controls.Add(this.button1);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
-            this.Text = "d";
+            this.Text = "Administrator Front End";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -147,6 +237,14 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.ListBox currentStatusList;
         private System.Windows.Forms.ListBox updateList;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.TextBox IP;
+        private System.Windows.Forms.TextBox Port;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }
 
