@@ -18,8 +18,6 @@
 #include <chrono>
 #include "jsoncpp-master/dist/json/json.h"
 #include "spreadsheet.h"
-#include "message.h"
-#include "helpers.h"
 #include "../Connection/socket_connections.h"
 
 using namespace std;
@@ -328,6 +326,8 @@ void process_updates()
       Json::CharReaderBuilder des_builder;
       Json::CharReader * deserializer = des_builder.newCharReader();
       Json::Value deserialized;
+
+      Json::Value send_back;
       
       // Try to read message
       if (!deserializer->parse(serialized_update.c_str(), serialized_update.c_str() + serialized_update.size(), &deserialized, NULL))
@@ -336,11 +336,10 @@ void process_updates()
 	  continue;
 	}
       
-      string json_to_client;
       
       //Process update
       // Open
-      if (NULL)
+      if (deserialized["type"].asString() == "open")
 	{
 	  
 	  
@@ -353,20 +352,23 @@ void process_updates()
 	  // Send error message for bad login
 	  else
 	    {
-	      
+	      send_back["type"] = "error";
+	      send_back["code"] = 1;
+	      send_back["source"] = "";
+
+	      //TODO SEND
 	    }
 	  
 	}
       
       // Edit
-      else if (NULL)
+      else if (deserialized["type"].asString() == "edit")
 	{
 	  vector<string> * dependencies = new vector<string>();
 
 	  // Add each dependency from json to a string vector
-	  Json::Value json_deps = deserialized["dependencies"];
-	  for (int i = 0; i < json_deps.size(); i++)
-	    dependencies->push_back(json_deps[i].asString());
+	  for (int i = 0; i < deserialized["dependencies"].size(); i++)
+	    dependencies->push_back(deserialized["dependencies"][i].asString());
 	  
 	  // Try to change cell
 	  if(sheet->change_cell(deserialized["cell"].asString(), deserialized["value"].asString(), dependencies))
@@ -377,12 +379,16 @@ void process_updates()
 	  // If there is a failure
 	  else
 	    {
-	      
+	      send_back["type"] = "error";
+	      send_back["code"] = 2;
+	      send_back["source"] = deserialized["cell"].asString();
+
+	      //TODO SEND
 	    }
 	}
       
       // Undo
-      else if (NULL)
+      else if (deserialized["type"].asString() == "undo")
 	{
 	  string result = sheet->undo();
 	  // Nothing needed for an empty undo
@@ -393,7 +399,7 @@ void process_updates()
 	}
       
       // Revert
-      else if (NULL)
+      else if (deserialized["type"].asString() == "revert")
 	{
 	  string result = sheet->revert(deserialized["cell"].asString());
 
@@ -407,7 +413,11 @@ void process_updates()
 	  // Result returned \t, error character (choice was arbitrary)
 	  else
 	    {
-	      
+	      send_back["type"] = "error";
+	      send_back["code"] = 2;
+	      send_back["source"] = deserialized["cell"].asString();
+
+	      //TODO SEND
 	    }
 	}
 	     
@@ -428,7 +438,7 @@ void close(volatile socks & socket_info)
   while (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - begin).count() < 7);
 
   //Clear queue and process messages
-  
+  process_updates();
 
   //Close sockets
   for (int socket : *socket_info.sockets)
@@ -524,6 +534,9 @@ int main(int argc, char ** argv)
       cout << "Error reading spreadsheet file. Check for syntax errors." << endl;
       return -1;
     }
+
+  // Start the "timer" (just initializes value to current time) for updating
+  auto update_timer = std::chrono::steady_clock::now();
 
   //Listen for clients async
   auto x = std::async(std::launch::async, socket_connections::WaitForClientConnections, &connections, &lock);
@@ -674,6 +687,18 @@ int main(int argc, char ** argv)
        process_updates();
 
        lock.unlock();
+
+       
+       // Write back to file every x minutes
+       if (std::chrono::duration_cast<std::chrono::minutes>(std::chrono::steady_clock::now() - update_timer).count() > 10)
+	 {
+	   lock.lock();
+	   if (write_sheets_to_file() < 0)
+	     cout << "Error writing sheets back to file" << endl;
+	   lock.unlock();
+	   update_timer = std::chrono::steady_clock::now();
+	 }
+       
 
     }
 
