@@ -364,8 +364,10 @@ void process_updates()
 		    send_back["spreadsheet"][cell] = contents;
 		  }
 	      
-	      // Send back the data, only to the client that requested the open
-	      socket_connections::SendData(fd, send_back.asCString(), send_back.asString().size());
+	      string send_back_str = send_back.toStyledString();
+
+	      //Send error back only to client that sent the bad request
+	      socket_connections::SendData(fd, send_back_str.c_str(), send_back_str.size());
 	      continue;
 	    }
 
@@ -376,8 +378,10 @@ void process_updates()
 	      send_back["code"] = 1;
 	      send_back["source"] = "";
 
+	      string send_back_str = send_back.toStyledString();
+
 	      //Send error back only to client that sent the bad request
-	      socket_connections::SendData(fd, send_back.asCString(), send_back.asString().size());
+	      socket_connections::SendData(fd, send_back_str.c_str(), send_back_str.size());
 	      continue;
 	    }
 	  
@@ -406,8 +410,10 @@ void process_updates()
 	      send_back["code"] = 2;
 	      send_back["source"] = deserialized["cell"].asString();
 
+	      string send_back_str = send_back.toStyledString();
+
 	      //Send error back only to client that sent the bad request
-	      socket_connections::SendData(fd, send_back.asCString(), send_back.asString().size());
+	      socket_connections::SendData(fd, send_back_str.c_str(), send_back_str.size());
 	      continue;
 	    }
 	}
@@ -448,19 +454,47 @@ void process_updates()
 	      send_back["code"] = 2;
 	      send_back["source"] = deserialized["cell"].asString();
 
+	      string send_back_str = send_back.toStyledString();
+
 	      //Send error back only to client that sent the bad request
-	      socket_connections::SendData(fd, send_back.asCString(), send_back.asString().size());
+	      socket_connections::SendData(fd, send_back_str.c_str(), send_back_str.size());
 	      continue;
 	    }
 	}
+      
+      // Admin connect message
+      else if (deserialized["type"].asString() == "admin")
+	{
 
-      int data_size = send_back.asString().size();
-      const char * data = send_back.asCString();
+	}
+
+      // Admin shutdown
+      else if (deserialized["type"].asString() == "shutdown")
+	{
+
+	}
+
+
+      // Admin spreadsheet message (request create, status, or delete)
+      else if (deserialized["type"].asString() == "SS")
+	{
+
+	}
+
+      // Admin spreadsheet message (request create, status, or delete)
+      else if (deserialized["type"].asString() == "User")
+	{
+
+	}
+
+
+      string send_back_str = send_back.toStyledString();
+      const char * send_back_c = send_back_str.c_str();
 	     
       // Send updates to all that should be notified if successful
       for (int client : (*sheets)[spread_name]->get_listeners())
 	{
-	  socket_connections::SendData(client, data, data_size);
+	  socket_connections::SendData(client, send_back_c, send_back_str.size());
 	}
     }
 
@@ -600,9 +634,9 @@ int main(int argc, char ** argv)
 	  Json::Value json_sheets;
 	  string type("list");
 	  json_sheets["type"] = type;
-	  json_sheets.append("spreadsheets");
+	  Json::Value j_sheets = json_sheets["spreadsheets"];
 	  for (string ind_sheet : *sheet_names)
-	    json_sheets["spreadsheets"].append(ind_sheet);
+	    j_sheets.append(ind_sheet);
 
 
 	  // Iterate over each new client, and send required start data, and wait for data from them
@@ -615,16 +649,16 @@ int main(int argc, char ** argv)
 	      connections.partial_data->push_back(new string());
 	      connections.needs_removed->push_back(false);
 
-	      
+	      string message = json_sheets.toStyledString();
 	      // Send list of spreadsheet names
-	      socket_connections::SendData((*connections.sockets)[idx], json_sheets.asCString(), (int)json_sheets.asString().size());
+	      socket_connections::SendData((*connections.sockets)[idx], message.c_str(), message.size());
 
 	      cout << "Data wait section" << endl;
-	      std::async(std::launch::async, socket_connections::WaitForData,
+	      auto y = std::async(std::launch::async, socket_connections::WaitForData,
 			 (*connections.sockets)[idx],  (*connections.buffers)[idx - 1], BUF_SIZE);
 
 	      cout << "Timer section" << endl;
-	      std::async(std::launch::async, socket_connections::WaitForDataTimer,
+	      auto z = std::async(std::launch::async, socket_connections::WaitForDataTimer,
 			 (*connections.buffers)[idx - 1], idx - 1, &lock, connections.needs_removed);
 			 
 	    }
@@ -688,10 +722,10 @@ int main(int argc, char ** argv)
 	     
 
 	       // Resume getting data
-	       std::async(std::launch::async, socket_connections::WaitForData,
+	       auto xx = std::async(std::launch::async, socket_connections::WaitForData,
 		      (*connections.sockets)[idx + 1],  (*connections.buffers)[idx], BUF_SIZE);
 
-	       std::async(std::launch::async, socket_connections::WaitForDataTimer,
+	       auto xxx = std::async(std::launch::async, socket_connections::WaitForDataTimer,
 			 (*connections.buffers)[idx], idx, &lock, connections.needs_removed);
 	     }
 
