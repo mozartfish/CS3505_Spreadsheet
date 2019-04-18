@@ -310,6 +310,14 @@
             <param name="normalize"></param>
             <param name="version"></param>
         </member>
+        <member name="M:SS.Spreadsheet.ParseContents(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="cellName"></param>
+            <param name="contents"></param>
+            <returns></returns>
+        </member>
         <member name="M:SS.Spreadsheet.#ctor(System.String,System.Func{System.String,System.Boolean},System.Func{System.String,System.String},System.String)">
             <summary>
             Constructot akes in file name and loads the spreadsheet file

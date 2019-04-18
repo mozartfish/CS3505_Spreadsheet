@@ -386,13 +386,16 @@ namespace Controller
             try
             {
                 dependents = spreadsheet.ParseContents(cellName, contents);
+                SendEdit(cellName, contents, dependents);
             }
             catch (SpreadsheetUtilities.FormulaFormatException e) 
             {
                 throw new SpreadsheetUtilities.FormulaFormatException(e.Message);
             }
-
-            SendEdit(cellName, contents, dependents);
+            catch(SS.InvalidNameException e)
+            {
+                throw new SS.InvalidNameException();
+            }
         }
 
         /// <summary>

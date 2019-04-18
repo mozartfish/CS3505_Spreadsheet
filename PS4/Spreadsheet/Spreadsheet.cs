@@ -43,9 +43,62 @@ namespace SS
         {
             Cells = new Dictionary<string, Cell>();
             Dependencies = new DependencyGraph();
-
             Changed = false;
         }
+
+
+        #region Server spreadsheet helpers
+        private void CheckInput(string name, string text = "")
+        {
+            if (text is null)
+                throw new ArgumentNullException();
+            else if (name is null || !IsLegalName(name))
+                throw new InvalidNameException();
+            else if (!IsValid(name))
+                throw new InvalidNameException();
+        }
+
+
+        private static bool IsLegalName(string str)
+        {
+            return Regex.IsMatch(str, @"^[a-zA-Z]+[\d]+$");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cellName"></param>
+        /// <param name="contents"></param>
+        /// <returns></returns>
+        public IEnumerable<string> ParseContents(string cellName, string contents)
+        {
+            try
+            {
+                IEnumerable<string> dependents = new HashSet<string>();
+                contents = Normalize(contents);
+                CheckInput(cellName, contents);
+                if (Regex.IsMatch(contents, @"^="))
+                {
+                    Formula formula = new Formula(contents.Split('=').Last(), Normalize, IsValid);
+                    dependents = formula.GetVariables();
+                }
+                return dependents;
+            }
+
+            catch (InvalidNameException)
+            {
+                throw new InvalidNameException();
+            }
+            catch (FormulaFormatException e)
+            {
+                throw new FormulaFormatException(e.Message);
+            }
+
+        }
+
+        #endregion
+
+
 
         /// <summary>
         /// Constructot akes in file name and loads the spreadsheet file
