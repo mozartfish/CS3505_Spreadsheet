@@ -1,5 +1,30 @@
 TODO:
 
+
+
+
+
+
+TESTING NEEDS DOING ONCE THE SERVER IS UP:
+- able to recieve and decode all messages correctly
+- make sure model updates correctly when getting information
+- Form1, manUsers, SSman need to update when recieve update from network
+- test shut down kills server, and allows user to enter new IP
+- test server rude disconnecting
+- test admin rude disconnectings effect on the server
+
+
+
+
+
+
+
+
+
+
+
+
+
 ON USER CLICK THE EXIT BUTTON AT TOP RIGHT:
 - the form must contact the server, and tell it that it is disconnecting then
   inform the welcome page to show, and kill form1
@@ -73,17 +98,6 @@ First part of the shut down, now the network event should inform the form when s
 
 
 
-
-
-
-
-
-TESTING NEEDS DOING WITH SERVER:
-- Form1, manUsers, SSman need to update when recieve update from network
-- make sure model updates correctly when getting information
-- able to recieve and decode all messages correctly
-- test shut down kills server, and allows user to enter new IP
-gotorocks.tk
 
 
 
