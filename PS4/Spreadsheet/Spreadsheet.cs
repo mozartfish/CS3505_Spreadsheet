@@ -72,7 +72,6 @@ namespace SS
         /// <returns></returns>
         public IEnumerable<string> ParseContents(string cellName, string contents)
         {
-            //Cell value = Cells[cellName];
             try
             {
                 IEnumerable<string> dependents = new HashSet<string>();
@@ -81,17 +80,26 @@ namespace SS
                 if (Regex.IsMatch(contents, @"^="))
                 {
                     Formula formula = new Formula(contents.Split('=').Last(), Normalize, IsValid);
-                    
-                    //if(formula.Evaluate(value.Lookup) is FormulaError)
-                    //{
-                    //    FormulaError errorMessage = (FormulaError)formula.Evaluate(value.Lookup);
-                    //    throw new FormulaFormatException(errorMessage.Reason);
-                    //}
+
+                    foreach (string var in formula.GetVariables())
+                    {
+                        if (!Cells.ContainsKey(var))
+                        {
+                            throw new ArgumentException();
+                        }
+                    }
+                    object value = formula.Evaluate(Lookup);
+                    if (value is FormulaError)
+                    {
+                        FormulaError errorMessage = (FormulaError)value;
+                        throw new FormulaFormatException(errorMessage.Reason);
+                    }
+
                     dependents = formula.GetVariables();
                 }
                 return dependents;
             }
-
+           
             catch (InvalidNameException)
             {
                 throw new InvalidNameException();
@@ -100,6 +108,7 @@ namespace SS
             {
                 throw new FormulaFormatException(e.Message);
             }
+
 
         }
 
@@ -207,6 +216,7 @@ namespace SS
                     return (double)formula.Evaluate(cell.Lookup);
                 }
             }
+
             throw new ArgumentException("Error: Cell must have number value");
         }
 

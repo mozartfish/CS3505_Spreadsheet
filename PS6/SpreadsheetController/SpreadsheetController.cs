@@ -400,6 +400,10 @@ namespace Controller
             {
                 throw new ArgumentNullException();
             }
+            catch(ArgumentException e)
+            {
+                throw new ArgumentException();
+            }
         }
 
         /// <summary>
