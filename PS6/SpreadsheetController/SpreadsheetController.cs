@@ -392,9 +392,13 @@ namespace Controller
             {
                 throw new SpreadsheetUtilities.FormulaFormatException(e.Message);
             }
-            catch(SS.InvalidNameException e)
+            catch(SS.InvalidNameException)
             {
                 throw new SS.InvalidNameException();
+            }
+            catch(ArgumentNullException)
+            {
+                throw new ArgumentNullException();
             }
         }
 

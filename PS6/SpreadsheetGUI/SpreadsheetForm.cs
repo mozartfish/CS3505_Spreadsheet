@@ -356,8 +356,13 @@ namespace Display
                 }
                 catch(SpreadsheetUtilities.FormulaFormatException)
                 {
-                    MessageBox.Show("The formula entered in cell" + cellName + " is invalid. Please check that all formulas are formatted " +
+                    MessageBox.Show("1 The formula entered in cell " + cellName + " is invalid. Please check that all formulas are formatted " +
                         "correctly." , "Formula Format Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch(SS.InvalidNameException)
+                {
+                    MessageBox.Show("2 The formula entered in cell" + cellName + " is invalid. Please check that all formulas are formatted " +
+                       "correctly.", "Formula Format Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
 

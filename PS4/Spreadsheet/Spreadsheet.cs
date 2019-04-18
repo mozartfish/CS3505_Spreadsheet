@@ -72,6 +72,7 @@ namespace SS
         /// <returns></returns>
         public IEnumerable<string> ParseContents(string cellName, string contents)
         {
+            //Cell value = Cells[cellName];
             try
             {
                 IEnumerable<string> dependents = new HashSet<string>();
@@ -80,6 +81,12 @@ namespace SS
                 if (Regex.IsMatch(contents, @"^="))
                 {
                     Formula formula = new Formula(contents.Split('=').Last(), Normalize, IsValid);
+                    
+                    //if(formula.Evaluate(value.Lookup) is FormulaError)
+                    //{
+                    //    FormulaError errorMessage = (FormulaError)formula.Evaluate(value.Lookup);
+                    //    throw new FormulaFormatException(errorMessage.Reason);
+                    //}
                     dependents = formula.GetVariables();
                 }
                 return dependents;
