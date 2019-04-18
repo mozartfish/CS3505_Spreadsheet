@@ -136,24 +136,24 @@ namespace Controller
             string totalData = ss.sb.ToString();
             //Console.WriteLine(totalData);
 
-            string[] messages = Regex.Split(totalData, @"(?<=[\n\n])");
+            string[] messages = Regex.Split(totalData, @"(?<=[\n])");
 
             foreach (string message in messages)
             {
-                //Console.WriteLine("Message: " + message);
+                Console.WriteLine("Message: " + message);
                 if (message.Length == 0)
                 {
                     continue;
                 }
-                if (message.Substring(message.Length - 2) != "\n\n")
+                if (message.Substring(message.Length - 1) != "\n")
                 {
                     //Console.WriteLine("EOL");
                     break;
                 }
 
-                if (message[0] == '{' && message[message.Length - 3] == '}')
+                if (message[0] == '{' && message[message.Length - 2] == '}')
                 {
-                    //Console.WriteLine("Object get updated");
+                    Console.WriteLine("Object get updated");
                     object updateObj = Deserialize(message);
                     UpdateActivity(updateObj);
 

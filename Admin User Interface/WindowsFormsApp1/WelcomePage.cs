@@ -34,8 +34,8 @@ namespace WindowsFormsApp1
 
             //begin first connection
             //STUB: controller must inform welcomepage that theres a connection success, to fire the connection successful
-            //hostname = "localhost";
-            //controller.Connect(hostname);
+            hostname = "localhost";
+            controller.Connect(hostname);
 
             ConnectSuccessful();
         }
