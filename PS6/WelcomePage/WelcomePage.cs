@@ -134,7 +134,8 @@ namespace Display
                 controller.Username = Username.Text;
 
                 string currSpreadsheet = spreadsheetList.SelectedItem.ToString();
-            
+                controller.SendOpen(currSpreadsheet);
+
                 this.Hide();
                 Display.SpreadsheetForm ssForm = new Display.SpreadsheetForm();
                 Display.SpreadsheetApplicationContext appContext = 
@@ -160,8 +161,11 @@ namespace Display
             controller.Password = Password.Text;
             controller.Username = Username.Text;
 
-            //send the name of the spreadsheet
-            controller.SendOpen(spreadsheet);
+            if (spreadsheet != "")
+            {
+                //send the name of the spreadsheet
+                controller.SendOpen(spreadsheet);
+            }
         }
     }
 }
