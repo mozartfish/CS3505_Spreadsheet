@@ -287,7 +287,7 @@ namespace Controller
             }
 
             // Check for authorization error
-            string[] messages = Regex.Split(ss.sb.ToString(), @"(?^<=[\n\n])");
+            string[] messages = Regex.Split(ss.sb.ToString(), @"(?<=[\n]{2})");
 
             foreach (string message in messages)
             {
@@ -350,7 +350,7 @@ namespace Controller
                 return;
             }
 
-            string[] messages = Regex.Split(ss.sb.ToString(), @"(?<=[\n\n])");
+            string[] messages = Regex.Split(ss.sb.ToString(), @"(?<=[\n]{2})");
 
             Debug.WriteLine("**** message count: " + messages.Length + "\n");
 
