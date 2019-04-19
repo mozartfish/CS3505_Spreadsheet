@@ -844,7 +844,7 @@ int main(int argc, char ** argv)
 
        
        // Write back to file every x minutes
-       if (std::chrono::duration_cast<std::chrono::minutes>(std::chrono::steady_clock::now() - update_timer).count() > 10)
+       if (std::chrono::duration_cast<std::chrono::minutes>(std::chrono::steady_clock::now() - update_timer).count() > 1000)
 	 {
 	   lock.lock();
 	   if (write_sheets_to_file() < 0)
