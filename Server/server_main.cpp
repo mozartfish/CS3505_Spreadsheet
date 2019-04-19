@@ -734,14 +734,11 @@ int main(int argc, char ** argv)
        
        if (connections.sockets->size() > 1)
 	 {
-	   cout << "removal" << endl;
 	   vector<int>::iterator it = connections.sockets->begin() + 1;
 	   int it_idx = 0;
 	   while (it != connections.sockets->end())
 	     {
-	       cout << "begin loop" << endl;
 	       int fd = *it;
-	       cout << fd << endl;
 	       // If a client needs removed, remove it
 	       if ((*connections.needs_removed)[fd])
 		 {
@@ -797,6 +794,7 @@ int main(int argc, char ** argv)
 	   // If data exists, grab and reset buffer (If not chars are null)
 	   if ((*connections.buffers)[idx][0] > 0)
 	     {
+	       cout << "data found" << endl;
 	       (*(*connections.partial_data)[idx]) += (*connections.buffers)[idx];
 	       (*connections.buffers)[idx] = new char[BUF_SIZE];
 	       bzero((*connections.buffers)[idx], BUF_SIZE);
@@ -814,6 +812,8 @@ int main(int argc, char ** argv)
 	   // If delemiter doesn't exist, data is partial
 	   if (limit < 0)
 	     continue;
+
+	   cout << " data good to process " << endl;
 
 	   //Get new data, erase data
 	   string  data = (*connections.partial_data)[idx]->substr(0, limit);
