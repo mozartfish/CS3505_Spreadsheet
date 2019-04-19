@@ -8,6 +8,7 @@
 #include <iostream>
 #include <vector>
 #include <future>
+#include <thread>
 #include <mutex>
 #include <string>
 #include <unordered_map>
@@ -27,8 +28,11 @@ unordered_map<string, spreadsheet*> * sheets;
 vector<string> * sheet_names;
 unordered_map<int, string> * socket_usermap;
 unordered_map<int, string> * socket_sprdmap;
+unordered_set<int> * admins;
 queue<string> * updates;
 const string * SHEET_FILEPATH = new string ("./Settings/sheets.txt");
+
+bool continue_to_run = true;
 
 
 // Function declarations
@@ -364,7 +368,7 @@ void process_updates()
 		    send_back["spreadsheet"][cell] = contents;
 		  }
 	      
-	      string send_back_str = send_back.toStyledString();
+	      string send_back_str = send_back.toStyledString()  + "\n\n";
 
 	      //Send error back only to client that sent the bad request
 	      socket_connections::SendData(fd, send_back_str.c_str(), send_back_str.size());
@@ -378,7 +382,7 @@ void process_updates()
 	      send_back["code"] = 1;
 	      send_back["source"] = "";
 
-	      string send_back_str = send_back.toStyledString();
+	      string send_back_str = send_back.toStyledString()  + "\n\n";
 
 	      //Send error back only to client that sent the bad request
 	      socket_connections::SendData(fd, send_back_str.c_str(), send_back_str.size());
@@ -401,6 +405,21 @@ void process_updates()
 	    {
 	      send_back["type"] = "full_send";
 	      send_back["spreadsheet"][deserialized["cell"].asString()] = deserialized["value"].asString();
+
+	      // Let all admins know of the update
+	      if (admins->size() > 0)
+		{
+		  Json::Value admin_mess;
+		  admin_mess["type"] = "SS";
+		  admin_mess["name"] = spread_name;
+		  admin_mess["status"] = 0;
+
+		  string admin_str = admin_mess.toStyledString()  + "\n\n";
+		  const char * admin_c = admin_str.c_str();
+		  
+		  for (int admin : *admins)
+		    socket_connections::SendData(admin, admin_c, admin_str.size());
+		}
 	    }
 	  
 	  // If there is a failure
@@ -410,7 +429,7 @@ void process_updates()
 	      send_back["code"] = 2;
 	      send_back["source"] = deserialized["cell"].asString();
 
-	      string send_back_str = send_back.toStyledString();
+	      string send_back_str = send_back.toStyledString()  + "\n\n";
 
 	      //Send error back only to client that sent the bad request
 	      socket_connections::SendData(fd, send_back_str.c_str(), send_back_str.size());
@@ -433,6 +452,20 @@ void process_updates()
 	  send_back["type"] = "full_send";
 	  send_back["spreadsheet"][cell] = contents;
 	  
+	  // Let all admins know of the update
+	      if (admins->size() > 0)
+		{
+		  Json::Value admin_mess;
+		  admin_mess["type"] = "SS";
+		  admin_mess["name"] = spread_name;
+		  admin_mess["status"] = 0;
+
+		  string admin_str = admin_mess.toStyledString()  + "\n\n";
+		  const char * admin_c = admin_str.c_str();
+		  
+		  for (int admin : *admins)
+		    socket_connections::SendData(admin, admin_c, admin_str.size());
+		}
 	}
       
       // Revert
@@ -445,6 +478,21 @@ void process_updates()
 	    {
 	      send_back["type"] = "full_send";
 	      send_back["spreadsheet"][deserialized["cell"].asString()] = result;
+
+	      // Let all admins know of the update
+	      if (admins->size() > 0)
+		{
+		  Json::Value admin_mess;
+		  admin_mess["type"] = "SS";
+		  admin_mess["name"] = spread_name;
+		  admin_mess["status"] = 0;
+
+		  string admin_str = admin_mess.toStyledString()  + "\n\n";
+		  const char * admin_c = admin_str.c_str();
+		  
+		  for (int admin : *admins)
+		    socket_connections::SendData(admin, admin_c, admin_str.size());
+		}
 	    }
 
 	  // Result returned \t, error character (choice was arbitrary)
@@ -454,7 +502,7 @@ void process_updates()
 	      send_back["code"] = 2;
 	      send_back["source"] = deserialized["cell"].asString();
 
-	      string send_back_str = send_back.toStyledString();
+	      string send_back_str = send_back.toStyledString() + "\n\n";
 
 	      //Send error back only to client that sent the bad request
 	      socket_connections::SendData(fd, send_back_str.c_str(), send_back_str.size());
@@ -465,13 +513,16 @@ void process_updates()
       // Admin connect message
       else if (deserialized["type"].asString() == "admin")
 	{
-
+	  // Add the socket to the list of admins
+	  admins->insert(fd);
 	}
 
       // Admin shutdown
       else if (deserialized["type"].asString() == "shutdown")
 	{
-
+	  // Just let the server know to shutdown on the next loop
+	  continue_to_run = false;
+	  continue;
 	}
 
 
@@ -488,7 +539,7 @@ void process_updates()
 	}
 
 
-      string send_back_str = send_back.toStyledString();
+      string send_back_str = send_back.toStyledString()  + "\n\n";
       const char * send_back_c = send_back_str.c_str();
 	     
       // Send updates to all that should be notified if successful
@@ -591,7 +642,7 @@ int main(int argc, char ** argv)
   connections.new_socket_connected = false;
   connections.buffers = new std::vector<char*>();
   connections.partial_data = new vector<string*>();
-  connections.needs_removed = new vector<bool>();
+  connections.needs_removed = new unordered_map<int, bool>();
 
   // Initialize a lock that gets passed around for when updating 
   // the socks struct or accessing its members
@@ -602,6 +653,7 @@ int main(int argc, char ** argv)
   sheet_names = new vector<string>();
   socket_usermap = new unordered_map<int, string>();
   socket_sprdmap = new unordered_map<int, string>();
+  admins = new unordered_set<int>();
   updates = new queue<string>();
 
   //Start by reading the file of spreadsheets into the program
@@ -611,14 +663,16 @@ int main(int argc, char ** argv)
       return -1;
     }
 
+  cout << sheets->size() << endl;
+
   // Start the "timer" (just initializes value to current time) for updating
   auto update_timer = std::chrono::steady_clock::now();
 
   //Listen for clients async
-  auto x = std::async(std::launch::async, socket_connections::WaitForClientConnections, &connections, &lock);
+  thread(socket_connections::WaitForClientConnections, &connections, &lock, continue_to_run).detach();
   
   //Infinite send and receive loop
-   while(true)
+   while(continue_to_run)
     {
 
       /**********************************************************************/
@@ -634,72 +688,88 @@ int main(int argc, char ** argv)
 	  Json::Value json_sheets;
 	  string type("list");
 	  json_sheets["type"] = type;
-	  Json::Value j_sheets = json_sheets["spreadsheets"];
+	  Json::Value * j_sheets = &json_sheets["spreadsheets"];
 	  for (string ind_sheet : *sheet_names)
-	    j_sheets.append(ind_sheet);
+	    j_sheets->append(ind_sheet);
 
+	  string message = json_sheets.toStyledString()  + "\n\n";
+	  const char * mess_c = message.c_str();
+
+	  cout << message << endl;
+
+	  int size = connections.sockets->size();
 
 	  // Iterate over each new client, and send required start data, and wait for data from them
-	  for (int idx = connections.size_before_update; idx < connections.sockets->size(); idx++)
+	  for (int idx = connections.size_before_update; idx < size; idx++)
 	    {
+	      cout << idx << " " << connections.sockets->size();
 	      cout << "Buffer section" << endl;
 	      // Add new buffers for getting data
               connections.buffers->push_back(new char[BUF_SIZE]);
 	      bzero((*connections.buffers)[idx - 1], BUF_SIZE);
 	      connections.partial_data->push_back(new string());
-	      connections.needs_removed->push_back(false);
+	      (*connections.needs_removed)[(*connections.sockets)[idx]] = false;;
 
-	      string message = json_sheets.toStyledString();
+	      
 	      // Send list of spreadsheet names
-	      socket_connections::SendData((*connections.sockets)[idx], message.c_str(), message.size());
+	      socket_connections::SendData((*connections.sockets)[idx], mess_c, message.size());
 
-	      cout << "Data wait section" << endl;
-	      auto y = std::async(std::launch::async, socket_connections::WaitForData,
-			 (*connections.sockets)[idx],  (*connections.buffers)[idx - 1], BUF_SIZE);
+	      // Wait for data and run the timeout timer
+	      thread(socket_connections::WaitForData, (*connections.sockets)[idx],  
+		     (*connections.buffers)[idx - 1], BUF_SIZE, &lock, &(*connections.needs_removed)).detach();
 
-	      cout << "Timer section" << endl;
-	      auto z = std::async(std::launch::async, socket_connections::WaitForDataTimer,
-			 (*connections.buffers)[idx - 1], idx - 1, &lock, connections.needs_removed);
-			 
 	    }
+	  cout << "hello3" << endl;
 	  connections.new_socket_connected = false;
 	  connections.size_before_update = connections.sockets->size();
+	  cout << "hello" << endl;
       	}
        lock.unlock();
+       
 
        /**********************************************************************/
        /*                     CLIENT REMOVAL BLOCK                           */
        /**********************************************************************/
        lock.lock();
-
-       int it_idx = 0;
-       vector<bool>::iterator it = connections.needs_removed->begin();
-       while (it != connections.needs_removed->end())
+       
+       if (connections.sockets->size() > 1)
 	 {
-	   cout << "Client removal section" << endl;
-	   // If a client needs removed, remove it
-	   if (*it)
+	   cout << "removal" << endl;
+	   vector<int>::iterator it = connections.sockets->begin();
+	   it++;
+	   int it_idx = 0;
+	   while (it != connections.sockets->end())
 	     {
-	       // Make sure double erasure doesn't happen
-	       connections.needs_removed->erase(it++);
-
-	       // Erase the socket from the usermap and sheet map, and remove it from the spreadsheet listeners
-	       int fd = (*connections.sockets)[it_idx + 1];
-	       string sheet_asso = (*socket_sprdmap)[fd];
-	       (*sheets)[sheet_asso]->remove_listener(fd);
-	       socket_usermap->erase(fd);
-	       socket_sprdmap->erase(fd);
-
-	       // Close the socket
-	       socket_connections::CloseSocket(fd);
+	       int fd = *it;
+	       // If a client needs removed, remove it
+	       if ((*connections.needs_removed)[fd])
+		 {
+		   cout << "removing client" << endl;
+		   // Erase the socket from the usermap and sheet map, and remove it from the spreadsheet listeners
+		   
+		   // Remove client if associated with spreadsheet
+		   if ((*socket_sprdmap).count(fd) > 0)
+		     {
+		       string sheet_asso = (*socket_sprdmap)[fd];
+		       (*sheets)[sheet_asso]->remove_listener(fd);
+		       socket_usermap->erase(fd);
+		       socket_sprdmap->erase(fd);
+		     }
+		   
+		   // Close the socket
+		   socket_connections::CloseSocket(fd);
+		   
+		   // Erase the socket from the connections struct
+		   connections.sockets->erase(it++);
+		   --(connections.size_before_update);
+		   connections.buffers->erase(connections.buffers->begin() + it_idx - 1);
+		   connections.partial_data->erase(connections.partial_data->begin() + it_idx - 1);
+		   
+		   // Make sure double erasure doesn't happen
+		   connections.needs_removed->erase(fd);
+		   
+		 }
 	       
-	       // Erase the socket from the connections struct
-	       connections.sockets->erase(connections.sockets->begin() + it_idx + 1);
-	       --(connections.size_before_update);
-	       connections.buffers->erase(connections.buffers->begin() + it_idx);
-	       connections.partial_data->erase(connections.partial_data->begin() + it_idx);
-	       
-	       it_idx++;
 	     }
 	 }
        lock.unlock();
@@ -722,11 +792,8 @@ int main(int argc, char ** argv)
 	     
 
 	       // Resume getting data
-	       auto xx = std::async(std::launch::async, socket_connections::WaitForData,
-		      (*connections.sockets)[idx + 1],  (*connections.buffers)[idx], BUF_SIZE);
-
-	       auto xxx = std::async(std::launch::async, socket_connections::WaitForDataTimer,
-			 (*connections.buffers)[idx], idx, &lock, connections.needs_removed);
+	       thread(socket_connections::WaitForData, (*connections.sockets)[idx + 1],  (*connections.buffers)[idx], 
+		      BUF_SIZE, &lock, &(*connections.needs_removed)).detach();
 	     }
 
 	   // Process data
@@ -775,7 +842,6 @@ int main(int argc, char ** argv)
 	   update_timer = std::chrono::steady_clock::now();
 	 }
        
-
     }
 
    close(connections);

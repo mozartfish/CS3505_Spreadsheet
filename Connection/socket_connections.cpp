@@ -15,6 +15,8 @@
 #include <iostream>
 #include <unistd.h>
 #include <chrono>
+#include <future>
+#include <unordered_map>
 #include "socket_connections.h"
 
   /*
@@ -23,7 +25,7 @@
    * ID for the socket that waits on client connections. overwrites any
    * numbers currently in the list.
    */
-void socket_connections::WaitForClientConnections(volatile socks * sock_list, std::mutex* lock)
+void socket_connections::WaitForClientConnections(volatile socks * sock_list, std::mutex* lock, const bool & continue_to_run)
   {
 
     // Make the socket listening for clients
@@ -63,7 +65,7 @@ void socket_connections::WaitForClientConnections(volatile socks * sock_list, st
 
     
     // Infinitely listen for incoming connections
-    while(true)
+    while(continue_to_run)
     {
       
       // Setting up the sockaddr and socklen from http://www.linuxhowtos.org/data/6/server.c
@@ -98,31 +100,46 @@ void socket_connections::WaitForClientConnections(volatile socks * sock_list, st
    * Reads in data from the socket fd provided, into the given buffer
    * of most bytes amount of data
    */
-  void socket_connections::WaitForData(int socket_fd, char* buf, int bytes)
+void socket_connections::WaitForData(int socket_fd, char* buf, int bytes, std::mutex* lock, std::unordered_map<int, bool> * should_disc)
   {
+    bool has_mod_val = false;
+
+    // WE want this to block when the destructor happens
+    //  auto launch = std::async(std::launch::async, socket_connections::WaitForDataTimer, &buf[0], 
+    //			     &(*lock), socket_fd, should_disc, &has_mod_val);
+
     if (read(socket_fd, buf, bytes) < 0)
-      std::cout << "Error reading data from socket" << std::endl;
+      {
+	std::cout << "Error reading data from socket" << std::endl;
+	
+        if (!has_mod_val) (*should_disc)[socket_fd] = true;
+	has_mod_val = true;
+      }
 
     std::cout << buf << std::endl;
+  
   }
 
 /*
  * Counts the time passed when waiting for data to decide whether to
  * disconnect the client being waited on
  */
-void socket_connections::WaitForDataTimer(char* buf, int vec_idx, std::mutex* lock, std::vector<bool> * disconnect_list)
+void socket_connections::WaitForDataTimer(char* buf, std::mutex* lock, int socket_fd, std::unordered_map<int, bool> * should_disc,  bool * has_mod_val)
 {
+
   auto begin = std::chrono::steady_clock::now();
-  while (std::chrono::duration_cast<std::chrono::minutes>(std::chrono::steady_clock::now() - begin).count() < 5);
+  while (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - begin).count() < 10);
+
+  std::cout << "disconnect time" << std::endl;
 
   // If there is data after the time, return
   if(buf[0] || buf[0] < 0)
     return;
 
   // Set disconnect to true if no data has been found yet
-  (*lock).lock();
-  (*disconnect_list)[vec_idx] = true;
-  (*lock).unlock();
+  std::cout << "good disc" << std::endl;
+  if (!(*has_mod_val)) (*should_disc)[socket_fd] = true;
+  (*has_mod_val) = true;
 }
 
   /*

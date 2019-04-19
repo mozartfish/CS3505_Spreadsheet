@@ -12,6 +12,7 @@
 #include <mutex>
 #include <string>
 #include <chrono>
+#include <unordered_map>
 
 #ifndef CONNECT_H
 #define CONNECT_H
@@ -32,7 +33,7 @@ struct socks {
   std::vector<char*>* buffers;
   std::vector<std::string *>* partial_data;
 
-  std::vector<bool>* needs_removed;
+  std::unordered_map<int, bool>* needs_removed;
   };
 
 class socket_connections {
@@ -45,17 +46,17 @@ class socket_connections {
   const static int PORT_NUM = 2112;
   
   // Server functions to allow client connection
-  static void WaitForClientConnections(volatile socks * sock_list, std::mutex* lock);
+  static void WaitForClientConnections(volatile socks * sock_list, std::mutex* lock, const bool & continue_to_run);
   
   // Functions to get and process data
-  static void WaitForData(int socket_fd, char* buf, int bytes);
+  static void WaitForData(int socket_fd, char* buf, int bytes, std::mutex* lock, std::unordered_map<int, bool> * should_disc);
   static void SendData(int socket_fd, const char * data, int bytes);
 
   // Simple wrapper for closing socket
   static void CloseSocket(int fd);
 
   // Helper function for waiting on data
-  static void WaitForDataTimer(char* buf, int vec_idx, std::mutex* lock, std::vector<bool> * disconnect_list);
+  static void WaitForDataTimer(char* buf, std::mutex* lock, int socket_fd, std::unordered_map<int, bool> * should_disc, bool * has_mod_val);
 
 };
 
