@@ -183,7 +183,6 @@ namespace Controller
             else if (!(jsonObject["type"] is null))
             {
                 return JsonConvert.DeserializeObject<ShutAndAdmin>(jsonString);
-
             }
 
             throw new ArgumentException();
@@ -250,17 +249,17 @@ namespace Controller
         /// <summary>
         /// Helper method to send user status change (username/password)
         /// </summary>
-        private void SendUserChange(string username)
-        {
-            StringBuilder messageBuilder = new StringBuilder();
+        //private void SendUserChange(string username)
+        //{
+        //    StringBuilder messageBuilder = new StringBuilder();
 
-            User user = new User();
-            user.SetUsername(username);
-            string serializedObj = JsonConvert.SerializeObject(user) + "\n\n";
-            messageBuilder.Append(serializedObj);
+        //    User user = new User();
+        //    user.SetUsername(username);
+        //    string serializedObj = JsonConvert.SerializeObject(user) + "\n\n";
+        //    messageBuilder.Append(serializedObj);
 
-            Networking.Send(server, messageBuilder.ToString());
-        }
+        //    Networking.Send(server, messageBuilder.ToString());
+        //}
         
         
         /// <summary>
@@ -296,7 +295,7 @@ namespace Controller
 
             Spreadsheet spreadsheet = new Spreadsheet();
             spreadsheet.SetName(SSname);// model.GetSS(SSname);
-            spreadsheet.SetSSType("user");
+            spreadsheet.SetSSType("SS");
             spreadsheet.SetStatus(status);
             string serializedObj = JsonConvert.SerializeObject(spreadsheet) + "\n\n";
             messageBuilder.Append(serializedObj);
@@ -327,7 +326,7 @@ namespace Controller
             if (result == DialogResult.OK)
             {
                 //Send message to the server telling it to shut down 
-                //SendShutDownMessage();
+                SendShutDownMessage();
                 CleanModel();
             }
         }

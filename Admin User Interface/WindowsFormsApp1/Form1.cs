@@ -31,11 +31,11 @@ namespace WindowsFormsApp1
             controller.UpdateInterface += HandleUpdateInterface;
 
             //Testing TODO: remove this
-            for (int i = 0; i < 10; i++)
-            {
-                controller.TestAddUse(i.ToString());
-                controller.TestAddSS(i.ToString());
-            }
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    controller.TestAddUse(i.ToString());
+            //    controller.TestAddSS(i.ToString());
+            //}
 
             // Testing connection TODO: remove this here
             //controller.Connect("localhost");
