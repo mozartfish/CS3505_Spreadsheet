@@ -735,18 +735,22 @@ int main(int argc, char ** argv)
        if (connections.sockets->size() > 1)
 	 {
 	   cout << "removal" << endl;
-	   vector<int>::iterator it = connections.sockets->begin();
-	   it++;
+	   vector<int>::iterator it = connections.sockets->begin() + 1;
 	   int it_idx = 0;
 	   while (it != connections.sockets->end())
 	     {
+	       cout << "begin loop" << endl;
 	       int fd = *it;
+	       cout << fd << endl;
 	       // If a client needs removed, remove it
 	       if ((*connections.needs_removed)[fd])
 		 {
 		   cout << "removing client" << endl;
-		   // Erase the socket from the usermap and sheet map, and remove it from the spreadsheet listeners
-		   
+		   cout << connections.sockets->size() << endl;
+		   cout << connections.buffers->size() << endl;
+		   cout << connections.partial_data->size() << endl;
+		   cout << connections.size_before_update << endl;
+		   // Erase the socket from the usermap and sheet map, and remove it from the spreadsheet listeners 
 		   // Remove client if associated with spreadsheet
 		   if ((*socket_sprdmap).count(fd) > 0)
 		     {
@@ -760,7 +764,7 @@ int main(int argc, char ** argv)
 		   socket_connections::CloseSocket(fd);
 		   
 		   // Erase the socket from the connections struct
-		   connections.sockets->erase(it++);
+		   it = connections.sockets->erase(it);
 		   --(connections.size_before_update);
 		   connections.buffers->erase(connections.buffers->begin() + it_idx - 1);
 		   connections.partial_data->erase(connections.partial_data->begin() + it_idx - 1);
@@ -768,7 +772,14 @@ int main(int argc, char ** argv)
 		   // Make sure double erasure doesn't happen
 		   connections.needs_removed->erase(fd);
 		   
+		   cout << "removing client" << endl;
+		   cout << connections.sockets->size() << endl;
+		   cout << connections.buffers->size() << endl;
+		   cout << connections.partial_data->size() << endl;
+		   cout << connections.size_before_update << endl;
 		 }
+	       else
+		 ++it;
 	       
 	     }
 	 }
