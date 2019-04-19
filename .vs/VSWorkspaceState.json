@@ -1,7 +1,11 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\PS4",
+    "\\PS4\\Spreadsheet",
+    "\\PS6",
+    "\\PS6\\SpreadsheetController"
   ],
-  "SelectedNode": "\\Connection",
+  "SelectedNode": "\\PS4\\Spreadsheet\\Spreadsheet.cs",
   "PreviewInSolutionExplorer": false
 }

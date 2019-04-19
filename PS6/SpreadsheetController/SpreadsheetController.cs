@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using JsonClasses;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace Controller
 { 
@@ -218,18 +219,36 @@ namespace Controller
             }
 
             // parse socket state for the list of spreadsheets
-            string[] messages = Regex.Split(ss.sb.ToString(), @"(?^<=[\n\n])");
+            //string[] messages = Regex.Split(ss.sb.ToString(), @"(?<=[\n\n])");
+            Debug.WriteLine(ss.sb.ToString());
+            string[] messages = Regex.Split(ss.sb.ToString(), @"(?<=[\n]{2})");
+            // string[] messages = Regex.Split(ss.sb.ToString(), @"(\n\n)");
+
+            Debug.WriteLine("*** message count: " + messages.Length + "\n");
+
+            int count = 1;
+            foreach (string m in messages)
+            {
+                
+                Debug.WriteLine(count++ + ": " + m);
+               
+            }
 
             foreach(string message in messages)
             {
-                if(message.Length == 0)
+                if(message.Length <= 3)
                 {
                     continue;
                 }
-                if(message.Substring(message.Length - 2) != "\n\n")
+                if (message.Substring(message.Length - 1) != "\n")
                 {
                     break;
                 }
+
+                Debug.WriteLine(message);
+
+                //// remove the newline characters before parsing
+                //message.Remove(message.Length - 2, 2);
 
                 if(message[0] == '{' && message[message.Length - 3] == '}')
                 {
@@ -331,7 +350,9 @@ namespace Controller
                 return;
             }
 
-            string[] messages = Regex.Split(ss.sb.ToString(), @"(?^<=[\n\n])");
+            string[] messages = Regex.Split(ss.sb.ToString(), @"(?<=[\n\n])");
+
+            Debug.WriteLine("**** message count: " + messages.Length + "\n");
 
             foreach (string message in messages)
             {
@@ -343,6 +364,8 @@ namespace Controller
                 {
                     break;
                 }
+
+                Debug.WriteLine(message);
 
                 if (message[0] == '{' && message[message.Length - 3] == '}')
                 {
@@ -386,13 +409,24 @@ namespace Controller
             try
             {
                 dependents = spreadsheet.ParseContents(cellName, contents);
+                SendEdit(cellName, contents, dependents);
             }
             catch (SpreadsheetUtilities.FormulaFormatException e) 
             {
                 throw new SpreadsheetUtilities.FormulaFormatException(e.Message);
             }
-
-            SendEdit(cellName, contents, dependents);
+            catch(SS.InvalidNameException)
+            {
+                throw new SS.InvalidNameException();
+            }
+            catch(ArgumentNullException)
+            {
+                throw new ArgumentNullException();
+            }
+            catch(ArgumentException e)
+            {
+                throw new ArgumentException();
+            }
         }
 
         /// <summary>

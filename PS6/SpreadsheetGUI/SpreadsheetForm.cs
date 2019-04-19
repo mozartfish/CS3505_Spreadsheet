@@ -354,11 +354,12 @@ namespace Display
                     //  process update
                     controller.ProcessEdit(cellName, contents);
                 }
-                catch(SpreadsheetUtilities.FormulaFormatException)
+                catch(Exception)
                 {
-                    MessageBox.Show("The formula entered in cell" + cellName + " is invalid. Please check that all formulas are formatted " +
+                    MessageBox.Show("The formula entered in cell " + cellName + " is invalid. Please check that all formulas are formatted " +
                         "correctly." , "Formula Format Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+                
             }
 
         }
