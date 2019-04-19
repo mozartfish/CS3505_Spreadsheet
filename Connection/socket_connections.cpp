@@ -16,6 +16,7 @@
 #include <unistd.h>
 #include <chrono>
 #include <future>
+#include <unordered_map>
 #include "socket_connections.h"
 
   /*
@@ -99,22 +100,20 @@ void socket_connections::WaitForClientConnections(volatile socks * sock_list, st
    * Reads in data from the socket fd provided, into the given buffer
    * of most bytes amount of data
    */
-void socket_connections::WaitForData(int socket_fd, char* buf, int bytes, std::mutex* lock, char * disc_var)
+void socket_connections::WaitForData(int socket_fd, char* buf, int bytes, std::mutex* lock, std::unordered_map<int, bool> * should_disc)
   {
     bool has_mod_val = false;
 
     // WE want this to block when the destructor happens
-    auto launch = std::async(std::launch::async, socket_connections::WaitForDataTimer, &buf[0], 
-			     &(*lock), &(*disc_var), &has_mod_val);
+    //  auto launch = std::async(std::launch::async, socket_connections::WaitForDataTimer, &buf[0], 
+    //			     &(*lock), socket_fd, should_disc, &has_mod_val);
 
     if (read(socket_fd, buf, bytes) < 0)
       {
 	std::cout << "Error reading data from socket" << std::endl;
 	
-	(*lock).lock();
-        if (!has_mod_val) (*disc_var) = 'd';
+        if (!has_mod_val) (*should_disc)[socket_fd] = true;
 	has_mod_val = true;
-	(*lock).unlock();
       }
 
     std::cout << buf << std::endl;
@@ -125,7 +124,7 @@ void socket_connections::WaitForData(int socket_fd, char* buf, int bytes, std::m
  * Counts the time passed when waiting for data to decide whether to
  * disconnect the client being waited on
  */
-void socket_connections::WaitForDataTimer(char* buf, std::mutex* lock, char * disc_var, bool * has_mod_val)
+void socket_connections::WaitForDataTimer(char* buf, std::mutex* lock, int socket_fd, std::unordered_map<int, bool> * should_disc,  bool * has_mod_val)
 {
 
   auto begin = std::chrono::steady_clock::now();
@@ -138,11 +137,9 @@ void socket_connections::WaitForDataTimer(char* buf, std::mutex* lock, char * di
     return;
 
   // Set disconnect to true if no data has been found yet
-  (*lock).lock();
   std::cout << "good disc" << std::endl;
-  if (!(*has_mod_val)) (*disc_var) = 'd';
+  if (!(*has_mod_val)) (*should_disc)[socket_fd] = true;
   (*has_mod_val) = true;
-  (*lock).unlock();
 }
 
   /*

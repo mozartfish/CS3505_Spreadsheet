@@ -642,7 +642,7 @@ int main(int argc, char ** argv)
   connections.new_socket_connected = false;
   connections.buffers = new std::vector<char*>();
   connections.partial_data = new vector<string*>();
-  connections.needs_removed = new vector<char>();
+  connections.needs_removed = new unordered_map<int, bool>();
 
   // Initialize a lock that gets passed around for when updating 
   // the socks struct or accessing its members
@@ -708,7 +708,7 @@ int main(int argc, char ** argv)
               connections.buffers->push_back(new char[BUF_SIZE]);
 	      bzero((*connections.buffers)[idx - 1], BUF_SIZE);
 	      connections.partial_data->push_back(new string());
-	      connections.needs_removed->push_back('c');
+	      (*connections.needs_removed)[(*connections.sockets)[idx]] = false;;
 
 	      
 	      // Send list of spreadsheet names
@@ -716,7 +716,7 @@ int main(int argc, char ** argv)
 
 	      // Wait for data and run the timeout timer
 	      thread(socket_connections::WaitForData, (*connections.sockets)[idx],  
-		     (*connections.buffers)[idx - 1], BUF_SIZE, &lock, &(*connections.needs_removed)[idx - 1]).detach();
+		     (*connections.buffers)[idx - 1], BUF_SIZE, &lock, &(*connections.needs_removed)).detach();
 
 	    }
 	  cout << "hello3" << endl;
@@ -732,35 +732,45 @@ int main(int argc, char ** argv)
        /**********************************************************************/
        lock.lock();
        
-       int it_idx = 0;
-       vector<char>::iterator it = connections.needs_removed->begin();
-       while (it != connections.needs_removed->end())
+       if (connections.sockets->size() > 1)
 	 {
-	   // If a client needs removed, remove it
-	   if (*it == 'd')
+	   cout << "removal" << endl;
+	   vector<int>::iterator it = connections.sockets->begin();
+	   it++;
+	   int it_idx = 0;
+	   while (it != connections.sockets->end())
 	     {
-
-	       // Erase the socket from the usermap and sheet map, and remove it from the spreadsheet listeners
-	       int fd = (*connections.sockets)[it_idx + 1];
-	       string sheet_asso = (*socket_sprdmap)[fd];
-	       (*sheets)[sheet_asso]->remove_listener(fd);
-	       socket_usermap->erase(fd);
-	       socket_sprdmap->erase(fd);
-
-	       // Close the socket
-	       socket_connections::CloseSocket(fd);
-	       
-	       // Erase the socket from the connections struct
-	       connections.sockets->erase(connections.sockets->begin() + it_idx + 1);
-	       --(connections.size_before_update);
-	       connections.buffers->erase(connections.buffers->begin() + it_idx);
-	       connections.partial_data->erase(connections.partial_data->begin() + it_idx);
-
-	       // Make sure double erasure doesn't happen
-	       connections.needs_removed->erase(it++);
+	       int fd = *it;
+	       // If a client needs removed, remove it
+	       if ((*connections.needs_removed)[fd])
+		 {
+		   cout << "removing client" << endl;
+		   // Erase the socket from the usermap and sheet map, and remove it from the spreadsheet listeners
+		   
+		   // Remove client if associated with spreadsheet
+		   if ((*socket_sprdmap).count(fd) > 0)
+		     {
+		       string sheet_asso = (*socket_sprdmap)[fd];
+		       (*sheets)[sheet_asso]->remove_listener(fd);
+		       socket_usermap->erase(fd);
+		       socket_sprdmap->erase(fd);
+		     }
+		   
+		   // Close the socket
+		   socket_connections::CloseSocket(fd);
+		   
+		   // Erase the socket from the connections struct
+		   connections.sockets->erase(it++);
+		   --(connections.size_before_update);
+		   connections.buffers->erase(connections.buffers->begin() + it_idx - 1);
+		   connections.partial_data->erase(connections.partial_data->begin() + it_idx - 1);
+		   
+		   // Make sure double erasure doesn't happen
+		   connections.needs_removed->erase(fd);
+		   
+		 }
 	       
 	     }
-	   it_idx++; 
 	 }
        lock.unlock();
 
@@ -783,7 +793,7 @@ int main(int argc, char ** argv)
 
 	       // Resume getting data
 	       thread(socket_connections::WaitForData, (*connections.sockets)[idx + 1],  (*connections.buffers)[idx], 
-		      BUF_SIZE, &lock, &(*connections.needs_removed)[idx]).detach();
+		      BUF_SIZE, &lock, &(*connections.needs_removed)).detach();
 	     }
 
 	   // Process data
