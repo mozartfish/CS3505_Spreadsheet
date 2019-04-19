@@ -48,24 +48,26 @@ namespace Display
         private bool KillForm;
 
 
-
-
+        public SpreadsheetForm()
+        {
+            InitializeComponent();
+        }
 
         /// <summary>
         /// This is a generic constructor used to initialize a new spreadsheet or be used to load one
         /// that was previously saved. The new spreadsheet will be empty and cell "A1" will be autoselected.
         /// </summary>
-        public SpreadsheetForm()
+        public SpreadsheetForm(ref Controller.SpreadsheetController controller):this()
         {
-            InitializeComponent();
+            
             //Added for server based spreadsheet
-            controller = new Controller.SpreadsheetController();
+            this.controller = controller;
             controller.RegisterSpreadsheetUpdateHandler(UpdateSpreadsheet);
             controller.RegisterNetworkErrorHandler(NetworkError);
 
 
             spreadsheetPanel1.SelectionChanged += DisplaySelection;
-            spreadsheet = new Spreadsheet(s => controller.IsValid(s), s => controller.Normalize(s), "ps6");
+            spreadsheet = new Spreadsheet(s => this.controller.IsValid(s), s => this.controller.Normalize(s), "ps6");
 
             spreadsheetPanel1.SetSelection(0, 0);
             contentTextBox.Select();
@@ -348,6 +350,7 @@ namespace Display
                 string cellName = ColRowToCellName(col, row);
 
                 string contents = contentTextBox.Text;
+                contentTextBox.Clear();
 
                 try
                 {

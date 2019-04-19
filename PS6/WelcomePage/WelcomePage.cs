@@ -91,6 +91,8 @@ namespace Display
             }
         }
 
+
+
         /// <summary>
         /// Connects to the server on connectButton click
         /// </summary>
@@ -129,21 +131,30 @@ namespace Display
         {
             if(spreadsheetList.SelectedItem != null) // make sure a spreadsheet has been selected
             {
-                // Store their credentials
-                controller.Password = Password.Text;
-                controller.Username = Username.Text;
+                //// Store their credentials
+                //controller.Password = Password.Text;
+                //controller.Username = Username.Text;
 
                 string currSpreadsheet = spreadsheetList.SelectedItem.ToString();
-                controller.SendOpen(currSpreadsheet);
-
-                this.Hide();
-                Display.SpreadsheetForm ssForm = new Display.SpreadsheetForm();
-                Display.SpreadsheetApplicationContext appContext = 
-                    Display.SpreadsheetApplicationContext.getAppContext();
-                appContext.RunForm(ssForm);
-                
-                ssForm.FormClosed += (o, ev) => this.Close();
+                OpenSpreadsheet(currSpreadsheet);
             }
+        }
+
+        private void OpenSpreadsheet(string spreadsheet)
+        {
+            // Store their credentials
+            controller.Password = Password.Text;
+            controller.Username = Username.Text;
+
+            controller.SendOpen(spreadsheet);
+
+            this.Hide();
+            Display.SpreadsheetForm ssForm = new Display.SpreadsheetForm(ref controller);
+            Display.SpreadsheetApplicationContext appContext =
+                Display.SpreadsheetApplicationContext.getAppContext();
+            appContext.RunForm(ssForm);
+
+            ssForm.FormClosed += (o, ev) => this.Close();
         }
 
         /// <summary>
@@ -157,14 +168,18 @@ namespace Display
             string spreadsheet = Microsoft.VisualBasic.Interaction.InputBox
                 ("Please Enter Name of Spreadsheet", "New Spreadsheet", "NewSpreadsheet");
 
-            // Store their credentials
-            controller.Password = Password.Text;
-            controller.Username = Username.Text;
-
             if (spreadsheet != "")
             {
-                //send the name of the spreadsheet
-                controller.SendOpen(spreadsheet);
+                OpenSpreadsheet(spreadsheet);
+            }
+        }
+
+
+        private void ServerAddress_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyValue == 13)
+            {
+                ConnectToServer(ServerAddress.Text);
             }
         }
     }
