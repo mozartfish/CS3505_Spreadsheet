@@ -289,8 +289,10 @@ namespace Controller
             // Check for authorization error
             string[] messages = Regex.Split(ss.sb.ToString(), @"(?<=[\n]{2})");
 
+
             foreach (string message in messages)
             {
+                Debug.WriteLine(message);
                 // ignore empty messages
                 if (message.Length == 0)
                 {

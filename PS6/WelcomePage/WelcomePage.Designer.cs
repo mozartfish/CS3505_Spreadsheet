@@ -87,6 +87,7 @@
             this.ServerAddress.Name = "ServerAddress";
             this.ServerAddress.Size = new System.Drawing.Size(319, 22);
             this.ServerAddress.TabIndex = 5;
+            this.ServerAddress.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ServerAddress_KeyDown);
             // 
             // ServerLabel
             // 
