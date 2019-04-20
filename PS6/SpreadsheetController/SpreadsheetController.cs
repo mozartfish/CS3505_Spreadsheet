@@ -55,7 +55,6 @@ namespace Controller
         /// </summary>
         private event ErrorUpdate ErrorOccured;
 
-
         /// <summary>
         /// Handles any NetworkError.
         /// </summary>
@@ -269,7 +268,7 @@ namespace Controller
             //populate spreadsheet list on welcome page
             ListArrived(spreadsheets);
 
-            //set CallMe to ReceiveSpreadsheet
+            //set CallMe to ReceiveInitialSpreadsheet
             ss.MessageProcessor = ReceiveInitialSpreadsheet;
             Networking.GetData(ss);
         }
@@ -286,15 +285,12 @@ namespace Controller
                 return;
             }
 
-            // Check for authorization error
             string[] messages = Regex.Split(ss.sb.ToString(), @"(?<=[\n]{2})");
-
-
             foreach (string message in messages)
             {
                 Debug.WriteLine(message);
                 // ignore empty messages
-                if (message.Length == 0)
+                if (message.Length < 2)
                 {
                     continue;
                 }
@@ -307,8 +303,9 @@ namespace Controller
                 if (message[0] == '{' && message[message.Length - 3] == '}')
                 {
                     JObject obj = JObject.Parse(message);
-                    JToken messageToken = obj["type"]; 
+                    JToken messageToken = obj["type"];
 
+                    // Check for authorization error
                     if (messageToken.ToString() == "error") // Invalid authorization error occurred! 
                     {
                         Error error = JsonConvert.DeserializeObject<Error>(message);
@@ -319,7 +316,6 @@ namespace Controller
                     
                     else
                     {
-
                         if (messageToken.ToString() == "full send")
                         {
                             FullSend fullSend = JsonConvert.DeserializeObject<FullSend>(message);
@@ -331,7 +327,10 @@ namespace Controller
                         }
                     }
                 }
-            } 
+            }
+
+            // trigger UpdateSpreadsheetEvent for redrawing
+            SpreadsheetArrived(spreadsheet);
             
             // set CallMe to ReceiveSpreadsheet
             ss.MessageProcessor = ReceiveSpreadsheet;
@@ -358,7 +357,7 @@ namespace Controller
 
             foreach (string message in messages)
             {
-                if (message.Length == 0)
+                if (message.Length < 2)
                 {
                     continue;
                 }

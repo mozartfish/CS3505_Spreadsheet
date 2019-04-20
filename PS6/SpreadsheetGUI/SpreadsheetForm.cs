@@ -59,7 +59,6 @@ namespace Display
         /// </summary>
         public SpreadsheetForm(ref Controller.SpreadsheetController controller):this()
         {
-            
             //Added for server based spreadsheet
             this.controller = controller;
             controller.RegisterSpreadsheetUpdateHandler(UpdateSpreadsheet);

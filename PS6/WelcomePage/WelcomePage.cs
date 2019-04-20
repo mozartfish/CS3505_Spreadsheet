@@ -146,8 +146,6 @@ namespace Display
             controller.Password = Password.Text;
             controller.Username = Username.Text;
 
-            controller.SendOpen(spreadsheet);
-
             this.Hide();
             Display.SpreadsheetForm ssForm = new Display.SpreadsheetForm(ref controller);
             Display.SpreadsheetApplicationContext appContext =
@@ -155,6 +153,8 @@ namespace Display
             appContext.RunForm(ssForm);
 
             ssForm.FormClosed += (o, ev) => this.Close();
+
+            controller.SendOpen(spreadsheet);
         }
 
         /// <summary>
