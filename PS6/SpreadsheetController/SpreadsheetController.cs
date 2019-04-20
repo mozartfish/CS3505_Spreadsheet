@@ -450,8 +450,15 @@ namespace Controller
             }
             edit.dependencies = dependencies;
 
-            //JSON serialize
-            Networking.Send(server, JsonConvert.SerializeObject(edit) + "\n\n");
+            try
+            {
+                //JSON serialize
+                Networking.Send(server, JsonConvert.SerializeObject(edit) + "\n\n");
+            }
+            catch(Exception)
+            {
+                NetworkError();
+            }
         }
 
         /// <summary>
@@ -466,7 +473,14 @@ namespace Controller
             open.username = username;
             open.password = password;
 
-            Networking.Send(server, JsonConvert.SerializeObject(open) + "\n\n");
+            try
+            {
+                Networking.Send(server, JsonConvert.SerializeObject(open) + "\n\n");
+            }
+            catch(Exception)
+            {
+                NetworkError();
+            }
         }
 
         /// <summary>
@@ -487,7 +501,14 @@ namespace Controller
             JsonClasses.Revert revert = new JsonClasses.Revert();
             revert.cell = cellName;
 
-            Networking.Send(server, JsonConvert.SerializeObject(revert) + "\n\n");
+            try
+            {
+                Networking.Send(server, JsonConvert.SerializeObject(revert) + "\n\n");
+            }
+            catch(Exception)
+            {
+                NetworkError();
+            }
         }
         
         #endregion

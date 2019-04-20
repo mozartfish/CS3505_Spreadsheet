@@ -62,7 +62,6 @@ namespace Display
             //Added for server based spreadsheet
             this.controller = controller;
             controller.RegisterSpreadsheetUpdateHandler(UpdateSpreadsheet);
-            controller.RegisterNetworkErrorHandler(NetworkError);
 
 
             spreadsheetPanel1.SelectionChanged += DisplaySelection;
@@ -80,11 +79,6 @@ namespace Display
                 LetterToNumber.Add(uppercharshouldbestring.ToString(), i);
             }
 
-        }
-
-        private void NetworkError()
-        {
-            MessageBox.Show("", "Network Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         public void UpdateSpreadsheet(Spreadsheet ss)
@@ -356,10 +350,20 @@ namespace Display
                     //  process update
                     controller.ProcessEdit(cellName, contents);
                 }
-                catch(Exception)
+                catch (SpreadsheetUtilities.FormulaFormatException)
                 {
                     MessageBox.Show("The formula entered in cell " + cellName + " is invalid. Please check that all formulas are formatted " +
-                        "correctly." , "Formula Format Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        "correctly.", "Formula Format Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (InvalidNameException)
+                {
+                    MessageBox.Show("The formula entered in cell " + cellName + " is invalid. Please check that all formulas are formatted " +
+                        "correctly.", "Formula Format Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (ArgumentException)
+                {
+                    MessageBox.Show("The formula entered in cell " + cellName + " is invalid. Please check that all formulas are formatted " +
+                        "correctly.", "Formula Format Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 
             }
