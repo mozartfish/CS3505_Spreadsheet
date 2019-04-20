@@ -413,12 +413,11 @@ namespace Controller
         public List<string> GetAllUsers()
         {
             List<string> list = new List<string>();
-            foreach (User user in model.GetUsersList())
+            foreach (KeyValuePair<string,User> user in model.GetUsersDict())
             {
-                list.Add(user.GetUsername() + "  ||  " + user.GetPassword() + "  ||  " + user.GetWorkingOn());
+                list.Add(user.Key + "  ||  " + user.Value.GetPassword() + "  ||  " + user.Value.GetWorkingOn());
             }
             return list;
-            //return model.GetUsersList();
         }
 
         public void TestAddUse(string user)

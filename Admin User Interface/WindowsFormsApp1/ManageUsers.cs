@@ -98,7 +98,7 @@ namespace WindowsFormsApp1
             {
                 //controller.SendUserChange(username, password, workingOn, -1);
             }
-            controller.SendUserChange(username, password, workingOn, 0);
+            controller.SendUserChange(username, password, workingOn, -1);
 
         }
 

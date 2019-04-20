@@ -164,10 +164,19 @@ namespace WindowsFormsApp1
                 currentStatusList.Items.Clear();
             }
 
-            List<string> SSList = new List<string>();
-            SSList = controller.GetAllUsers();
+            //List<string> SSList = new List<string>();
+            //SSList = controller.GetAllUsers();
 
-            foreach (string user in SSList)
+            //foreach (string user in SSList)
+            //{
+            //    currentStatusList.Items.Add(user);
+            //}
+
+            //Dictionary<string, > SSDict = new Dictionary<string, string>();
+            List<string> list = new List<string>();
+            list = controller.GetAllUsers();
+
+            foreach (string user in list)
             {
                 currentStatusList.Items.Add(user);
             }

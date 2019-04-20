@@ -25,15 +25,15 @@ namespace Model
         /// <summary>
         /// List of usernames representing all users working on spreadsheet
         /// </summary>
-        [JsonProperty]
-        private List<string> users;
+        //[JsonProperty]
+        //private List<string> //users;
 
 
         /// <summary>
         /// A dict of all users connected to passwords as value
         /// </summary>
         [JsonProperty]
-        private Dictionary<string, string> usersDict;
+        private Dictionary<string, string> users;
 
         /// <summary>
         /// Status code for spreadsheet
@@ -46,7 +46,7 @@ namespace Model
 
         public Spreadsheet()
         {
-            usersDict = new Dictionary<string, string>();
+            users = new Dictionary<string, string>();
         }
 
         public string GetSSType()
@@ -71,28 +71,28 @@ namespace Model
 
         public Dictionary<string, string> GetUsers()
         {
-            return usersDict;
+            return users;
         }
 
         public void SetUsers(Dictionary<string, string> usersList)
         {
-            usersDict = usersList;
+            users = usersList;
         }
 
         public void AddUsers(string newUser, string userPass)
         {
             //Dont try and add a user that is not there
-            if (!usersDict.ContainsKey(newUser))
+            if (!users.ContainsKey(newUser))
             {
-                usersDict.Add(newUser, userPass);
+                users.Add(newUser, userPass);
             }
         }
 
         public void RemoveUser(string name)
         {
-            if (usersDict.ContainsKey(name))
+            if (users.ContainsKey(name))
             {
-                usersDict.Remove(name);
+                users.Remove(name);
             }
         }
 
