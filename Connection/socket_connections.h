@@ -46,7 +46,7 @@ class socket_connections {
   const static int PORT_NUM = 2112;
   
   // Server functions to allow client connection
-  static void WaitForClientConnections(volatile socks * sock_list, std::mutex* lock, const bool & continue_to_run);
+  static void WaitForClientConnections(volatile socks * sock_list, std::mutex* lock, bool * continue_to_run);
   
   // Functions to get and process data
   static void WaitForData(int socket_fd, char* buf, int bytes, std::mutex* lock, std::unordered_map<int, bool> * should_disc);

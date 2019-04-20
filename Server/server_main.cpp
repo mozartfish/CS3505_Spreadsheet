@@ -329,6 +329,7 @@ void process_updates()
 
       // Message should always have the socket at 0
       int fd = atoi(message_split[0]);
+      cout << fd << endl;
       
       // Get the spreadsheet for the update (if there is one)
       string spread_name;
@@ -339,10 +340,12 @@ void process_updates()
 	{
 	  spread_name += message_split[1];
 	  sheet = (*sheets)[spread_name];
+	  cout << spread_name << endl;
 	}
       
       // Get the JSON Serialized update
       string serialized_update(message_split[message_split.size() - 1]);
+      cout << serialized_update << endl;
       
       //Deserialize
       Json::Value deserialized;
@@ -381,7 +384,6 @@ void process_updates()
 		  }
 	      
 	      string send_back_str = send_back.toStyledString()  + "\n\n";
-	      cout << send_back_str << endl;
 
 	      //Send error back only to client that sent the bad request
 	      socket_connections::SendData(fd, send_back_str.c_str(), send_back_str.size());
@@ -407,15 +409,19 @@ void process_updates()
       // Edit
       else if (deserialized["type"].asString() == "edit")
 	{
+	  cout << "in edit" << endl;
 	  vector<string> * dependencies = new vector<string>();
 
 	  // Add each dependency from json to a string vector
 	  for (int i = 0; i < deserialized["dependencies"].size(); i++)
 	    dependencies->push_back(deserialized["dependencies"][i].asString());
 	  
+	  cout << "deps" << endl;
+	  
 	  // Try to change cell
 	  if(sheet->change_cell(deserialized["cell"].asString(), deserialized["value"].asString(), dependencies))
 	    {
+	      cout << "cell changed" << endl;
 	      send_back["type"] = "full send";
 	      send_back["spreadsheet"][deserialized["cell"].asString()] = deserialized["value"].asString();
 
@@ -538,7 +544,7 @@ void process_updates()
 
 	      for (auto user_pair : sheet_pair.second->get_users())
 		{
-		  ad_mess["users"].append(user_pair.first);
+		  ad_mess["users"][user_pair.first] = user_pair.second;
 		}
 
 	      string send_back_str = ad_mess.toStyledString() + "\n\n";
@@ -699,6 +705,9 @@ bool check_sprd(string spread_name, string user, string pass, int fd)
       (*sheets)[spread_name] = new spreadsheet(spread_name);
       (*sheets)[spread_name]->add_user(user, pass);
       (*sheets)[spread_name]->add_listener(fd);
+      (*socket_sprdmap)[fd] = spread_name;
+      (*socket_usermap)[fd] = user;
+      
       return true;
     }
   
@@ -712,11 +721,15 @@ bool check_sprd(string spread_name, string user, string pass, int fd)
 	{
 	  (*sheets)[spread_name]->add_user(user, pass);
 	  (*sheets)[spread_name]->add_listener(fd);
+	  (*socket_sprdmap)[fd] = spread_name;
+	  (*socket_usermap)[fd] = user;
 	  return true;
 	}
       else if (sprd_users[user] == pass)
 	{
 	  (*sheets)[spread_name]->add_listener(fd);
+	  (*socket_sprdmap)[fd] = spread_name;
+	  (*socket_usermap)[fd] = user;
 	  return true;
 	}
       else
@@ -765,7 +778,7 @@ int main(int argc, char ** argv)
   auto update_timer = std::chrono::steady_clock::now();
 
   //Listen for clients async
-  thread(socket_connections::WaitForClientConnections, &connections, &lock, continue_to_run).detach();
+  thread(socket_connections::WaitForClientConnections, &connections, &lock, &continue_to_run).detach();
   
   //Infinite send and receive loop
    while(continue_to_run)
@@ -902,7 +915,7 @@ int main(int argc, char ** argv)
 
 	   //Get new data, erase data
 	   string  data = (*connections.partial_data)[idx]->substr(0, limit);
-	   (*connections.partial_data)[idx]->erase(0, limit + 1);
+	   (*connections.partial_data)[idx]->erase(0, limit + 2);
 
 	   cout << "data grabbed" << endl;
 
