@@ -54,9 +54,6 @@
     <Reference Include="Formula">
       <HintPath>..\Resources\Libraries\Formula.dll</HintPath>
     </Reference>
-    <Reference Include="SpreadSheet">
-      <HintPath>..\Resources\Libraries\SpreadSheet.dll</HintPath>
-    </Reference>
     <Reference Include="SpreadsheetPanel">
       <HintPath>..\Resources\Libraries\SpreadsheetPanel.dll</HintPath>
     </Reference>
@@ -131,6 +128,10 @@
     <ProjectReference Include="..\SpreadsheetController\SpreadsheetController.csproj">
       <Project>{a2c58484-1cfd-45c8-9e05-65e071edafd7}</Project>
       <Name>SpreadsheetController</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Spreadsheet\Spreadsheet.csproj">
+      <Project>{6960a32d-d637-4ae1-83c2-e78066ff343f}</Project>
+      <Name>Spreadsheet</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
