@@ -46,43 +46,18 @@ namespace WindowsFormsApp1
         /// </summary>
         /// <param name="users"></param>
         /// <param name="spreadsheet"></param>
-        public void HandleUpdateInterface(Dictionary<string, User> users, Dictionary<string, Spreadsheet> spreadsheets)
+        public void HandleUpdateInterface()
         {
             // Update the Current Status column with User data
             this.Invoke(new MethodInvoker(() =>
            {
-
                RedrawUserList();
-
-               //if (currentStatusList.Items.Count > 0)
-               //{
-               //    currentStatusList.Items.Clear();
-               //}
-               //foreach (string username in users.Keys)
-               //{
-               //    //Console.WriteLine(username);
-               //    currentStatusList.Items.Add(username);
-               //}
            }));
 
             // Update the Update column with Spreadsheet data
             this.Invoke(new MethodInvoker(() =>
             {
-
                 RedrawSSList();
-
-                //if (updateList.Items.Count > 0)
-                //{
-                //    updateList.Items.Clear();
-                //}
-                //foreach (Spreadsheet ss in spreadsheets.Values)
-                //{
-                //    if (ss.GetStatus() == 2)
-                //    {
-                //        //Console.WriteLine(ss.GetName());
-                //        updateList.Items.Add(ss.GetName());
-                //    }
-                //}
             }));
         }
 
@@ -100,6 +75,8 @@ namespace WindowsFormsApp1
 
                 currentStatusList.Items.Clear();
                 updateList.Items.Clear();
+
+                //this.Close();
 
                 //check if the user man is open
                 if (userMan != null)
@@ -225,7 +202,7 @@ namespace WindowsFormsApp1
 
         private void ConnectToServer_buttone(object sender, EventArgs e)
         {
-            string hostname = "lab1-3.eng.utah.edu";
+            string hostname = "lab1-5.eng.utah.edu";
             if (IP.Text != "")
             {
                 hostname = IP.Text;
@@ -237,6 +214,11 @@ namespace WindowsFormsApp1
             }
 
             controller.Connect(hostname, port);
+        }
+
+        private void currentStatusList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

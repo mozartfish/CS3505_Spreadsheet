@@ -35,7 +35,7 @@ namespace Controller
 
         #endregion Gui Definitions
         #region Events
-        public delegate void UpdateInterfaceHandler(Dictionary<string, User> users, Dictionary<string, Spreadsheet> spreadsheets);
+        public delegate void UpdateInterfaceHandler();
 
         public event UpdateInterfaceHandler UpdateInterface;
 
@@ -163,7 +163,7 @@ namespace Controller
                 }
             }
 
-            UpdateInterface?.Invoke(model.GetUsersDict(), model.GetSSDict());
+            UpdateInterface?.Invoke();
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace Controller
                 return JsonConvert.DeserializeObject<User>(jsonString);
 
             }
-            else if ((string)jsonObject["type"] == "Shutdown")
+            else if ((string)jsonObject["type"] == "shutdown")
             {
                 ShutdownServer?.Invoke();
                 return null;
@@ -209,20 +209,13 @@ namespace Controller
                 Spreadsheet ss = (Spreadsheet)updateObj;
                 string SSname = ss.GetName();
                 model.SetSS(SSname, ss);
-                foreach (KeyValuePair<string,string> user in ss.GetUsers())
-                {
-                    User use = new User();
-                    use.SetUsername(user.Key);
-                    use.SetPassword(user.Value);
-                    use.SetWorkingOn(SSname);
-                    model.SetUser(user.Key, use);
-                }
             }
             else if (updateObj is User)
             {
                 User user = (User)updateObj;
                 string username = user.GetUsername();
-                model.SetUser(username, user);
+                string ssName = user.GetWorkingOn();
+                model.SetUser(ssName, username, user);
             }
         }
 
@@ -363,9 +356,9 @@ namespace Controller
         }
 
 
-        public bool ModelHasUser(string username)
+        public bool ModelHasUser(string ssName, string username)
         {
-            if (model.ContainsUser(username))
+            if (model.ContainsUser(ssName, username))
             {
                 return true;
             }
@@ -413,9 +406,12 @@ namespace Controller
         public List<string> GetAllUsers()
         {
             List<string> list = new List<string>();
-            foreach (KeyValuePair<string,User> user in model.GetUsersDict())
+            foreach(string ssName in model.GetSSDict().Keys)
             {
-                list.Add(user.Key + "  ||  " + user.Value.GetPassword() + "  ||  " + user.Value.GetWorkingOn());
+                foreach (KeyValuePair<string, User> user in model.GetUsersDict(ssName))
+                {
+                    list.Add(user.Key + "  ||  " + user.Value.GetPassword() + "  ||  " + ssName);
+                }                
             }
             return list;
         }
