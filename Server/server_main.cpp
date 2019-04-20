@@ -314,7 +314,7 @@ void process_updates()
 
       // Get individual message
       string update = updates->front();
-      cout << update << endl;
+      cout << "update: " << update << endl;
       updates->pop();
 
       vector<char *> message_split;
@@ -368,7 +368,7 @@ void process_updates()
 	      
 	      // Get every cell with data
 	      for (char c = 'A'; c <= 'Z'; c++)
-		for (int i = 1; i <= 100; i++)
+		for (int i = 1; i <= 99; i++)
 		  {
 		    // Get current cell
 		    string cell(1, c);
@@ -916,7 +916,7 @@ int main(int argc, char ** argv)
 	   *update += '\t';
 	   *update += data;
 
-	   cout << "update made" << endl;
+	   cout << "update made" << *update << endl;
 	   
 	   // Add data to the queue
 	   updates->push(*update);
