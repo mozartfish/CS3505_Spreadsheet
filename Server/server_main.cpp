@@ -25,7 +25,6 @@ using namespace std;
 
 // All necessary fields for running the server
 unordered_map<string, spreadsheet*> * sheets;
-vector<string> * sheet_names;
 unordered_map<int, string> * socket_usermap;
 unordered_map<int, string> * socket_sprdmap;
 unordered_set<int> * admins;
@@ -96,7 +95,6 @@ int process_spreadsheets_from_file()
 	      delete token_str;
 	      token_str = new string (token);
 	      curr_sheet = new spreadsheet(*token_str);
-	      sheet_names->push_back(*token_str);
 	    }
 	  
 	  ++part_idx;
@@ -530,13 +528,41 @@ void process_updates()
 	{
 	  // Add the socket to the list of admins
 	  admins->insert(fd);
+
+	  //Send the admin all sheets with all of their users
+	  for (auto sheet_pair : *sheets)
+	    {
+	      Json::Value ad_mess;
+	      ad_mess["type"] = "SS";
+	      ad_mess["SSname"] = sheet_pair.second->get_name();
+
+	      for (auto user_pair : sheet_pair.second->get_users())
+		{
+		  ad_mess["users"].append(user_pair.first);
+		}
+
+	      string send_back_str = ad_mess.toStyledString() + "\n\n";
+	      const char * admin_c = send_back_str.c_str();
+
+	      socket_connections::SendData(fd, admin_c, send_back_str.size());
+	    }
+
+	  continue;
 	}
 
       // Admin shutdown
       else if (deserialized["type"].asString() == "shutdown")
 	{
-	  // Just let the server know to shutdown on the next loop
+	  // Just let the server know to shutdown on the next loop, and echo the message back to the admin
 	  continue_to_run = false;
+
+	  string send_back_str = deserialized.toStyledString() + "\n\n";
+	  const char * admin_c = send_back_str.c_str();
+
+	  // Let all admins know of the shutdown
+	  for (int admin : *admins)
+	    socket_connections::SendData(admin, admin_c, send_back_str.size());
+
 	  continue;
 	}
 
@@ -544,13 +570,71 @@ void process_updates()
       // Admin spreadsheet message (request create, status, or delete)
       else if (deserialized["type"].asString() == "SS")
 	{
+	  string sheet_name = deserialized["SSname"].asString();
+	  int status = deserialized["Status"].asInt();
 
+	  // Delete sheet
+	  if (status == -1 && sheets->find(sheet_name) != sheets->end())
+	    {
+	      //For now force close all clients, should improve to use the bool they have
+	      for (int listener : (*sheets)[sheet_name]->get_listeners())
+		socket_connections::CloseSocket(listener);
+	      
+	      delete (*sheets)[sheet_name];
+	      sheets->erase(sheet_name);
+	    }
+
+	  // Add sheet
+	  else if (status == 1 && sheets->find(sheet_name) == sheets->end())
+	    {
+	      (*sheets)[sheet_name] = new spreadsheet(sheet_name);
+	    }
+
+	  string send_back_str = deserialized.toStyledString() + "\n\n";
+	  const char * admin_c = send_back_str.c_str();
+
+	  // Let all admins know of the shutdown
+	  for (int admin : *admins)
+	    socket_connections::SendData(admin, admin_c, send_back_str.size());
+
+	  continue;
 	}
 
-      // Admin spreadsheet message (request create, status, or delete)
+      // Admin spreadsheet message (request create, change, or delete)
       else if (deserialized["type"].asString() == "User")
 	{
+	  int status = deserialized["status"].asInt();
+	  string user = deserialized["username"].asString();
+	  string pass = deserialized["pass"].asString();
+	  string sheet_name = deserialized["workingOn"].asString();
+	  spreadsheet * sheet = (*sheets)[sheet_name];
 
+	  // Delete user
+	  if (status == -1)
+	    {
+	      sheet->remove_user(user);
+	    }
+
+	  // Change user password
+	  else if (status == 0)
+	    {
+	      sheet->change_user(user, pass);
+	    }
+
+	  // Add user
+	  else if (status == 1)
+	    {
+	      sheet->add_user(user, pass);
+	    }
+
+	  string send_back_str = deserialized.toStyledString() + "\n\n";
+	  const char * admin_c = send_back_str.c_str();
+
+	  // Let all admins know of the shutdown
+	  for (int admin : *admins)
+	    socket_connections::SendData(admin, admin_c, send_back_str.size());
+
+	  continue;
 	}
 
 
@@ -594,7 +678,6 @@ void close(volatile socks & socket_info)
   for (unordered_map<string, spreadsheet*>::iterator it = sheets->begin(); it != sheets->end(); it++)
     delete it->second;
   delete sheets;
-  delete sheet_names;
   delete socket_usermap;
   delete socket_sprdmap;
   delete updates;
@@ -613,7 +696,6 @@ bool check_sprd(string spread_name, string user, string pass, int fd)
   //Create new spreadsheet if nonexistant
   if (sheets->find(spread_name) == sheets->end())
     {
-      sheet_names->push_back(spread_name);
       (*sheets)[spread_name] = new spreadsheet(spread_name);
       (*sheets)[spread_name]->add_user(user, pass);
       (*sheets)[spread_name]->add_listener(fd);
@@ -665,7 +747,6 @@ int main(int argc, char ** argv)
 
   // Initialize all fields needed for running the server
   sheets = new unordered_map<string, spreadsheet*> ();
-  sheet_names = new vector<string>();
   socket_usermap = new unordered_map<int, string>();
   socket_sprdmap = new unordered_map<int, string>();
   admins = new unordered_set<int>();
@@ -704,8 +785,8 @@ int main(int argc, char ** argv)
 	  string type("list");
 	  json_sheets["type"] = type;
 	  Json::Value * j_sheets = &json_sheets["spreadsheets"];
-	  for (string ind_sheet : *sheet_names)
-	    j_sheets->append(ind_sheet);
+	  for (auto it : *sheets)
+	    j_sheets->append(it.first);
 
 	  string message = json_sheets.toStyledString()  + "\n\n";
 	  const char * mess_c = message.c_str();

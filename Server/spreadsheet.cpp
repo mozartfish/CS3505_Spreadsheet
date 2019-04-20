@@ -86,6 +86,23 @@ bool spreadsheet::add_user(std::string user, std::string pass)
 }
 
 /*
+ * Changes the password if the user exists, returns false if the same password is given or the user doesn't exist
+ */
+bool spreadsheet::change_user(std::string user, std::string new_pass)
+{
+  // Case no user
+  if (users->find(user) == users->end())
+    return false;
+
+  // Case pass is the same
+  if ((*users)[user] == new_pass)
+    return false;
+
+  (*users)[user] = new_pass;
+  return true;
+}
+
+/*
  * Returns whether or not the specified user could be removed from
  * the list of users
  */

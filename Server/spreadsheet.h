@@ -41,6 +41,7 @@ class spreadsheet {
 
   bool add_user(std::string user, std::string pass);
   bool remove_user(std::string user);
+  bool change_user(std::string user, std::string new_pass);
   bool change_cell(std::string cell, std::string contents, std::vector<std::string> * dependencies);
   std::string undo();
   std::string revert(std::string cell);
