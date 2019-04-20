@@ -26,6 +26,8 @@ namespace Display
     /// </summary>
     public partial class SpreadsheetForm : Form
     {
+        private static int cellFocused;
+
 
         /// <summary>
         /// The controller for the spreadsheet
@@ -386,6 +388,7 @@ namespace Display
         private void UndoButton_Click(object sender, EventArgs e)
         {
             controller.SendUndo();
+            spreadsheetPanel1.Focus();
         }
 
         /// <summary>
@@ -395,9 +398,11 @@ namespace Display
         /// <param name="e"></param>
         private void RevertButton_Click(object sender, EventArgs e)
         {
+
             spreadsheetPanel1.GetSelection(out int col, out int row);
             string cellName = ColRowToCellName(col, row);
             controller.SendRevert(cellName);
+            spreadsheetPanel1.SetSelection(col, row);
         }
 
         /// <summary>
@@ -411,6 +416,7 @@ namespace Display
             spreadsheetPanel1.GetSelection(out int col, out int row);
             string cellName = ColRowToCellName(col, row);
             DisplayCellPanelValue(cellName, contentTextBox.Text);
+            spreadsheetPanel1.SetSelection(col, row);
         }
     }
 }
