@@ -264,6 +264,7 @@ namespace Controller
         /// <param name="ss"></param>
         public void ReceiveInitialSpreadsheet(SocketState ss)
         {
+            bool initialized = false;
             if (ss.Disconnected)
             {
                 NetworkError();
@@ -309,16 +310,21 @@ namespace Controller
                             {
                                 spreadsheet.SetContentsOfCell(cell, fullSend.spreadsheet[cell]);
                             }
+                            initialized = true;
                         }
                     }
                 }
             }
 
-            // trigger UpdateSpreadsheetEvent for redrawing
-            SpreadsheetArrived(spreadsheet);
 
-            // set CallMe to ReceiveSpreadsheet
-            ss.MessageProcessor = ReceiveSpreadsheet;
+            if (initialized)
+            {
+                // trigger UpdateSpreadsheetEvent for redrawing
+                SpreadsheetArrived(spreadsheet);
+                // set CallMe to ReceiveSpreadsheet
+                ss.MessageProcessor = ReceiveSpreadsheet;
+            }
+
             Networking.GetData(ss);
         }
 
@@ -338,7 +344,6 @@ namespace Controller
 
             string[] messages = Regex.Split(ss.sb.ToString(), @"(?<=[\n]{2})");
 
-            // Debug.WriteLine("**** message count: " + messages.Length + "\n");
 
             foreach (string message in messages)
             {
@@ -377,6 +382,7 @@ namespace Controller
                 }
             }
 
+            
             // trigger UpdateSpreadsheetEvent for redrawing
             SpreadsheetArrived(spreadsheet);
 
