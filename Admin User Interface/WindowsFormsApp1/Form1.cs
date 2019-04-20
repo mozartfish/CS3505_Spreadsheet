@@ -30,6 +30,7 @@ namespace WindowsFormsApp1
             // Register handlers
             controller.UpdateInterface += HandleUpdateInterface;
 
+            Console.WriteLine("     admin has started");
             //Testing TODO: remove this
             //for (int i = 0; i < 10; i++)
             //{
@@ -206,15 +207,6 @@ namespace WindowsFormsApp1
             }
         }
 
-
-        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            //Fire an event to the WelcomePage to 
-            //KillProgram();
-        }
-
-
-
         public static int counter = 0;
         private void TESTinsertingTopOfList(object sender, EventArgs e)
         {
@@ -222,14 +214,28 @@ namespace WindowsFormsApp1
             counter++;
         }
 
-        private void button8_Click(object sender, EventArgs e)
+        private void ConnectToServer_buttone(object sender, EventArgs e)
         {
-            string hostname = "localhost";
+            Console.WriteLine("admin attempting to connect");
+            //TESTING
+            //string hostname = "localhost";
+            //if (IP.Text != "")
+            //{
+            //    hostname = IP.Text;
+            //}
+            //int port = 11000;// 2112;
+            //if (Port.Text != "")
+            //{
+            //    int.TryParse(Port.Text, out port);
+            //}
+
+            //TODO: fill in hostname with the lab name... get from client or server
+            string hostname = "";
             if (IP.Text != "")
             {
                 hostname = IP.Text;
             }
-            int port = 11000;// 2112;
+            int port = 2112;
             if (Port.Text != "")
             {
                 int.TryParse(Port.Text, out port);

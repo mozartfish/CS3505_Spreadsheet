@@ -14,31 +14,14 @@ namespace Controller
 {
     public class AdminController
     {
-        #region Events
-
-        #endregion Events
-        
-
-
-        #region Controller Definitions
-
         private Socket server;
-
         private AdminModel model;
-        #endregion Controller Definitions
-
-
-
-        #region Gui Definitions
 
         private bool acctManOpen, ssManOpen;
-
-        #endregion Gui Definitions
+        
         #region Events
         public delegate void UpdateInterfaceHandler(Dictionary<string, User> users, Dictionary<string, Spreadsheet> spreadsheets);
-
         public event UpdateInterfaceHandler UpdateInterface;
-
         #endregion
 
         /// <summary>

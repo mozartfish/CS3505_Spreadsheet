@@ -187,7 +187,7 @@ namespace Controller
         public static Socket ConnectToServer(string hostName, int port, NetworkAction MessageProcessor)
         {
             SocketState ss = new SocketState(null, -1, MessageProcessor);
-
+            Console.WriteLine("networking attempting to connect to server");
             try
             {
                 System.Diagnostics.Debug.WriteLine("Connecting to " + hostName);
@@ -199,8 +199,9 @@ namespace Controller
                 Networking.MakeSocket(hostName, out socket, out ipAddress);
                 ss = new SocketState(socket, -1, MessageProcessor);
 
-                socket.BeginConnect(ipAddress, DEFAULT_PORT, ConnectedCallback, ss);
-                //socket.BeginConnect(ipAddress, port, ConnectedCallback, ss);
+                //TESTING, do not use localhost for connecting to the server!
+                //socket.BeginConnect(ipAddress, DEFAULT_PORT, ConnectedCallback, ss);
+                socket.BeginConnect(ipAddress, port, ConnectedCallback, ss);
                 return socket;
             }
             catch (SocketException)
