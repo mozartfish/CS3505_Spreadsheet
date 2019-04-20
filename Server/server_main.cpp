@@ -349,8 +349,13 @@ void process_updates(volatile socks * socks_list)
       if (message_split.size() > 2)
 	{
 	  spread_name += message_split[1];
+	  
+	  // Don't modify nonexistant servers
+	  if (sheets->find(spread_name) == sheets->end())
+	    continue;
+
 	  sheet = (*sheets)[spread_name];
-	  cout << spread_name << endl;
+	  
 	}
       
       // Get the JSON Serialized update
@@ -540,7 +545,6 @@ void process_updates(volatile socks * socks_list)
       // Admin connect message
       else if (deserialized["type"].asString() == "admin")
 	{
-	  cout << "Admin message received" << endl;
 	  // Add the socket to the list of admins
 	  admins->insert(fd);
 
@@ -568,7 +572,6 @@ void process_updates(volatile socks * socks_list)
       // Admin shutdown
       else if (deserialized["type"].asString() == "shutdown")
 	{
-	  cout << "shutdown" << endl;
 	  // Just let the server know to shutdown on the next loop, and echo the message back to the admin
 	  continue_to_run = false;
 
@@ -596,7 +599,7 @@ void process_updates(volatile socks * socks_list)
 	    {
 	      //For now force close all clients, should improve to use the bool they have
 	      for (int listener : (*sheets)[sheet_name]->get_listeners())
-		socket_connections::CloseSocket(listener);
+		(*(socks_list->needs_removed))[listener] = true;
 	      
 	      delete (*sheets)[sheet_name];
 	      sheets->erase(sheet_name);
@@ -701,7 +704,9 @@ void close(volatile socks & socket_info)
   //Delete all pointers, and all spreadsheets in the list
   for (unordered_map<string, spreadsheet*>::iterator it = sheets->begin(); it != sheets->end(); it++)
     delete it->second;
+  sheets->clear();
   delete sheets;
+
   delete socket_usermap;
   delete socket_sprdmap;
   delete updates;
@@ -870,7 +875,11 @@ int main(int argc, char ** argv)
 		   if ((*socket_sprdmap).count(fd) > 0)
 		     {
 		       string sheet_asso = (*socket_sprdmap)[fd];
-		       (*sheets)[sheet_asso]->remove_listener(fd);
+		       
+		       // Handles case of spreadsheet was deleted mid connect
+		       if (sheets->find(sheet_asso) != sheets->end())
+			 (*sheets)[sheet_asso]->remove_listener(fd);
+		       
 		       socket_usermap->erase(fd);
 		       socket_sprdmap->erase(fd);
 		     }
