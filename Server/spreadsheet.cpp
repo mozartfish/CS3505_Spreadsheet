@@ -28,6 +28,8 @@ spreadsheet::spreadsheet(std::string name)
   this->dependencies = new DependencyGraph();
   this->cell_history = new std::vector<std::vector<std::string> *>();
 
+  std::cout << &spd_history << std::endl;
+
   for (int i = 0; i < DEFAULT_CELL_COUNT; i++)
     {
       this->cell_history->push_back(new std::vector<std::string>());
@@ -149,9 +151,12 @@ bool spreadsheet::change_cell(std::string cell, std::string contents, std::vecto
   }
 
   this->dependencies->ReplaceDependents(cell, *dep_set);
-  
+  std::cout << "deps replaced" << &cell_history << &(*cell_history) << &((*cell_history)[cell_idx]) << std::endl;
+
   this->spd_history->push_back(cell);
+  std::cout << "spd update" << std::endl;
   (*(this->cell_history))[cell_idx]->push_back(contents);
+  std::cout << "hist update" << std::endl;
   
   return true;
 }
@@ -361,8 +366,6 @@ std::string spreadsheet::get_cell_contents(std::string cell)
     {
     return NULL;
     }
-
-  
   
 
   if ((*cell_history)[index]->size() == 0)
@@ -396,12 +399,10 @@ void spreadsheet::add_direct_cell_history(int cell, std::vector<std::string> & h
   if (cell < 0 || cell > DEFAULT_CELL_COUNT)
     return;
 
-  std::cout << &cell_history << std::endl;
   // Delete old history and overwrite
   std::vector<std::string> * cell_hist = &hist;
   (*(this->cell_history))[cell] = cell_hist;
 
-  std::cout << &cell_history << std::endl;
 }
 
 
