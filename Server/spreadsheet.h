@@ -46,8 +46,8 @@ class spreadsheet {
   std::string undo();
   std::string revert(std::string cell);
   std::unordered_map<std::string, std::string> & get_users();
-  std::vector<std::string> & get_cell_history(int cell_as_num);
-  std::vector<std::string> & get_sheet_history();
+  std::vector<std::string> * get_cell_history(int cell_as_num);
+  std::vector<std::string> * get_sheet_history();
   std::string get_cell_contents(std::string cell);
 
   void add_direct_sheet_history(std::vector<std::string> * hist);

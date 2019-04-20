@@ -261,7 +261,7 @@ int write_sheets_to_file()
 	  
 	  file << "Spreadsheet_History:" << '\t';
 	  //Write spreadsheet history
-	  for (auto sheet_hist : sheet_it->second->get_sheet_history())
+	  for (auto sheet_hist : *(sheet_it->second->get_sheet_history()))
 	    {
 	      file << sheet_hist << '\t';
 	    }
@@ -273,10 +273,20 @@ int write_sheets_to_file()
 	    {
 	      // Write individual cell history
 	      string cell = ":" + to_string(i) + ":";
+	      
+	      vector<string> * cell_hist = sheet_it->second->get_cell_history(i);
+
+	      if (cell_hist->size() == 0)
+		continue;
+
 	      file << cell;
-	      vector<string> cell_hist = sheet_it->second->get_cell_history(i);
-	      for (auto cell_contents : cell_hist)
+
+	      for (auto cell_contents : *cell_hist)
 		file  << '\t' << cell_contents;
+
+	      // If not the last cell
+	      if (i < DEFAULT_CELL_COUNT - 1)
+		file << '\t';
 	    }
 
 	  //Separate spreadsheets by newline
@@ -409,19 +419,17 @@ void process_updates(volatile socks * socks_list)
       // Edit
       else if (deserialized["type"].asString() == "edit")
 	{
-	  cout << "in edit" << endl;
 	  vector<string> * dependencies = new vector<string>();
 
 	  // Add each dependency from json to a string vector
 	  for (int i = 0; i < deserialized["dependencies"].size(); i++)
 	    dependencies->push_back(deserialized["dependencies"][i].asString());
 	  
-	  cout << "deps" << endl;
 	  
 	  // Try to change cell
 	  if(sheet->change_cell(deserialized["cell"].asString(), deserialized["value"].asString(), dependencies))
 	    {
-	      cout << "cell changed" << endl;
+	      
 	      send_back["type"] = "full send";
 	      send_back["spreadsheet"][deserialized["cell"].asString()] = deserialized["value"].asString();
 
@@ -490,9 +498,7 @@ void process_updates(volatile socks * socks_list)
       // Revert
       else if (deserialized["type"].asString() == "revert")
 	{
-	  cout << "reverting" << endl;
 	  string result = sheet->revert(deserialized["cell"].asString());
-	  cout << "reverted" << endl;
 
 	  // Good revert
 	  if (result != "\t")
@@ -774,8 +780,6 @@ int main(int argc, char ** argv)
       return -1;
     }
 
-  cout << sheets->size() << endl;
-
   // Start the "timer" (just initializes value to current time) for updating
   auto update_timer = std::chrono::steady_clock::now();
 
@@ -805,8 +809,6 @@ int main(int argc, char ** argv)
 
 	  string message = json_sheets.toStyledString()  + "\n\n";
 	  const char * mess_c = message.c_str();
-
-	  cout << message << endl;
 
 	  int size = connections.sockets->size();
 
@@ -894,7 +896,7 @@ int main(int argc, char ** argv)
 	   // If data exists, grab and reset buffer (If not chars are null)
 	   if ((*connections.buffers)[idx][0] > 0)
 	     {
-	       cout << "data found" << endl;
+
 	       (*(*connections.partial_data)[idx]) += (*connections.buffers)[idx];
 	       (*connections.buffers)[idx] = new char[BUF_SIZE];
 	       bzero((*connections.buffers)[idx], BUF_SIZE);
@@ -913,13 +915,9 @@ int main(int argc, char ** argv)
 	   if (limit < 0)
 	     continue;
 
-	   cout << " data good to process " << endl;
-
 	   //Get new data, erase data
 	   string  data = (*connections.partial_data)[idx]->substr(0, limit);
 	   (*connections.partial_data)[idx]->erase(0, limit + 2);
-
-	   cout << "data grabbed" << endl;
 
 	   // Format an update as socket_num, sheet_name, and then the data, separated with \t
 	   string * update = new string();
@@ -930,8 +928,6 @@ int main(int argc, char ** argv)
 
 	   *update += '\t';
 	   *update += data;
-
-	   cout << "update made" << *update << endl;
 	   
 	   // Add data to the queue
 	   updates->push(*update);
@@ -952,7 +948,7 @@ int main(int argc, char ** argv)
 
        
        // Write back to file every x minutes
-       if (std::chrono::duration_cast<std::chrono::minutes>(std::chrono::steady_clock::now() - update_timer).count() > 1000)
+       if (std::chrono::duration_cast<std::chrono::minutes>(std::chrono::steady_clock::now() - update_timer).count() > 1)
 	 {
 	   lock.lock();
 	   if (write_sheets_to_file() < 0)

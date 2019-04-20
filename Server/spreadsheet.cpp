@@ -148,14 +148,11 @@ bool spreadsheet::change_cell(std::string cell, std::string contents, std::vecto
     
   }
 
+  // Replace dependents and update cell
   this->dependencies->ReplaceDependents(cell, *dep_set);
-  std::cout << "deps replaced" << &cell_history << &(*cell_history) << &((*cell_history)[cell_idx]) << std::endl;
-
-  std::cout << cell << std::endl;
+ 
   this->spd_history->push_back(cell);
-  std::cout << "spd update" << std::endl;
   (*(*(this->cell_history))[cell_idx]).push_back(contents);
-  std::cout << "hist update" << std::endl;
   
   return true;
 }
@@ -344,22 +341,22 @@ bool spreadsheet::Visit(std::string start, std::string goal)
  * Returns a vector of the history of edits for a cell specified as a number
  * Returns an empty vector for out of range cells
  */
-std::vector<std::string> & spreadsheet::get_cell_history(int cell_as_num)
+std::vector<std::string> * spreadsheet::get_cell_history(int cell_as_num)
 {
 
   // Return empty vector for out of range
   if (cell_as_num < 0 || cell_as_num > DEFAULT_CELL_COUNT)
-    return *(new std::vector<std::string>());
+    return new std::vector<std::string>();
   
-  return *((*cell_history)[cell_as_num]);
+  return &(*(*cell_history)[cell_as_num]);
 }
 
 /*
  * Returns the history of edits for this spreadsheet
  */
-std::vector<std::string> & spreadsheet::get_sheet_history()
+std::vector<std::string> * spreadsheet::get_sheet_history()
 {
-  return *spd_history;
+  return &(*spd_history);
 }
 
 /*
