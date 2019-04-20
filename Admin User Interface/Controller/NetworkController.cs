@@ -42,7 +42,7 @@ namespace Controller
         /// String builder for the message
         /// </summary>
         private StringBuilder stringBuilder = new StringBuilder();
-
+        
         /// <summary>
         /// Whether or not the SocketState has disconnected
         /// </summary>
