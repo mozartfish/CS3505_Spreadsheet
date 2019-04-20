@@ -72,6 +72,12 @@
     <Compile Include="SpreadsheetManagement.Designer.cs">
       <DependentUpon>SpreadsheetManagement.cs</DependentUpon>
     </Compile>
+    <Compile Include="WelcomePage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WelcomePage.Designer.cs">
+      <DependentUpon>WelcomePage.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -90,6 +96,9 @@
     <EmbeddedResource Include="SpreadsheetManagement.resx">
       <DependentUpon>SpreadsheetManagement.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="WelcomePage.resx">
+      <DependentUpon>WelcomePage.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -105,9 +114,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Controller\Controller.csproj">
+      <Project>{C2952F9A-1F73-4EB0-958A-E6EAE6D7FA1F}</Project>
+      <Name>Controller</Name>
+    </ProjectReference>
     <ProjectReference Include="..\JsonClasses\JsonClasses.csproj">
       <Project>{40487d0e-ae12-4ef6-b1c4-fd8ee02d1e5d}</Project>
       <Name>JsonClasses</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{d1b72b76-1dc2-406b-897c-3f133996fe35}</Project>
+      <Name>Model</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

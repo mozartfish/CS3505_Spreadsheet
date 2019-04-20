@@ -45,18 +45,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdminLogic.cs" />
+    <Compile Include="AdminModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\UnitTests\UnitTests.csproj">
-      <Project>{e0a7b0a3-0556-490a-bd0c-9b65d80dfb5e}</Project>
-      <Name>UnitTests</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WindowsFormsApp1\WindowsFormsApp1.csproj">
-      <Project>{cadd20c3-5de9-4a7b-9b5f-85db92bb4206}</Project>
-      <Name>WindowsFormsApp1</Name>
-    </ProjectReference>
+    <Compile Include="ShutAndAdmin.cs" />
+    <Compile Include="Spreadsheet.cs" />
+    <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
