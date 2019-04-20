@@ -246,7 +246,7 @@ int spreadsheet::cell_to_index(std::string cell)
 
   // Multiply alphabetical index by numerical index
   int row_i = std::stoi(row) - 1;
-  ret_idx = ret_idx * 100 + row_i;
+  ret_idx = ret_idx * 99 + row_i;
   return ret_idx;
 }
 

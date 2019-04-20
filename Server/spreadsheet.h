@@ -17,7 +17,7 @@
 #ifndef SPRD
 #define SPRD
 
-#define DEFAULT_CELL_COUNT 2600 //26x100 spreadsheet
+#define DEFAULT_CELL_COUNT 2574 //26x100 spreadsheet
 
 class spreadsheet {
 
