@@ -408,8 +408,12 @@ namespace Display
         /// <param name="e"></param>
         private void UndoButton_Click(object sender, EventArgs e)
         {
+            spreadsheetPanel1.GetSelection(out int col, out int row);
+
             controller.SendUndo();
+
             spreadsheetPanel1.Focus();
+            spreadsheetPanel1.SetSelection(col, row);
         }
 
         /// <summary>
@@ -423,6 +427,7 @@ namespace Display
             spreadsheetPanel1.GetSelection(out int col, out int row);
             string cellName = ColRowToCellName(col, row);
             controller.SendRevert(cellName);
+            spreadsheetPanel1.Focus();
             spreadsheetPanel1.SetSelection(col, row);
         }
 
@@ -437,7 +442,6 @@ namespace Display
             spreadsheetPanel1.GetSelection(out int col, out int row);
             string cellName = ColRowToCellName(col, row);
             DisplayCellPanelValue(cellName, contentTextBox.Text);
-            spreadsheetPanel1.SetSelection(col, row);
         }
     }
 }
