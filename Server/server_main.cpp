@@ -818,6 +818,7 @@ int main(int argc, char ** argv)
 	  Json::Value json_sheets;
 	  string type("list");
 	  json_sheets["type"] = type;
+	  json_sheets["spreadsheets"] = Json::Value(Json::arrayValue);
 	  Json::Value * j_sheets = &json_sheets["spreadsheets"];
 	  for (auto it : *sheets)
 	    j_sheets->append(it.first);
@@ -826,6 +827,7 @@ int main(int argc, char ** argv)
 	  const char * mess_c = message.c_str();
 
 	  int size = connections.sockets->size();
+	  cout << message << endl;
 
 	  // Iterate over each new client, and send required start data, and wait for data from them
 	  for (int idx = connections.size_before_update; idx < size; idx++)
