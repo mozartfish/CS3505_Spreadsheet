@@ -28,8 +28,6 @@ spreadsheet::spreadsheet(std::string name)
   this->dependencies = new DependencyGraph();
   this->cell_history = new std::vector<std::vector<std::string> *>();
 
-  std::cout << &spd_history << std::endl;
-
   for (int i = 0; i < DEFAULT_CELL_COUNT; i++)
     {
       this->cell_history->push_back(new std::vector<std::string>());
@@ -150,14 +148,11 @@ bool spreadsheet::change_cell(std::string cell, std::string contents, std::vecto
     
   }
 
+  // Replace dependents and update cell
   this->dependencies->ReplaceDependents(cell, *dep_set);
-  std::cout << "deps replaced" << &cell_history << &(*cell_history) << &((*cell_history)[cell_idx]) << std::endl;
-
-  std::cout << cell << std::endl;
-  //this->spd_history->push_back(cell);
-  std::cout << "spd update" << std::endl;
+ 
+  this->spd_history->push_back(cell);
   (*(*(this->cell_history))[cell_idx]).push_back(contents);
-  std::cout << "hist update" << std::endl;
   
   return true;
 }
@@ -193,9 +188,18 @@ std::string spreadsheet::revert(std::string cell)
   std::vector<std::string> * cell_hist = (*(this->cell_history))[cell_idx];
   std::unordered_set<std::string> * dep_set = new std::unordered_set<std::string>();
 
+  // No history just means 
+  if (cell_hist->size() == 0)
+    return "";
+
   //TODO use dependency graph to make sure circ dep won't exist
   std::string curr_cont = cell_hist->back();
   cell_hist->pop_back();
+
+  // No history just means 
+  if (cell_hist->size() == 0)
+    return "";
+  
   if (cell_hist[cell_idx].back()[0] == '=')
   {
     std::vector<std::string> * deps = cells_from_formula((*cell_hist).back());
@@ -337,22 +341,22 @@ bool spreadsheet::Visit(std::string start, std::string goal)
  * Returns a vector of the history of edits for a cell specified as a number
  * Returns an empty vector for out of range cells
  */
-std::vector<std::string> & spreadsheet::get_cell_history(int cell_as_num)
+std::vector<std::string> * spreadsheet::get_cell_history(int cell_as_num)
 {
 
   // Return empty vector for out of range
   if (cell_as_num < 0 || cell_as_num > DEFAULT_CELL_COUNT)
-    return *(new std::vector<std::string>());
+    return new std::vector<std::string>();
   
-  return *((*cell_history)[cell_as_num]);
+  return &(*(*cell_history)[cell_as_num]);
 }
 
 /*
  * Returns the history of edits for this spreadsheet
  */
-std::vector<std::string> & spreadsheet::get_sheet_history()
+std::vector<std::string> * spreadsheet::get_sheet_history()
 {
-  return *spd_history;
+  return &(*spd_history);
 }
 
 /*
@@ -381,11 +385,10 @@ std::string spreadsheet::get_cell_contents(std::string cell)
  * Undefined histories cause undefined behavior, so use of this method
  * outisde of the specified format is not recommended
  */
-void spreadsheet::add_direct_sheet_history(std::vector<std::string> hist)
+void spreadsheet::add_direct_sheet_history(std::vector<std::string> * hist)
 {
   delete this->spd_history;
-  std::vector<std::string> * new_hist = &hist;
-  this->spd_history = new_hist;
+  this->spd_history = hist;
 }
 
 /*
@@ -395,14 +398,13 @@ void spreadsheet::add_direct_sheet_history(std::vector<std::string> hist)
  *
  * Does nothing for cells outside of the range of the spreadsheet
  */
-void spreadsheet::add_direct_cell_history(int cell, std::vector<std::string> & hist)
+void spreadsheet::add_direct_cell_history(int cell, std::vector<std::string> * hist)
 {
   if (cell < 0 || cell > DEFAULT_CELL_COUNT)
     return;
 
   // Delete old history and overwrite
-  std::vector<std::string> * cell_hist = &hist;
-  (*(this->cell_history))[cell] = cell_hist;
+  (*(this->cell_history))[cell] = hist;
 
 }
 

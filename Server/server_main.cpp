@@ -38,7 +38,7 @@ bool continue_to_run = true;
 void close(volatile socks & socket_info);
 int process_spreadsheets_from_file();
 int write_sheets_to_file();
-void process_updates();
+void process_updates(volatile socks * socks_list);
 bool check_sprd(string spread_name, string user, string pass, int fd);
 
 
@@ -173,7 +173,7 @@ int process_spreadsheets_from_file()
 	      token = strtok(NULL, "\t");
 	    }
 
-	  curr_sheet->add_direct_sheet_history(*spd_hist);
+	  curr_sheet->add_direct_sheet_history(spd_hist);
 
        /**********************************************************************/
        /*                       CELL HISTORY READ                            */
@@ -212,7 +212,7 @@ int process_spreadsheets_from_file()
 		}
 	      
 	      // Add vector of histories to spreadsheet
-	      curr_sheet->add_direct_cell_history(cell_num, *cell_hist);
+	      curr_sheet->add_direct_cell_history(cell_num, cell_hist);
 	      
 	      } 
 
@@ -261,7 +261,7 @@ int write_sheets_to_file()
 	  
 	  file << "Spreadsheet_History:" << '\t';
 	  //Write spreadsheet history
-	  for (auto sheet_hist : sheet_it->second->get_sheet_history())
+	  for (auto sheet_hist : *(sheet_it->second->get_sheet_history()))
 	    {
 	      file << sheet_hist << '\t';
 	    }
@@ -273,10 +273,20 @@ int write_sheets_to_file()
 	    {
 	      // Write individual cell history
 	      string cell = ":" + to_string(i) + ":";
+	      
+	      vector<string> * cell_hist = sheet_it->second->get_cell_history(i);
+
+	      if (cell_hist->size() == 0)
+		continue;
+
 	      file << cell;
-	      vector<string> cell_hist = sheet_it->second->get_cell_history(i);
-	      for (auto cell_contents : cell_hist)
+
+	      for (auto cell_contents : *cell_hist)
 		file  << '\t' << cell_contents;
+
+	      // If not the last cell
+	      if (i < DEFAULT_CELL_COUNT - 1)
+		file << '\t';
 	    }
 
 	  //Separate spreadsheets by newline
@@ -302,7 +312,7 @@ int write_sheets_to_file()
  * Function that processes all messages contained in the queue field updates, and sends them out to all
  * necessary users
  */
-void process_updates()
+void process_updates(volatile socks * socks_list)
 {
   
 
@@ -409,19 +419,17 @@ void process_updates()
       // Edit
       else if (deserialized["type"].asString() == "edit")
 	{
-	  cout << "in edit" << endl;
 	  vector<string> * dependencies = new vector<string>();
 
 	  // Add each dependency from json to a string vector
 	  for (int i = 0; i < deserialized["dependencies"].size(); i++)
 	    dependencies->push_back(deserialized["dependencies"][i].asString());
 	  
-	  cout << "deps" << endl;
 	  
 	  // Try to change cell
 	  if(sheet->change_cell(deserialized["cell"].asString(), deserialized["value"].asString(), dependencies))
 	    {
-	      cout << "cell changed" << endl;
+	      
 	      send_back["type"] = "full send";
 	      send_back["spreadsheet"][deserialized["cell"].asString()] = deserialized["value"].asString();
 
@@ -532,6 +540,7 @@ void process_updates()
       // Admin connect message
       else if (deserialized["type"].asString() == "admin")
 	{
+	  cout << "Admin message received" << endl;
 	  // Add the socket to the list of admins
 	  admins->insert(fd);
 
@@ -559,6 +568,7 @@ void process_updates()
       // Admin shutdown
       else if (deserialized["type"].asString() == "shutdown")
 	{
+	  cout << "shutdown" << endl;
 	  // Just let the server know to shutdown on the next loop, and echo the message back to the admin
 	  continue_to_run = false;
 
@@ -576,8 +586,10 @@ void process_updates()
       // Admin spreadsheet message (request create, status, or delete)
       else if (deserialized["type"].asString() == "SS")
 	{
-	  string sheet_name = deserialized["SSname"].asString();
-	  int status = deserialized["Status"].asInt();
+	  cout << "sheet mess" << endl;
+	  string sheet_name = deserialized["ssName"].asString();
+	  int status = deserialized["status"].asInt();
+	  cout << status << endl;
 
 	  // Delete sheet
 	  if (status == -1 && sheets->find(sheet_name) != sheets->end())
@@ -594,10 +606,13 @@ void process_updates()
 	  else if (status == 1 && sheets->find(sheet_name) == sheets->end())
 	    {
 	      (*sheets)[sheet_name] = new spreadsheet(sheet_name);
+	      cout << "sheet made" << sheets->size() << endl;
 	    }
 
 	  string send_back_str = deserialized.toStyledString() + "\n\n";
 	  const char * admin_c = send_back_str.c_str();
+
+	  cout << send_back_str << endl;
 
 	  // Let all admins know of the shutdown
 	  for (int admin : *admins)
@@ -609,6 +624,7 @@ void process_updates()
       // Admin spreadsheet message (request create, change, or delete)
       else if (deserialized["type"].asString() == "User")
 	{
+	  cout << "User message" << endl;
 	  int status = deserialized["status"].asInt();
 	  string user = deserialized["username"].asString();
 	  string pass = deserialized["pass"].asString();
@@ -665,19 +681,21 @@ void process_updates()
 void close(volatile socks & socket_info)
 {
 
+  cout << "Preparing to Shut Down the Server" << endl;
+
   //Wait 7 seconds for data to finish coming in
   auto begin = std::chrono::steady_clock::now();
   while (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - begin).count() < 7);
 
   //Clear queue and process messages
-  process_updates();
+  process_updates(&socket_info);
 
   //Close sockets
   for (int socket : *socket_info.sockets)
     socket_connections::CloseSocket(socket);
 
   //Write the sheets to the file
-  if (!write_sheets_to_file())
+  if (write_sheets_to_file() < 0)
     cout << "Error writing back spreadsheets, last version will be saved instead" << endl;
 
   //Delete all pointers, and all spreadsheets in the list
@@ -772,8 +790,6 @@ int main(int argc, char ** argv)
       return -1;
     }
 
-  cout << sheets->size() << endl;
-
   // Start the "timer" (just initializes value to current time) for updating
   auto update_timer = std::chrono::steady_clock::now();
 
@@ -803,8 +819,6 @@ int main(int argc, char ** argv)
 
 	  string message = json_sheets.toStyledString()  + "\n\n";
 	  const char * mess_c = message.c_str();
-
-	  cout << message << endl;
 
 	  int size = connections.sockets->size();
 
@@ -850,6 +864,7 @@ int main(int argc, char ** argv)
 	       // If a client needs removed, remove it
 	       if ((*connections.needs_removed)[fd])
 		 {
+		   cout << "Removing client from socket " << fd << endl;
 		   // Erase the socket from the usermap and sheet map, and remove it from the spreadsheet listeners 
 		   // Remove client if associated with spreadsheet
 		   if ((*socket_sprdmap).count(fd) > 0)
@@ -892,7 +907,7 @@ int main(int argc, char ** argv)
 	   // If data exists, grab and reset buffer (If not chars are null)
 	   if ((*connections.buffers)[idx][0] > 0)
 	     {
-	       cout << "data found" << endl;
+
 	       (*(*connections.partial_data)[idx]) += (*connections.buffers)[idx];
 	       (*connections.buffers)[idx] = new char[BUF_SIZE];
 	       bzero((*connections.buffers)[idx], BUF_SIZE);
@@ -911,13 +926,9 @@ int main(int argc, char ** argv)
 	   if (limit < 0)
 	     continue;
 
-	   cout << " data good to process " << endl;
-
 	   //Get new data, erase data
 	   string  data = (*connections.partial_data)[idx]->substr(0, limit);
 	   (*connections.partial_data)[idx]->erase(0, limit + 2);
-
-	   cout << "data grabbed" << endl;
 
 	   // Format an update as socket_num, sheet_name, and then the data, separated with \t
 	   string * update = new string();
@@ -928,8 +939,6 @@ int main(int argc, char ** argv)
 
 	   *update += '\t';
 	   *update += data;
-
-	   cout << "update made" << *update << endl;
 	   
 	   // Add data to the queue
 	   updates->push(*update);
@@ -944,13 +953,13 @@ int main(int argc, char ** argv)
 
        lock.lock();
 
-       process_updates();
+       process_updates(&connections);
 
        lock.unlock();
 
        
        // Write back to file every x minutes
-       if (std::chrono::duration_cast<std::chrono::minutes>(std::chrono::steady_clock::now() - update_timer).count() > 1000)
+       if (std::chrono::duration_cast<std::chrono::minutes>(std::chrono::steady_clock::now() - update_timer).count() > 1)
 	 {
 	   lock.lock();
 	   if (write_sheets_to_file() < 0)
