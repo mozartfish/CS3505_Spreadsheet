@@ -150,6 +150,13 @@ void socket_connections::SendData(int socket_fd, const char *data, int bytes)
   {
 
     int bytes_written = write(socket_fd, data, bytes);
+
+    // On error
+    if (bytes_written < 0)
+      {
+	std::cout << "Error sending data to socket " << socket_fd << std::endl;
+	return;
+      }
       
       // If not all data was sent, try to send the rest
       if (bytes_written < bytes)
