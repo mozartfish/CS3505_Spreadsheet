@@ -34,7 +34,7 @@
   <ItemGroup>
     <Reference Include="Formula, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Dropbox\School- Sophmore 2018-19\CS 3500\Assignments\PS3\Formula\bin\Debug\Formula.dll</HintPath>
+      <HintPath>..\Resources\Libraries\Formula.dll</HintPath>
     </Reference>
     <Reference Include="JsonClasses">
       <HintPath>..\Resources\Libraries\JsonClasses.dll</HintPath>
@@ -62,9 +62,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Formula.dll" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NetworkController\NetworkController.csproj">
