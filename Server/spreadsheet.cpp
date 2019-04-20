@@ -153,9 +153,10 @@ bool spreadsheet::change_cell(std::string cell, std::string contents, std::vecto
   this->dependencies->ReplaceDependents(cell, *dep_set);
   std::cout << "deps replaced" << &cell_history << &(*cell_history) << &((*cell_history)[cell_idx]) << std::endl;
 
-  this->spd_history->push_back(cell);
+  std::cout << cell << std::endl;
+  //this->spd_history->push_back(cell);
   std::cout << "spd update" << std::endl;
-  (*(this->cell_history))[cell_idx]->push_back(contents);
+  (*(*(this->cell_history))[cell_idx]).push_back(contents);
   std::cout << "hist update" << std::endl;
   
   return true;
