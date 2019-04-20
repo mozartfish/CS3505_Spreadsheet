@@ -165,7 +165,6 @@ namespace Model
             use.SetUsername("user");
             use.SetPassword("pass");
             use.SetWorkingOn("working on this one");
-            use.SetActive(1);
 
             usersDict.Add(user, use);
         }

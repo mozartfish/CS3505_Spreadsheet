@@ -29,12 +29,6 @@ namespace Model
         private string password;
 
         /// <summary>
-        /// Active status
-        /// </summary>
-        [JsonProperty]
-        private int active;
-
-        /// <summary>
         /// This is an array of strings because a user may be logged onto multiple spreadsheets at once
         /// </summary>
         [JsonProperty]
@@ -87,16 +81,6 @@ namespace Model
         public void SetPassword(string pass)
         {
             password = pass;
-        }
-
-        public int GetActive()
-        {
-            return active;
-        }
-
-        public void SetActive(int act)
-        {
-            active = act;
         }
 
         public string GetWorkingOn()

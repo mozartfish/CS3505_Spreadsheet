@@ -30,13 +30,14 @@ namespace WindowsFormsApp1
             // Register handlers
             controller.UpdateInterface += HandleUpdateInterface;
 
-            Console.WriteLine("     admin has started");
+            controller.ShutdownServer += RecieveShutDownEcho;
+
             //Testing TODO: remove this
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    controller.TestAddUse(i.ToString());
-            //    controller.TestAddSS(i.ToString());
-            //}
+            for (int i = 0; i < 10; i++)
+            {
+                controller.TestAddUse(i.ToString());
+                controller.TestAddSS(i.ToString());
+            }
 
             // Testing connection TODO: remove this here
             //controller.Connect("localhost");
@@ -111,8 +112,11 @@ namespace WindowsFormsApp1
 
         private void RecieveShutDownEcho()
         {
-            currentStatusList.Items.Clear();
-            updateList.Items.Clear();
+            this.Invoke(new MethodInvoker(() =>
+            {
+                currentStatusList.Items.Clear();
+                updateList.Items.Clear();
+            }));            
 
             //check if the user man is open
             if (userMan != null)
@@ -207,6 +211,15 @@ namespace WindowsFormsApp1
             }
         }
 
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            //Fire an event to the WelcomePage to 
+            //KillProgram();
+        }
+
+
+
         public static int counter = 0;
         private void TESTinsertingTopOfList(object sender, EventArgs e)
         {
@@ -214,23 +227,9 @@ namespace WindowsFormsApp1
             counter++;
         }
 
-        private void ConnectToServer_buttone(object sender, EventArgs e)
+        private void button8_Click(object sender, EventArgs e)
         {
-            Console.WriteLine("admin attempting to connect");
-            //TESTING
-            //string hostname = "localhost";
-            //if (IP.Text != "")
-            //{
-            //    hostname = IP.Text;
-            //}
-            //int port = 11000;// 2112;
-            //if (Port.Text != "")
-            //{
-            //    int.TryParse(Port.Text, out port);
-            //}
-
-            //TODO: fill in hostname with the lab name... get from client or server
-            string hostname = "";
+            string hostname = "localhost";
             if (IP.Text != "")
             {
                 hostname = IP.Text;

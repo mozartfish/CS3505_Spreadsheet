@@ -14,14 +14,35 @@ namespace Controller
 {
     public class AdminController
     {
+        #region Events
+
+        #endregion Events
+        
+
+
+        #region Controller Definitions
+
         private Socket server;
+
         private AdminModel model;
+        #endregion Controller Definitions
+
+
+
+        #region Gui Definitions
 
         private bool acctManOpen, ssManOpen;
-        
+
+        #endregion Gui Definitions
         #region Events
         public delegate void UpdateInterfaceHandler(Dictionary<string, User> users, Dictionary<string, Spreadsheet> spreadsheets);
+
         public event UpdateInterfaceHandler UpdateInterface;
+
+        public delegate void ShutdownHandler();
+
+        public event ShutdownHandler ShutdownServer;
+
         #endregion
 
         /// <summary>
@@ -44,7 +65,6 @@ namespace Controller
             User user = new User();
             user.SetUsername("Peter Jensen");
             user.SetPassword("12345678");
-            user.SetActive(1);
             user.SetWorkingOn("ss1.sprd");
             user.SetStatus(0);
         }
@@ -153,22 +173,27 @@ namespace Controller
         private object Deserialize(string jsonString)
         {
             JObject jsonObject = JObject.Parse(jsonString);
-            if (!(jsonObject["SSname"] is null))
+            if ((string)jsonObject["type"] == "SS")
             {
                 //deserialize spreadsheet
                 return JsonConvert.DeserializeObject<Spreadsheet>(jsonString);
             }
-            else if (!(jsonObject["username"] is null))
+            else if ((string)jsonObject["type"] == "user")
             {
                 //deserialize user
                 return JsonConvert.DeserializeObject<User>(jsonString);
+
             }
-            else if (!(jsonObject["type"] is null))
+            else if ((string)jsonObject["type"] == "shutdown")
+            {
+                ShutdownServer?.Invoke();
+                return null;
+            }
+            else
             {
                 return JsonConvert.DeserializeObject<ShutAndAdmin>(jsonString);
             }
 
-            throw new ArgumentException();
         }
 
         /// <summary>
@@ -199,7 +224,7 @@ namespace Controller
         {
             StringBuilder messageBuilder = new StringBuilder();
 
-            string msg = "admin\n";
+            string msg = "admin";
             ShutAndAdmin shut = new ShutAndAdmin();
             shut.SetShutAndAdminType(msg);
 
@@ -213,7 +238,7 @@ namespace Controller
         {
             StringBuilder messageBuilder = new StringBuilder();
 
-            string msg = "Shutdown\n";
+            string msg = "shutdown";
             ShutAndAdmin shut = new ShutAndAdmin();
             shut.SetShutAndAdminType(msg);
 
@@ -232,17 +257,17 @@ namespace Controller
         /// <summary>
         /// Helper method to send user status change (username/password)
         /// </summary>
-        //private void SendUserChange(string username)
-        //{
-        //    StringBuilder messageBuilder = new StringBuilder();
+        private void SendUserChange(string username)
+        {
+            StringBuilder messageBuilder = new StringBuilder();
 
-        //    User user = new User();
-        //    user.SetUsername(username);
-        //    string serializedObj = JsonConvert.SerializeObject(user) + "\n\n";
-        //    messageBuilder.Append(serializedObj);
+            User user = new User();
+            user.SetUsername(username);
+            string serializedObj = JsonConvert.SerializeObject(user) + "\n\n";
+            messageBuilder.Append(serializedObj);
 
-        //    Networking.Send(server, messageBuilder.ToString());
-        //}
+            Networking.Send(server, messageBuilder.ToString());
+        }
         
         
         /// <summary>
@@ -278,7 +303,7 @@ namespace Controller
 
             Spreadsheet spreadsheet = new Spreadsheet();
             spreadsheet.SetName(SSname);// model.GetSS(SSname);
-            spreadsheet.SetSSType("SS");
+            spreadsheet.SetSSType("user");
             spreadsheet.SetStatus(status);
             string serializedObj = JsonConvert.SerializeObject(spreadsheet) + "\n\n";
             messageBuilder.Append(serializedObj);
@@ -309,7 +334,7 @@ namespace Controller
             if (result == DialogResult.OK)
             {
                 //Send message to the server telling it to shut down 
-                SendShutDownMessage();
+                //SendShutDownMessage();
                 CleanModel();
             }
         }
