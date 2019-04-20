@@ -73,7 +73,6 @@ namespace Display
 
             spreadsheetPanel1.SetSelection(0, 0);
             contentTextBox.Select();
-            DisplaySelection(spreadsheetPanel1);
 
             //this dictionary maps key: letter to value: row number
             LetterToNumber = new Dictionary<string, int>();
@@ -82,6 +81,8 @@ namespace Display
                 char uppercharshouldbestring = (char)(i + 65);
                 LetterToNumber.Add(uppercharshouldbestring.ToString(), i);
             }
+            DisplaySelection(spreadsheetPanel1);
+
 
         }
 
@@ -212,6 +213,7 @@ namespace Display
 
             //Sets the caret to the end of the contents text box.
             contentTextBox.SelectionStart = contentTextBox.Text.Length;
+            DisplayCellPanelValue(name, value);
         }
 
         /// <summary>
@@ -234,7 +236,9 @@ namespace Display
             {
                 string letter = m.Groups[1].ToString();
                 double.TryParse(m.Groups[2].ToString(), out double result);
-                spreadsheetPanel1.SetValue(LetterToNumber[letter], (int)result - 1, value);
+                
+                    spreadsheetPanel1.SetValue(LetterToNumber[letter], (int)result - 1, value);
+                
                 m = m.NextMatch();
             }
         }
@@ -272,14 +276,15 @@ namespace Display
             string cellName = ColRowToCellName(col, row);
             string contents = "";
 
-            if (contentTextBox.Text != "")
-            {
-                contents = contentTextBox.Text;
-            }
-            else
-            {
-                contents = spreadsheet.GetCellContents(cellName).ToString();
-            }
+            //TODO: Fix scrolling so that a message is sent when the text box is changed
+            //if (contentTextBox.Text != "")
+            //{
+            //    contents = contentTextBox.Text;
+            //}
+            //else
+            //{
+            //    contents = spreadsheet.GetCellContents(cellName).ToString();
+            //}
 
             EnterData(cellName, contents);
 
