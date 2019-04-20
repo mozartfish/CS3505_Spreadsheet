@@ -27,17 +27,17 @@ namespace WindowsFormsApp1
             RedrawSSList();
             RedrawUserList();
             
-            // Register handlers
+            //events triggered by network sending
             controller.UpdateInterface += HandleUpdateInterface;
-
+            //event triggered by server echoing our shut down message
             controller.ShutdownServer += RecieveShutDownEcho;
 
             //Testing TODO: remove this
-            for (int i = 0; i < 10; i++)
-            {
-                controller.TestAddUse(i.ToString());
-                controller.TestAddSS(i.ToString());
-            }
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    controller.TestAddUse(i.ToString());
+            //    controller.TestAddSS(i.ToString());
+            //}
         }
 
         /// <summary>
@@ -95,23 +95,28 @@ namespace WindowsFormsApp1
         {
             this.Invoke(new MethodInvoker(() =>
             {
+                //clean the models dictionaries
+                controller.CleanModel();
+
                 currentStatusList.Items.Clear();
                 updateList.Items.Clear();
+
+                //check if the user man is open
+                if (userMan != null)
+                {
+                    //if so close the man tab
+                    userMan.Close();
+                }
+
+                //check if the ssman is open
+                if (ssMan != null)
+                {
+                    //if so, close the man tab
+                    ssMan.Close();
+                }
             }));            
 
-            //check if the user man is open
-            if (userMan != null)
-            {
-                userMan.Close();
-            }
-
-            //check if the ssman is open
-            if (ssMan != null)
-            {
-                ssMan.Close();
-            }
-
-            controller.CleanModel();
+            
         }
 
         private void AccountManagementButton(object sender, EventArgs e)
@@ -146,9 +151,9 @@ namespace WindowsFormsApp1
             List<string> SSList = new List<string>();
             SSList = controller.GetAllSS();
 
-            foreach (string user in SSList)
+            foreach (string ss in SSList)
             {
-                updateList.Items.Add(user);
+                updateList.Items.Add(ss);
             }
         }
 
@@ -170,18 +175,19 @@ namespace WindowsFormsApp1
 
 
 
-        private void UpdateList(Dictionary<string, User> users)
-        {
-            foreach (string username in users.Keys)
-            {
-                Console.WriteLine(username);
-                currentStatusList.Items.Add(username);
-            }
-        }
+        //private void UpdateList(Dictionary<string, User> users)
+        //{
+        //    foreach (string username in users.Keys)
+        //    {
+        //        Console.WriteLine(username);
+        //        currentStatusList.Items.Add(username);
+        //    }
+        //}
 
         private void button4_Click(object sender, EventArgs e)
         {
             RedrawSSList();
+            RedrawUserList();
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -193,11 +199,11 @@ namespace WindowsFormsApp1
         }
 
 
-        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            //Fire an event to the WelcomePage to 
-            //KillProgram();
-        }
+        //private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        //{
+        //    //Fire an event to the WelcomePage to 
+        //    //KillProgram();
+        //}
 
 
 
