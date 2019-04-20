@@ -42,7 +42,7 @@ namespace Display
         /// </summary>
         private void NetworkError()
         {
-            string mssg = "An error occured with the connection to the server. Please try again.";
+            string mssg = "An error occured with the connection to the server. Please close and try again.";
             MessageBox.Show(mssg, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             this.Invoke(new MethodInvoker(() => ConnectButton.Enabled = true));
         }
