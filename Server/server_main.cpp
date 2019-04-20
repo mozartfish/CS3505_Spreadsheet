@@ -38,7 +38,7 @@ bool continue_to_run = true;
 void close(volatile socks & socket_info);
 int process_spreadsheets_from_file();
 int write_sheets_to_file();
-void process_updates();
+void process_updates(volatile socks * socks_list);
 bool check_sprd(string spread_name, string user, string pass, int fd);
 
 
@@ -302,7 +302,7 @@ int write_sheets_to_file()
  * Function that processes all messages contained in the queue field updates, and sends them out to all
  * necessary users
  */
-void process_updates()
+void process_updates(volatile socks * socks_list)
 {
   
 
@@ -490,7 +490,9 @@ void process_updates()
       // Revert
       else if (deserialized["type"].asString() == "revert")
 	{
+	  cout << "reverting" << endl;
 	  string result = sheet->revert(deserialized["cell"].asString());
+	  cout << "reverted" << endl;
 
 	  // Good revert
 	  if (result != "\t")
@@ -670,7 +672,7 @@ void close(volatile socks & socket_info)
   while (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - begin).count() < 7);
 
   //Clear queue and process messages
-  process_updates();
+  process_updates(&socket_info);
 
   //Close sockets
   for (int socket : *socket_info.sockets)
@@ -944,7 +946,7 @@ int main(int argc, char ** argv)
 
        lock.lock();
 
-       process_updates();
+       process_updates(&connections);
 
        lock.unlock();
 

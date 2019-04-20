@@ -28,8 +28,6 @@ spreadsheet::spreadsheet(std::string name)
   this->dependencies = new DependencyGraph();
   this->cell_history = new std::vector<std::vector<std::string> *>();
 
-  std::cout << &spd_history << std::endl;
-
   for (int i = 0; i < DEFAULT_CELL_COUNT; i++)
     {
       this->cell_history->push_back(new std::vector<std::string>());
@@ -193,9 +191,18 @@ std::string spreadsheet::revert(std::string cell)
   std::vector<std::string> * cell_hist = (*(this->cell_history))[cell_idx];
   std::unordered_set<std::string> * dep_set = new std::unordered_set<std::string>();
 
+  // No history just means 
+  if (cell_hist->size() == 0)
+    return "";
+
   //TODO use dependency graph to make sure circ dep won't exist
   std::string curr_cont = cell_hist->back();
   cell_hist->pop_back();
+
+  // No history just means 
+  if (cell_hist->size() == 0)
+    return "";
+  
   if (cell_hist[cell_idx].back()[0] == '=')
   {
     std::vector<std::string> * deps = cells_from_formula((*cell_hist).back());
