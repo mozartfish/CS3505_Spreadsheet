@@ -308,7 +308,10 @@ namespace Controller
 
                             foreach (string cell in fullSend.spreadsheet.Keys)
                             {
-                                spreadsheet.SetContentsOfCell(cell, fullSend.spreadsheet[cell]);
+                                lock (spreadsheet)
+                                {
+                                    spreadsheet.SetContentsOfCell(cell, fullSend.spreadsheet[cell]);
+                                }
                             }
                             initialized = true;
                         }
