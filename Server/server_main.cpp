@@ -540,6 +540,7 @@ void process_updates(volatile socks * socks_list)
       // Admin connect message
       else if (deserialized["type"].asString() == "admin")
 	{
+	  cout << "Admin message received" << endl;
 	  // Add the socket to the list of admins
 	  admins->insert(fd);
 
@@ -567,6 +568,7 @@ void process_updates(volatile socks * socks_list)
       // Admin shutdown
       else if (deserialized["type"].asString() == "shutdown")
 	{
+	  cout << "shutdown" << endl;
 	  // Just let the server know to shutdown on the next loop, and echo the message back to the admin
 	  continue_to_run = false;
 
@@ -584,8 +586,10 @@ void process_updates(volatile socks * socks_list)
       // Admin spreadsheet message (request create, status, or delete)
       else if (deserialized["type"].asString() == "SS")
 	{
-	  string sheet_name = deserialized["SSname"].asString();
-	  int status = deserialized["Status"].asInt();
+	  cout << "sheet mess" << endl;
+	  string sheet_name = deserialized["ssName"].asString();
+	  int status = deserialized["status"].asInt();
+	  cout << status << endl;
 
 	  // Delete sheet
 	  if (status == -1 && sheets->find(sheet_name) != sheets->end())
@@ -602,10 +606,13 @@ void process_updates(volatile socks * socks_list)
 	  else if (status == 1 && sheets->find(sheet_name) == sheets->end())
 	    {
 	      (*sheets)[sheet_name] = new spreadsheet(sheet_name);
+	      cout << "sheet made" << sheets->size() << endl;
 	    }
 
 	  string send_back_str = deserialized.toStyledString() + "\n\n";
 	  const char * admin_c = send_back_str.c_str();
+
+	  cout << send_back_str << endl;
 
 	  // Let all admins know of the shutdown
 	  for (int admin : *admins)
@@ -617,6 +624,7 @@ void process_updates(volatile socks * socks_list)
       // Admin spreadsheet message (request create, change, or delete)
       else if (deserialized["type"].asString() == "User")
 	{
+	  cout << "User message" << endl;
 	  int status = deserialized["status"].asInt();
 	  string user = deserialized["username"].asString();
 	  string pass = deserialized["pass"].asString();
@@ -673,6 +681,8 @@ void process_updates(volatile socks * socks_list)
 void close(volatile socks & socket_info)
 {
 
+  cout << "Preparing to Shut Down the Server" << endl;
+
   //Wait 7 seconds for data to finish coming in
   auto begin = std::chrono::steady_clock::now();
   while (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - begin).count() < 7);
@@ -685,7 +695,7 @@ void close(volatile socks & socket_info)
     socket_connections::CloseSocket(socket);
 
   //Write the sheets to the file
-  if (!write_sheets_to_file())
+  if (write_sheets_to_file() < 0)
     cout << "Error writing back spreadsheets, last version will be saved instead" << endl;
 
   //Delete all pointers, and all spreadsheets in the list
@@ -854,6 +864,7 @@ int main(int argc, char ** argv)
 	       // If a client needs removed, remove it
 	       if ((*connections.needs_removed)[fd])
 		 {
+		   cout << "Removing client from socket " << fd << endl;
 		   // Erase the socket from the usermap and sheet map, and remove it from the spreadsheet listeners 
 		   // Remove client if associated with spreadsheet
 		   if ((*socket_sprdmap).count(fd) > 0)
