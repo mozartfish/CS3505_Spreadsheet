@@ -37,6 +37,15 @@ namespace Model
             return new Spreadsheet();
         }
 
+        public bool ContainsSS(string name)
+        {
+            if (ssDict.ContainsKey(name))
+            {
+                return true;
+            }
+            return false;
+        }
+
         public Dictionary<string, Spreadsheet> GetSSDict()
         {
             return ssDict;
@@ -54,6 +63,14 @@ namespace Model
         public Dictionary<string, User> GetUsersDict()
         {
             return usersDict;
+        }
+        public bool ContainsUser(string username)
+        {
+            if (usersDict.ContainsKey(username))
+            {
+                return true;
+            }
+            return false;
         }
 
         //public List<User> GetOrderedUsersList()
@@ -87,7 +104,7 @@ namespace Model
         //        {
 
         //            string user = entry.Value.GetUsername() + "  " + entry.Value.GetPassword() + "   " + entry.Value.GetActive() + " " + entry.Value.GetWorkingOn().ToString();
-                    
+
         //            activeList.Add(user);
 
         //        }
@@ -159,27 +176,30 @@ namespace Model
             usersDict[username] = user;
         }
 
-        public void TESTAddUser(string user)
-        {
-            User use = new User();
-            use.SetUsername("user");
-            use.SetPassword("pass");
-            use.SetWorkingOn("working on this one");
+        //public void TESTAddUser(string user)
+        //{
+        //    User use = new User();
+        //    use.SetUsername("user");
+        //    use.SetPassword("pass");
+        //    use.SetWorkingOn("working on this one");
 
-            usersDict.Add(user, use);
-        }
+        //    usersDict.Add(user, use);
+        //}
 
-        public void TESTAddSSs(string name)
-        {
-            Spreadsheet ss = new Spreadsheet();
+        //public void TESTAddSSs(string name)
+        //{
+        //    Spreadsheet ss = new Spreadsheet();
 
-            ss.SetName(name);
-            ss.SetStatus(0);
-            List<string> list = new List<string> { "ssUser1"};
-            ss.SetUsers(list);
+        //    ss.SetName(name);
+        //    ss.SetStatus(0);
 
-            ssDict.Add(name, ss);
-        }
+        //    List<string> list = new List<string> { "ssUser1"};
+        //    //ss.SetUsers(list);
+
+        //    ssDict.Add(name, ss);
+        //}
+
+        
 
         #endregion
 

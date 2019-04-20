@@ -77,7 +77,14 @@ namespace WindowsFormsApp1
             string username = ChangeUser_User.Text;
             string password = ChangeUser_Pass.Text;
             string workingOn = ChangeUser_WorkingOn.Text;
+
+            //only send the message if the user is in the model, keeps the server lighter
+            if (controller.ModelHasUser(username))
+            {
+                //controller.SendUserChange(username, password, workingOn, 0);
+            }
             controller.SendUserChange(username, password, workingOn, 0);
+
         }
 
         private void DeleteUser_button(object sender, EventArgs e)
@@ -85,9 +92,16 @@ namespace WindowsFormsApp1
             string username = DeleteUser_User.Text;
             string password = DeleteUser_Pass.Text;
             string workingOn = DeleteUser_WorkingOn.Text;
-            controller.SendUserChange(username, password, workingOn, -1);
+
+            //only send the message if the user is in the model, keeps the server lighter
+            if (controller.ModelHasUser(username))
+            {
+                //controller.SendUserChange(username, password, workingOn, -1);
+            }
+            controller.SendUserChange(username, password, workingOn, 0);
+
         }
-        
+
 
         #endregion events form admin
 

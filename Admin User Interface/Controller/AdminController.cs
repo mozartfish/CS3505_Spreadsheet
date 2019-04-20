@@ -62,11 +62,11 @@ namespace Controller
             #endregion Gui Var Initialize
 
             // testing TODO: remove this 
-            User user = new User();
-            user.SetUsername("Peter Jensen");
-            user.SetPassword("12345678");
-            user.SetWorkingOn("ss1.sprd");
-            user.SetStatus(0);
+            //User user = new User();
+            //user.SetUsername("Peter Jensen");
+            //user.SetPassword("12345678");
+            //user.SetWorkingOn("ss1.sprd");
+            //user.SetStatus(0);
         }
 
         #region NetworkControl
@@ -96,6 +96,7 @@ namespace Controller
             //start listening for data
             Networking.GetData(ss);
         }
+
 
         /// <summary>
         /// Method used as SocketState.networkAction delegate
@@ -178,13 +179,13 @@ namespace Controller
                 //deserialize spreadsheet
                 return JsonConvert.DeserializeObject<Spreadsheet>(jsonString);
             }
-            else if ((string)jsonObject["type"] == "user")
+            else if ((string)jsonObject["type"] == "User")
             {
                 //deserialize user
                 return JsonConvert.DeserializeObject<User>(jsonString);
 
             }
-            else if ((string)jsonObject["type"] == "shutdown")
+            else if ((string)jsonObject["type"] == "Shutdown")
             {
                 ShutdownServer?.Invoke();
                 return null;
@@ -208,6 +209,14 @@ namespace Controller
                 Spreadsheet ss = (Spreadsheet)updateObj;
                 string SSname = ss.GetName();
                 model.SetSS(SSname, ss);
+                foreach (KeyValuePair<string,string> user in ss.GetUsers())
+                {
+                    User use = new User();
+                    use.SetUsername(user.Key);
+                    use.SetPassword(user.Value);
+                    use.SetWorkingOn(SSname);
+                    model.SetUser(user.Key, use);
+                }
             }
             else if (updateObj is User)
             {
@@ -344,6 +353,25 @@ namespace Controller
             }
         }
 
+        public bool ModelHasSpreadsheet(string name)
+        {
+            if (model.ContainsSS(name))
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+        public bool ModelHasUser(string username)
+        {
+            if (model.ContainsUser(username))
+            {
+                return true;
+            }
+            return false;
+        }
+
         public void CleanModel()
         {
             model.CleanModel();
@@ -395,13 +423,13 @@ namespace Controller
 
         public void TestAddUse(string user)
         {
-            model.TESTAddUser(user);
+            //model.TESTAddUser(user);
         }
 
 
         public void TestAddSS(string user)
         {
-            model.TESTAddSSs(user);
+            //model.TESTAddSSs(user);
         }
 
 

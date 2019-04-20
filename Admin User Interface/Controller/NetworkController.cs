@@ -316,9 +316,13 @@ namespace Controller
                 socket.BeginSend(messageBytes, 0, messageBytes.Length, SocketFlags.None, SendCallback, socket);
                 return true;
             }
-            catch (SocketException)//object.Disposed exception nmeeds to be here
+            catch (SocketException)
             {
                 socket.Close();
+                return false;
+            }
+            catch (ObjectDisposedException) //ADDED by Aaron, to deal with clicking connect multiple times in succession
+            {
                 return false;
             }
         }
