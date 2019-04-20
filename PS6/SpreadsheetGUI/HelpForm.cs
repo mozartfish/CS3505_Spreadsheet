@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SpreadsheetGUI
+namespace Display
 {
     public partial class HelpForm : Form
     {

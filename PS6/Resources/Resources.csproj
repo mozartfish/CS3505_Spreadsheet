@@ -40,8 +40,8 @@
     <Content Include="Libraries\DependencyGraph.xml" />
     <Content Include="Libraries\Formula.dll" />
     <Content Include="Libraries\Formula.xml" />
-    <Content Include="Libraries\SpreadSheet.dll" />
-    <Content Include="Libraries\SpreadSheet.xml" />
+    <Content Include="Libraries\JsonClasses.dll" />
+    <Content Include="Libraries\JsonClasses.xml" />
     <Content Include="Libraries\SpreadsheetPanel.dll" />
     <Content Include="Libraries\SpreadsheetPanel.XML" />
     <Content Include="README.txt" />

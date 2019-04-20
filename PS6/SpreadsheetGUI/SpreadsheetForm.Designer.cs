@@ -1,4 +1,4 @@
-﻿namespace SpreadsheetGUI
+﻿namespace Display
 {
     partial class SpreadsheetForm
     {
@@ -32,7 +32,6 @@
             this.contentTextBox = new System.Windows.Forms.TextBox();
             this.valueTextBox = new System.Windows.Forms.TextBox();
             this.nameTextBox = new System.Windows.Forms.TextBox();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.fileMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,7 +51,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.spreadsheetPanel1.Location = new System.Drawing.Point(8, 85);
             this.spreadsheetPanel1.Name = "spreadsheetPanel1";
-            this.spreadsheetPanel1.Size = new System.Drawing.Size(1496, 961);
+            this.spreadsheetPanel1.Size = new System.Drawing.Size(812, 491);
             this.spreadsheetPanel1.TabIndex = 0;
             // 
             // contentTextBox
@@ -62,8 +61,9 @@
             this.contentTextBox.Location = new System.Drawing.Point(85, 50);
             this.contentTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.contentTextBox.Name = "contentTextBox";
-            this.contentTextBox.Size = new System.Drawing.Size(1299, 22);
+            this.contentTextBox.Size = new System.Drawing.Size(615, 22);
             this.contentTextBox.TabIndex = 12;
+            this.contentTextBox.TextChanged += new System.EventHandler(this.contentTextBox_TextChanged);
             this.contentTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ContentTextBox_KeyDown);
             // 
             // valueTextBox
@@ -78,7 +78,7 @@
             this.valueTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.valueTextBox.Name = "valueTextBox";
             this.valueTextBox.ReadOnly = true;
-            this.valueTextBox.Size = new System.Drawing.Size(1196, 15);
+            this.valueTextBox.Size = new System.Drawing.Size(512, 15);
             this.valueTextBox.TabIndex = 11;
             // 
             // nameTextBox
@@ -93,11 +93,6 @@
             this.nameTextBox.Size = new System.Drawing.Size(36, 15);
             this.nameTextBox.TabIndex = 10;
             // 
-            // backgroundWorker1
-            // 
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker1_DoWork);
-            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker1_RunWorkerCompleted);
-            // 
             // fileMenu
             // 
             this.fileMenu.BackColor = System.Drawing.Color.Transparent;
@@ -106,7 +101,7 @@
             this.fileToolStripMenuItem});
             this.fileMenu.Location = new System.Drawing.Point(0, 0);
             this.fileMenu.Name = "fileMenu";
-            this.fileMenu.Size = new System.Drawing.Size(1516, 28);
+            this.fileMenu.Size = new System.Drawing.Size(832, 28);
             this.fileMenu.TabIndex = 17;
             this.fileMenu.Text = "file";
             // 
@@ -122,14 +117,14 @@
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(120, 26);
             this.helpToolStripMenuItem.Text = "Help";
             this.helpToolStripMenuItem.Click += new System.EventHandler(this.HelpToolStripMenuItem_Click);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(120, 26);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.CloseToolStripMenuItem_Click);
             // 
@@ -164,7 +159,7 @@
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.875F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(1388, 50);
+            this.button1.Location = new System.Drawing.Point(704, 50);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(116, 25);
             this.button1.TabIndex = 21;
@@ -174,8 +169,9 @@
             // 
             // RevertButton
             // 
+            this.RevertButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.RevertButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RevertButton.Location = new System.Drawing.Point(1388, 12);
+            this.RevertButton.Location = new System.Drawing.Point(704, 12);
             this.RevertButton.Name = "RevertButton";
             this.RevertButton.Size = new System.Drawing.Size(116, 31);
             this.RevertButton.TabIndex = 22;
@@ -188,7 +184,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1516, 1055);
+            this.ClientSize = new System.Drawing.Size(832, 588);
             this.Controls.Add(this.RevertButton);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.valueText);
@@ -217,7 +213,6 @@
         private System.Windows.Forms.TextBox contentTextBox;
         private System.Windows.Forms.TextBox valueTextBox;
         private System.Windows.Forms.TextBox nameTextBox;
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.MenuStrip fileMenu;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;

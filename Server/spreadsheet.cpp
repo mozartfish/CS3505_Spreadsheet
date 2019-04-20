@@ -1,6 +1,6 @@
 /*
  * Authors: Thomas Ady and Pranav Rajan
- * Last Revision: 4/1/19
+ * Last Revision: 4/15/19
  *
  * Contains all function definitions for a spreadsheet object
  */
@@ -9,9 +9,11 @@
 #include <stack>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 #include <sstream>
 #include "spreadsheet.h"
 #include <queue>
+#include <iostream>
 
 /*
  *  Constructs a new spreadsheet of the given name, with empty cells
@@ -20,15 +22,17 @@
 spreadsheet::spreadsheet(std::string name)
 {
   this->name = name;
+  this->listeners = new std::unordered_set<int>();
   this->spd_history = new std::vector<std::string>();
   this->users = new std::unordered_map<std::string, std::string>();
   this->dependencies = new DependencyGraph();
-  this->cell_history = new std::vector<std::string>* [DEFAULT_CELL_COUNT];
+  this->cell_history = new std::vector<std::vector<std::string> *>();
 
   for (int i = 0; i < DEFAULT_CELL_COUNT; i++)
     {
-      this->cell_history[i] = new std::vector<std::string>();
+      this->cell_history->push_back(new std::vector<std::string>());
     }
+
 }
 
 /*
@@ -40,6 +44,31 @@ spreadsheet::~spreadsheet()
   delete this->spd_history;
   delete this-> users;
   delete this-> dependencies;
+  delete this-> listeners;
+}
+
+/*
+ * Adds a socket fd listener to the spreadsheet
+ */
+void spreadsheet::add_listener(int fd)
+{
+  this->listeners->insert(fd);
+}
+
+/*
+ * Removes a socket fd listener from the spreadsheet
+ */
+void spreadsheet::remove_listener(int fd)
+{
+  this->listeners->erase(fd);
+}
+
+/*
+ * Returns the list of all current listeners to this spreadsheet
+ */
+const std::unordered_set<int> & spreadsheet::get_listeners()
+{
+  return *(this->listeners);
 }
 
 /*
@@ -53,6 +82,23 @@ bool spreadsheet::add_user(std::string user, std::string pass)
     return false;
   
   (*users)[user] = pass;
+  return true;
+}
+
+/*
+ * Changes the password if the user exists, returns false if the same password is given or the user doesn't exist
+ */
+bool spreadsheet::change_user(std::string user, std::string new_pass)
+{
+  // Case no user
+  if (users->find(user) == users->end())
+    return false;
+
+  // Case pass is the same
+  if ((*users)[user] == new_pass)
+    return false;
+
+  (*users)[user] = new_pass;
   return true;
 }
 
@@ -83,47 +129,92 @@ std::unordered_map<std::string, std::string> & spreadsheet::get_users()
  *  cell and new contents, returns true if the edit can be processed
  *
  */
-bool spreadsheet::change_cell(std::string cell, std::string contents)
+bool spreadsheet::change_cell(std::string cell, std::string contents, std::vector<std::string> * dep_list)
 {
   int cell_idx = cell_to_index(cell);
   if (cell_idx < 0 || cell_idx >= DEFAULT_CELL_COUNT)
     return false;
+
+  std::unordered_set<std::string> * dep_set = new std::unordered_set<std::string>();
+
+  //check for circular dependencies
+  if (contents[0] == '=')
+  {
+    if (CircularDependency(cell, dep_list))
+      return false;
+    
+    for (std::string cell_dep : *dep_list)
+      dep_set->insert(cell_dep);
+    
+  }
+
+  // Replace dependents and update cell
+  this->dependencies->ReplaceDependents(cell, *dep_set);
+ 
+  this->spd_history->push_back(cell);
+  (*(*(this->cell_history))[cell_idx]).push_back(contents);
+  
+  return true;
 }
 
 /*
  *  Performs an undo on this spreadsheet, and returns the contents of
- *  the last edit, with the cell name attached to the beginning
- *  Returns NULL if no previous edits
+ *  the last edit, with the cell name attached to the beginning separated by \t
+ *  Returns empty string if no previous edits
  */
 std::string spreadsheet::undo()
 {
-  if (spd_history->empty())
-    return NULL;
+  std::string empty("");
+  if (this->spd_history->empty())
+    return empty;
 
-  std::string cell = spd_history->back();
-  spd_history->pop_back();
+  std::string cell = this->spd_history->back();
+  this->spd_history->pop_back();
 
   // Revert the cell that had the most recent edit
-  return this->revert(cell);
-  
-  
+  return cell + "\t" + this->revert(cell);
 }
 
 /*
  * Reverts the contents of a cell to what they previously were, 
- * returning those contents, or NULL if the revert failed
+ * returning those contents, or \t (unusable character for clients) if the revert failed
  */
 std::string spreadsheet::revert(std::string cell)
 {
   int cell_idx = cell_to_index(cell);
   if (cell_idx < 0 || cell_idx >= DEFAULT_CELL_COUNT)
-    return NULL;
+    return "\t";
 
-  std::vector<std::string> * cell_hist = cell_history[cell_idx];
-  
+  std::vector<std::string> * cell_hist = (*(this->cell_history))[cell_idx];
+  std::unordered_set<std::string> * dep_set = new std::unordered_set<std::string>();
+
+  // No history just means 
+  if (cell_hist->size() == 0)
+    return "";
+
   //TODO use dependency graph to make sure circ dep won't exist
   std::string curr_cont = cell_hist->back();
   cell_hist->pop_back();
+
+  // No history just means 
+  if (cell_hist->size() == 0)
+    return "";
+  
+  if (cell_hist[cell_idx].back()[0] == '=')
+  {
+    std::vector<std::string> * deps = cells_from_formula((*cell_hist).back());
+    if (CircularDependency(cell, deps))
+    {
+      cell_hist->push_back(curr_cont);
+      return "\t";
+    }
+
+    for (std::string cell_dep : *deps)
+      dep_set->insert(cell_dep);
+    
+  }
+
+  dependencies->ReplaceDependents(cell, *dep_set);
   
   // Return the current top contents
   return cell_hist->back();
@@ -165,25 +256,54 @@ int spreadsheet::cell_to_index(std::string cell)
 
   // Multiply alphabetical index by numerical index
   int row_i = std::stoi(row) - 1;
-  ret_idx = ret_idx * 100 + row_i;
+  ret_idx = ret_idx * 99 + row_i;
   return ret_idx;
 }
 
+/*
+ * Returns a list of all cells in the given formula
+ */
+std::vector<std::string> *  spreadsheet::cells_from_formula(std::string formula)
+{
+  std::vector<std::string> * dependencies = new std::vector<std::string>();
+
+  // Find any letter occurances
+  int idx = formula.find_first_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+  while(idx != -1)
+    {
+      int num_idx;
+      
+      // Find length of digits (Finds inclusive index of last num)
+      for (num_idx = formula.find_first_of("0123456789", idx + 1); 
+	   (formula.find_first_of("0123456789", num_idx + 1) - num_idx) == 1; num_idx++);
+
+      // Get cell as substring
+      std::string cell = formula.substr(idx, num_idx + 1);
+      
+      // Push back cell, find next cell
+      dependencies->push_back(cell);
+      idx = formula.find_first_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", idx + 1);
+    }
+  
+  return &(*dependencies);
+  
+}
+
 //Function that detects circular dependcies in the spreadsheet
-bool spreadsheet::CircularDependency(std::string cell, std::string Formula)
+bool spreadsheet::CircularDependency(std::string cell, std::vector<std::string> * dependencies)
 {
   //https://stackoverflow.com/questions/16029324/c-splitting-a-string-into-an-array
   
-  std::string string_tokens[Formula.length()];
+  /*std::string string_tokens[Formula.length()];
   int j = 0;
   std:: stringstream read_tokens(Formula);
   while (read_tokens.good() && j < Formula.length())
   {
     read_tokens >> string_tokens[j];
     j++;
-  }
+    } */
   
-  for (std::string s : string_tokens)
+  for (std::string s : *dependencies)
   {
     if (Visit(s, cell))
       return true;
@@ -221,22 +341,22 @@ bool spreadsheet::Visit(std::string start, std::string goal)
  * Returns a vector of the history of edits for a cell specified as a number
  * Returns an empty vector for out of range cells
  */
-std::vector<std::string> & spreadsheet::get_cell_history(int cell_as_num)
+std::vector<std::string> * spreadsheet::get_cell_history(int cell_as_num)
 {
 
   // Return empty vector for out of range
   if (cell_as_num < 0 || cell_as_num > DEFAULT_CELL_COUNT)
-    return *(new std::vector<std::string>());
+    return new std::vector<std::string>();
   
-  return *cell_history[cell_as_num];
+  return &(*(*cell_history)[cell_as_num]);
 }
 
 /*
  * Returns the history of edits for this spreadsheet
  */
-std::vector<std::string> & spreadsheet::get_sheet_history()
+std::vector<std::string> * spreadsheet::get_sheet_history()
 {
-  return *spd_history;
+  return &(*spd_history);
 }
 
 /*
@@ -244,15 +364,20 @@ std::vector<std::string> & spreadsheet::get_sheet_history()
  */
 std::string spreadsheet::get_cell_contents(std::string cell)
 {
+  
   int index = cell_to_index(cell);
-
+  
   if (index < 0)
+    {
     return NULL;
+    }
+  
 
-  if (cell_history[index]->size() == 0)
-    return NULL;
+  if ((*cell_history)[index]->size() == 0)
+    return "";
 
-  return cell_history[index]->back();
+  
+  return (*cell_history)[index]->back();
 }
 
 /*
@@ -260,11 +385,10 @@ std::string spreadsheet::get_cell_contents(std::string cell)
  * Undefined histories cause undefined behavior, so use of this method
  * outisde of the specified format is not recommended
  */
-void spreadsheet::add_direct_sheet_history(std::vector<std::string> hist)
+void spreadsheet::add_direct_sheet_history(std::vector<std::string> * hist)
 {
-  delete spd_history;
-  std::vector<std::string> * new_hist = &hist;
-  spd_history = new_hist;
+  delete this->spd_history;
+  this->spd_history = hist;
 }
 
 /*
@@ -274,15 +398,14 @@ void spreadsheet::add_direct_sheet_history(std::vector<std::string> hist)
  *
  * Does nothing for cells outside of the range of the spreadsheet
  */
-void spreadsheet::add_direct_cell_history(int cell, std::vector<std::string> & hist)
+void spreadsheet::add_direct_cell_history(int cell, std::vector<std::string> * hist)
 {
   if (cell < 0 || cell > DEFAULT_CELL_COUNT)
     return;
 
   // Delete old history and overwrite
-  delete cell_history[cell];
-  std::vector<std::string> * cell_hist = &hist;
-  cell_history[cell] = cell_hist;
+  (*(this->cell_history))[cell] = hist;
+
 }
 
 

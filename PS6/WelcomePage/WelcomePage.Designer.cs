@@ -1,4 +1,4 @@
-﻿namespace WelcomePage
+﻿namespace Display
 {
     partial class WelcomePage
     {
@@ -41,9 +41,9 @@
             // 
             // ConnectButton
             // 
-            this.ConnectButton.Location = new System.Drawing.Point(462, 33);
+            this.ConnectButton.Location = new System.Drawing.Point(462, 21);
             this.ConnectButton.Name = "ConnectButton";
-            this.ConnectButton.Size = new System.Drawing.Size(100, 35);
+            this.ConnectButton.Size = new System.Drawing.Size(100, 34);
             this.ConnectButton.TabIndex = 0;
             this.ConnectButton.Text = "Connect";
             this.ConnectButton.UseVisualStyleBackColor = true;
@@ -58,7 +58,7 @@
             // 
             // Password
             // 
-            this.Password.Location = new System.Drawing.Point(103, 60);
+            this.Password.Location = new System.Drawing.Point(103, 55);
             this.Password.Name = "Password";
             this.Password.Size = new System.Drawing.Size(319, 22);
             this.Password.TabIndex = 2;
@@ -75,7 +75,7 @@
             // PasswordLabel
             // 
             this.PasswordLabel.AutoSize = true;
-            this.PasswordLabel.Location = new System.Drawing.Point(23, 65);
+            this.PasswordLabel.Location = new System.Drawing.Point(23, 60);
             this.PasswordLabel.Name = "PasswordLabel";
             this.PasswordLabel.Size = new System.Drawing.Size(73, 17);
             this.PasswordLabel.TabIndex = 4;
@@ -87,6 +87,7 @@
             this.ServerAddress.Name = "ServerAddress";
             this.ServerAddress.Size = new System.Drawing.Size(319, 22);
             this.ServerAddress.TabIndex = 5;
+            this.ServerAddress.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ServerAddress_KeyDown);
             // 
             // ServerLabel
             // 

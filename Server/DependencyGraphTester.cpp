@@ -15,6 +15,7 @@ using namespace std;
 int main()
 {
   
+//Empty Graph should contain nothing
   {
     DependencyGraph *t = new DependencyGraph();
     bool b;
@@ -29,6 +30,7 @@ int main()
       cout << "Test zero size failed" << endl;
   }
   
+//Empty Graph should have nothing
   {
     DependencyGraph *t = new DependencyGraph();
     bool b;
@@ -49,10 +51,19 @@ int main()
     
   }
   
+//Remove Dependency Test
   {
     DependencyGraph *t = new DependencyGraph();
     t->RemoveDependency("x", "y");
     cout << "called the remove function on an empty set" << endl;
+  }
+
+//Replace on an empty DG shouldn't fail
+  {
+    DependencyGraph *t = new DependencyGraph();
+    std::unordered_set<std::string> empty_set = std::unordered_set<std::string>();
+    t->ReplaceDependents("x", empty_set);
+    t->ReplaceDependees("y", empty_set);
   }
   
   

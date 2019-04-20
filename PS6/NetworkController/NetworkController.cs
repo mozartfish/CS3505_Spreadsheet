@@ -4,8 +4,9 @@
 // can be used for any networking, but in this instance are
 // used for the Space Wars game
 
-//Joanna Lowry && Cole Jacobs
-//Version 1.2 (04/07/2019)
+/// Joanna Lowry && Cole Jacobs
+/// Version 1.2 (04/07/2019)
+/// Updated Networking to be compatable for the client of a server-based spreadsheet
 
 using System;
 using System.Collections.Generic;
@@ -24,50 +25,6 @@ namespace Controller
     /// <param name="ss"></param>
     public delegate void NetworkAction(SocketState ss);
 
-    /// <summary>
-    /// Handles any NetworkError.
-    /// </summary>
-    public delegate void NetWorkErrorHandler();
-
-
-    /// <summary>
-    /// The state the server connection is held in.
-    /// Contains a TCPListener and a messageProcessor
-    /// </summary>
-    //public class ConnectionState
-    //{
-    //    /// <summary>
-    //    /// Listener for the ConnectionState
-    //    /// </summary>
-    //    private TcpListener listener;
-
-    //    /// <summary>
-    //    /// Processes messages received by the ConnectionState
-    //    /// </summary>
-    //    private NetworkAction serverMessageProcessor;
-
-    //    /// <summary>
-    //    /// Creates a new ConnectionState
-    //    /// </summary>
-    //    /// <param name="listener">listener for the ConnectionState</param>
-    //    /// <param name="action">processes the messages received by the ConnectionState</param>
-    //    public ConnectionState(TcpListener listener, NetworkAction action)
-    //    {
-    //        this.listener = listener;
-    //        serverMessageProcessor = action;
-    //    }
-
-    //    /// <summary>
-    //    /// Returns the listener for the ConnectionState
-    //    /// </summary>
-    //    public TcpListener Listener { get { return listener; } }
-
-    //    /// <summary>
-    //    /// Returns or sets the message processor for the ConnectionState
-    //    /// </summary>
-    //    public NetworkAction ServerMessageProcessor
-    //    { get { return serverMessageProcessor; } set { serverMessageProcessor = value; } }
-    //}
 
     /// <summary>
     /// This class holds all the necessary state to hold a socket connection
@@ -130,6 +87,7 @@ namespace Controller
             get { return messageProcessor; }
             set { messageProcessor = value; }
         }
+
         /// <summary>
         /// Returns the socket in the socket state
         /// </summary>
@@ -154,6 +112,15 @@ namespace Controller
         /// Returns or sets whether or not the socket state has disconnected.
         /// </summary>
         public bool Disconnected { get { return disconnected; } set { disconnected = value; } }
+
+        public void RemoveProcessedMessages()
+        {
+            int index = sb.ToString().LastIndexOf("\n\n");
+            if (index != -1)
+            {
+                sb.Remove(0, index + 2);
+            }
+        }
     }
 
     /// <summary>
@@ -162,11 +129,6 @@ namespace Controller
     public static class Networking
     {
         public const int DEFAULT_PORT = 2112;
-
-        /// <summary>
-        /// Event that handles network errors
-        /// </summary>
-        private static event NetWorkErrorHandler NetworkError;
 
 
         /// <summary>
@@ -180,53 +142,46 @@ namespace Controller
             ipAddress = IPAddress.None;
             socket = null;
 
+            //Establish the remote endpoint for the socket
+            IPHostEntry ipHostInfo;
+
+            // Determine if the server address is a URL or an IP
             try
             {
-
-                //Establish the remote endpoint for the socket
-                IPHostEntry ipHostInfo;
-
-                // Determine if the server address is a URL or an IP
-                try
+                ipHostInfo = Dns.GetHostEntry(hostName);
+                bool foundIPV4 = false;
+                foreach (IPAddress address in ipHostInfo.AddressList)
                 {
-                    ipHostInfo = Dns.GetHostEntry(hostName);
-                    bool foundIPV4 = false;
-                    foreach (IPAddress address in ipHostInfo.AddressList)
+                    if (address.AddressFamily != AddressFamily.InterNetworkV6)
                     {
-                        if (address.AddressFamily != AddressFamily.InterNetworkV6)
-                        {
-                            foundIPV4 = true;
-                            ipAddress = address;
-                            break;
-                        }
-                    }
-
-                    // Didn't find any IPV4 addresses
-                    if (!foundIPV4)
-                    {
-                        System.Diagnostics.Debug.WriteLine("Invalid address: " + hostName);
-                        throw new ArgumentException("Invalid address");
+                        foundIPV4 = true;
+                        ipAddress = address;
+                        break;
                     }
                 }
-                catch (Exception)
+
+                // Didn't find any IPV4 addresses
+                if (!foundIPV4)
                 {
-                    //see if host name is actually an IP addresss 
-                    System.Diagnostics.Debug.WriteLine("using IP");
-                    ipAddress = IPAddress.Parse(hostName);
+                    System.Diagnostics.Debug.WriteLine("Invalid address: " + hostName);
+                    throw new ArgumentException("Invalid address");
                 }
-
-                //Create a TCP/IP socket
-                socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
-                socket.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, false);
-
-                // Disable Nagle's algorithm
-                socket.NoDelay = true;
             }
             catch (Exception)
             {
-                NetworkError();
+                //see if host name is actually an IP addresss 
+                System.Diagnostics.Debug.WriteLine("using IP");
+                ipAddress = IPAddress.Parse(hostName);
             }
+
+            //Create a TCP/IP socket
+            socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+
+            socket.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, false);
+
+            // Disable Nagle's algorithm
+            socket.NoDelay = true;
+
         }
 
         /// <summary>
@@ -239,25 +194,19 @@ namespace Controller
         {
             SocketState ss = new SocketState(null, -1, MessageProcessor);
 
-            try
-            {
-                System.Diagnostics.Debug.WriteLine("Connecting to " + hostName);
+            System.Diagnostics.Debug.WriteLine("Connecting to " + hostName);
 
-                //Create a TCP/IP Socket
-                Socket socket;
-                IPAddress ipAddress;
+            //Create a TCP/IP Socket
+            Socket socket;
+            IPAddress ipAddress;
 
-                Networking.MakeSocket(hostName, out socket, out ipAddress);
-                ss = new SocketState(socket, -1, MessageProcessor);
+            Networking.MakeSocket(hostName, out socket, out ipAddress);
+            ss = new SocketState(socket, -1, MessageProcessor);
 
-                socket.BeginConnect(ipAddress, Networking.DEFAULT_PORT, ConnectedCallback, ss);
-                return socket;
-            }
-            catch (SocketException)
-            {
-                ss.Disconnected = true;
-                return ss.theSocket;
-            }
+            socket.BeginConnect(ipAddress, Networking.DEFAULT_PORT, ConnectedCallback, ss);
+            return socket;
+
+
         }
 
         /// <summary>
@@ -273,16 +222,11 @@ namespace Controller
                 //Complete the connection
                 ss.theSocket.EndConnect(ar);
             }
-            catch (SocketException)
+            catch (Exception)
             {
                 ss.Disconnected = true;
                 ss.MessageProcessor(ss);
             }
-            catch (Exception)
-            {
-                NetworkError();
-            }
-
             ss.MessageProcessor(ss);
 
         }
@@ -310,15 +254,12 @@ namespace Controller
                     ss.MessageProcessor(ss);
                 }
             }
-            catch (SocketException)
+            catch (Exception)
             {
                 ss.Disconnected = true;
                 ss.MessageProcessor(ss);
             }
-            catch (ObjectDisposedException)
-            {
-
-            }
+           
         }
 
         /// <summary>
@@ -338,16 +279,15 @@ namespace Controller
         /// <param name="state"></param>
         public static void GetData(SocketState state)
         {
+            state.RemoveProcessedMessages();
             try
             {
                 state.theSocket.BeginReceive(state.messageBuffer, 0, state.messageBuffer.Length, SocketFlags.None, ReceiveCallback, state);
             }
-            catch (ObjectDisposedException)
-            {
-            }
-            catch (SocketException)
+           catch(Exception)
             {
                 state.Disconnected = true;
+                state.MessageProcessor(state);
             }
         }
 
@@ -364,58 +304,12 @@ namespace Controller
                 socket.BeginSend(messageBytes, 0, messageBytes.Length, SocketFlags.None, SendCallback, socket);
                 return true;
             }
-            catch (SocketException)
+            catch (Exception)
             {
-                socket.Close();
                 return false;
             }
         }
 
-        /// <summary>
-        /// Registers a handler for the NetworkError Event.
-        /// </summary>
-        /// <param name="handler"></param>
-        public static void RegisterNetworkErrorHandler(NetWorkErrorHandler handler)
-        {
-            NetworkError += handler;
-        }
-
-        /// <summary>
-        /// Starts listening for new connections on the specified port and
-        /// handles incoming data from the client
-        /// </summary>
-        /// <param name="HandleNewClient">handler for client data</param>
-        /// <param name="port">port the connection will be started on</param>
-        //public static void ServerAwaitingClientLoop(NetworkAction HandleNewClient, int port)
-        //{
-        //    TcpListener listener = new TcpListener(IPAddress.Any, port);
-        //    listener.Start();
-        //    ConnectionState connectionState = new ConnectionState(listener, HandleNewClient);
-        //    listener.BeginAcceptSocket(AcceptNewClient, connectionState);
-        //}
-
-        ///// <summary>
-        ///// Handles new connection requests and processes data from the new connection
-        ///// </summary>
-        ///// <param name="ar"></param>
-        //public static void AcceptNewClient(IAsyncResult ar)
-        //{
-        //    ConnectionState connectionState = (ConnectionState)ar.AsyncState;
-        //    Socket socket = connectionState.Listener.EndAcceptSocket(ar);
-
-        //    SocketState socketState = new SocketState(socket, 0, connectionState.ServerMessageProcessor);
-        //    try
-        //    {
-        //        socketState.MessageProcessor(socketState);
-        //        connectionState.Listener.BeginAcceptSocket(AcceptNewClient, connectionState);
-        //    }
-        //    catch (SocketException)
-        //    {
-        //        socketState.Disconnected = true;
-        //        socketState.MessageProcessor(socketState);
-        //    }
-
-        //}
     }
 }
 
