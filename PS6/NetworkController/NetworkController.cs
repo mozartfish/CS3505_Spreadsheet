@@ -116,7 +116,10 @@ namespace Controller
         public void RemoveProcessedMessages()
         {
             int index = sb.ToString().LastIndexOf("\n\n");
-            sb.Remove(0, index + 1);
+            if (index != -1)
+            {
+                sb.Remove(0, index + 2);
+            }
         }
     }
 
