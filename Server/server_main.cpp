@@ -361,7 +361,7 @@ void process_updates()
       // Open
       if (deserialized["type"].asString() == "open")
 	{
-	  send_back["type"] = "full_send";
+	  send_back["type"] = "full send";
 	  
 	  // Send the full spreadsheet to the client
 	  if (check_sprd(deserialized["name"].asString(), deserialized["username"].asString(), deserialized["password"].asString(), fd))
@@ -418,7 +418,7 @@ void process_updates()
 	  // Try to change cell
 	  if(sheet->change_cell(deserialized["cell"].asString(), deserialized["value"].asString(), dependencies))
 	    {
-	      send_back["type"] = "full_send";
+	      send_back["type"] = "full send";
 	      send_back["spreadsheet"][deserialized["cell"].asString()] = deserialized["value"].asString();
 
 	      // Let all admins know of the update
@@ -464,7 +464,7 @@ void process_updates()
 	  string cell = result.substr(0, idx);
 	  string contents = result.substr(idx + 1);
 
-	  send_back["type"] = "full_send";
+	  send_back["type"] = "full send";
 	  send_back["spreadsheet"][cell] = contents;
 	  
 	  // Let all admins know of the update
@@ -491,7 +491,7 @@ void process_updates()
 	  // Good revert
 	  if (result != "\t")
 	    {
-	      send_back["type"] = "full_send";
+	      send_back["type"] = "full send";
 	      send_back["spreadsheet"][deserialized["cell"].asString()] = result;
 
 	      // Let all admins know of the update
