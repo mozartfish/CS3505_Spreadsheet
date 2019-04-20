@@ -1,10 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Admin User Interface",
-    "\\Admin User Interface\\AdminModel\\Connected Services",
-    "\\Admin User Interface\\UnitTests",
-    "\\Admin User Interface\\WindowsFormsApp1"
+    "\\PS4\\Spreadsheet",
+    "\\PS6\\SpreadsheetController"
   ],
+  "SelectedNode": "\\.gitignore",
   "PreviewInSolutionExplorer": false
 }
