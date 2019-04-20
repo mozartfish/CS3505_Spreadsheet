@@ -1,2 +1,5 @@
+<<<<<<< HEAD
 Name:	Tester	Usermap:	bobby	hill	Spreadsheet_History:	Cell_Information:	
 Name:	test_2	Usermap:	bobby	hill	Spreadsheet_History:	A1	Z99	A2	A3	A4	Cell_Information:	:0:	95	:1:	B	:2573:	howdy	:2:	=5+8	:3:	=A3-A1	Name:	test_2	Usermap:	bobby	hill	f	f	Spreadsheet_History:	A1	Z99	A2	A3	A4	B3	D6	Cell_Information:	:0:	95	:1:	B	:2:	=5+8	:3:	=A3-A1	:101:	howdy	:302:	HI	:2573:	howdy
+=======
+>>>>>>> 80127aca2fab0b7e27bb9ad4fc3c585b2bc96c6b
