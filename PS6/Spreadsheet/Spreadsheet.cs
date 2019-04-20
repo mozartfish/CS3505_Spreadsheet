@@ -87,6 +87,10 @@ namespace SS
                         {
                             throw new ArgumentException();
                         }
+                        if(Cells[var].Type == typeof(string))
+                        {
+                            throw new ArgumentException();
+                        }
                     }
                     object value = formula.Evaluate(Lookup);
                     if (value is FormulaError)
@@ -99,7 +103,7 @@ namespace SS
                 }
                 return dependents;
             }
-           
+
             catch (InvalidNameException)
             {
                 throw new InvalidNameException();
@@ -107,6 +111,10 @@ namespace SS
             catch (FormulaFormatException e)
             {
                 throw new FormulaFormatException(e.Message);
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException();
             }
 
 
@@ -216,8 +224,8 @@ namespace SS
                     return (double)formula.Evaluate(cell.Lookup);
                 }
             }
-
-            throw new ArgumentException("Error: Cell must have number value");
+            return -1;
+          //  throw new ArgumentException();
         }
 
         /// <summary>
@@ -281,11 +289,7 @@ namespace SS
         /// </summary>
         public override IEnumerable<string> GetNamesOfAllNonemptyCells()
         {
-            foreach (KeyValuePair<String, Cell> cell in Cells)
-            {
-                if (cell.Value.Content != null)
-                    yield return cell.Key;
-            }
+            return new List<string>(Cells.Keys.ToArray());
         }
 
         /// <summary>
@@ -507,7 +511,9 @@ namespace SS
 
             HashSet<String> dependents = new HashSet<string>(GetCellsToRecalculate(name));
             return dependents;
+
         }
+
 
 
         /// <summary>

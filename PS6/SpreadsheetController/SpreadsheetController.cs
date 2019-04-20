@@ -80,12 +80,12 @@ namespace Controller
         /// </summary>
         private string password;
 
-       
+
 
         /// <summary>
         /// Current spreadsheet being edited by the client
         /// </summary>
-        private SS.Spreadsheet spreadsheet;
+        public SS.Spreadsheet spreadsheet;
 
         /// <summary>
         /// Constructor for the SpreadsheetController
@@ -94,7 +94,7 @@ namespace Controller
         {
             server = null;
             username = "";
-           // spreadsheets = new List<string>();
+            // spreadsheets = new List<string>();
             spreadsheet = new SS.Spreadsheet();
         }
 
@@ -124,6 +124,8 @@ namespace Controller
             get { return password; }
             set { password = value; }
         }
+
+
         #endregion
 
         #region Register Event Handlers
@@ -208,8 +210,8 @@ namespace Controller
         /// <param name="ss">SocketState for the server</param>
         public void ReceiveStartup(SocketState ss)
         {
-          
-             List<string> spreadsheets = new List<string>();
+
+            List<string> spreadsheets = new List<string>();
             if (ss.Disconnected)
             {
                 NetworkError();
@@ -310,9 +312,9 @@ namespace Controller
                                 lock (spreadsheet)
                                 {
                                     spreadsheet.SetContentsOfCell(cell, fullSend.spreadsheet[cell]);
-
                                 }
                             }
+                            IEnumerable<string> d = spreadsheet.GetNamesOfAllNonemptyCells();
 
                             initialized = true;
                         }
@@ -323,7 +325,7 @@ namespace Controller
             if (initialized)
             {
                 // trigger UpdateSpreadsheetEvent for redrawing
-                
+
                 SpreadsheetArrived(spreadsheet);
                 // set CallMe to ReceiveSpreadsheet
                 ss.MessageProcessor = ReceiveSpreadsheet;
@@ -384,6 +386,7 @@ namespace Controller
                             {
                                 spreadsheet.SetContentsOfCell(cell, fullSend.spreadsheet[cell]);
                             }
+
                         }
                     }
                 }
@@ -426,7 +429,7 @@ namespace Controller
             {
                 throw new ArgumentNullException();
             }
-            catch (ArgumentException e)
+            catch (ArgumentException)
             {
                 throw new ArgumentException();
             }

@@ -10,6 +10,7 @@
 using SS;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -65,7 +66,8 @@ namespace Display
 
 
             spreadsheetPanel1.SelectionChanged += DisplaySelection;
-            spreadsheet = new Spreadsheet(s => this.controller.IsValid(s), s => this.controller.Normalize(s), "ps6");
+            spreadsheet = this.controller.spreadsheet;
+                //new Spreadsheet(s => this.controller.IsValid(s), s => this.controller.Normalize(s), "ps6");
 
             spreadsheetPanel1.SetSelection(0, 0);
             contentTextBox.Select();
@@ -85,7 +87,6 @@ namespace Display
         {
             IEnumerable<string> cells = new HashSet<string>();
             //update the spreadsheet view
-
             cells = ss.GetNamesOfAllNonemptyCells();
 
             foreach (string cell in cells)
@@ -266,6 +267,19 @@ namespace Display
         {
             int col, row;
             spreadsheetPanel1.GetSelection(out col, out row);
+            string cellName = ColRowToCellName(col, row);
+            string contents = "";
+
+            if (contentTextBox.Text != "")
+            {
+                contents = contentTextBox.Text;
+            }
+            else
+            {
+                contents = spreadsheet.GetCellContents(cellName).ToString();
+            }
+
+            EnterData(cellName, contents);
 
             // The following ifs are used to capture the users key pressing data.
             // This captures the up arrow key
@@ -347,35 +361,37 @@ namespace Display
                 int col, row;
                 spreadsheetPanel1.GetSelection(out col, out row);
                 string cellName = ColRowToCellName(col, row);
-
                 string contents = contentTextBox.Text;
                 contentTextBox.Clear();
-
-                try
-                {
-                    //  process update
-                    controller.ProcessEdit(cellName, contents);
-                }
-                catch (SpreadsheetUtilities.FormulaFormatException)
-                {
-                    MessageBox.Show("The formula entered in cell " + cellName + " is invalid. Please check that all formulas are formatted " +
-                        "correctly.", "Formula Format Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                catch (InvalidNameException)
-                {
-                    MessageBox.Show("The formula entered in cell " + cellName + " is invalid. Please check that all formulas are formatted " +
-                        "correctly.", "Formula Format Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                catch (ArgumentException)
-                {
-                    MessageBox.Show("The formula entered in cell " + cellName + " is invalid. Please check that all formulas are formatted " +
-                        "correctly.", "Formula Format Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                EnterData(cellName, contents);
 
             }
-
         }
 
+        private void EnterData(string cellName, string contents)
+        {
+
+            try
+            {
+                //  process update
+                controller.ProcessEdit(cellName, contents);
+            }
+            catch (SpreadsheetUtilities.FormulaFormatException)
+            {
+                MessageBox.Show("The formula entered in cell " + cellName + " is invalid. Please check that all formulas are formatted " +
+                    "correctly.", "Formula Format Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (InvalidNameException)
+            {
+                MessageBox.Show("The formula entered in cell " + cellName + " is invalid. Please check that all formulas are formatted " +
+                    "correctly.", "Formula Format Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (ArgumentException)
+            {
+                MessageBox.Show("The formula entered in cell " + cellName + " is invalid. Please check that all formulas are formatted " +
+                    "correctly.", "Formula Format Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         #endregion
 
         /// <summary>
