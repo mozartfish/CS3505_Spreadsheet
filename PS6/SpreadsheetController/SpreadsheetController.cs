@@ -80,10 +80,7 @@ namespace Controller
         /// </summary>
         private string password;
 
-        /// <summary>
-        /// List of spreadsheets available on the server
-        /// </summary>
-        private List<string> spreadsheets;
+       
 
         /// <summary>
         /// Current spreadsheet being edited by the client
@@ -97,18 +94,18 @@ namespace Controller
         {
             server = null;
             username = "";
-            spreadsheets = new List<string>();
+           // spreadsheets = new List<string>();
             spreadsheet = new SS.Spreadsheet();
         }
 
         #region Properties
-        /// <summary>
-        /// Get property for the SpreadsheetList
-        /// </summary>
-        public List<string> Spreadsheets
-        {
-            get { return spreadsheets; }
-        }
+        ///// <summary>
+        ///// Get property for the SpreadsheetList
+        ///// </summary>
+        //public List<string> Spreadsheets
+        //{
+        //    get { return spreadsheets; }
+        //}
 
         /// <summary>
         /// Get and Set property for the Username
@@ -211,6 +208,8 @@ namespace Controller
         /// <param name="ss">SocketState for the server</param>
         public void ReceiveStartup(SocketState ss)
         {
+          
+             List<string> spreadsheets = new List<string>();
             if (ss.Disconnected)
             {
                 NetworkError();
@@ -311,18 +310,20 @@ namespace Controller
                                 lock (spreadsheet)
                                 {
                                     spreadsheet.SetContentsOfCell(cell, fullSend.spreadsheet[cell]);
+
                                 }
                             }
+
                             initialized = true;
                         }
                     }
                 }
             }
 
-
             if (initialized)
             {
                 // trigger UpdateSpreadsheetEvent for redrawing
+                
                 SpreadsheetArrived(spreadsheet);
                 // set CallMe to ReceiveSpreadsheet
                 ss.MessageProcessor = ReceiveSpreadsheet;
@@ -379,13 +380,16 @@ namespace Controller
 
                         foreach (string cell in fullSend.spreadsheet.Keys)
                         {
-                            spreadsheet.SetContentsOfCell(cell, fullSend.spreadsheet[cell]);
+                            lock (spreadsheet)
+                            {
+                                spreadsheet.SetContentsOfCell(cell, fullSend.spreadsheet[cell]);
+                            }
                         }
                     }
                 }
             }
 
-            
+
             // trigger UpdateSpreadsheetEvent for redrawing
             SpreadsheetArrived(spreadsheet);
 
@@ -403,7 +407,11 @@ namespace Controller
             IEnumerable<string> dependents = new HashSet<string>();
             try
             {
-                dependents = spreadsheet.ParseContents(cellName, contents);
+                lock (spreadsheet)
+                {
+                    dependents = spreadsheet.ParseContents(cellName, contents);
+                }
+
                 SendEdit(cellName, contents, dependents);
             }
             catch (SpreadsheetUtilities.FormulaFormatException e)
@@ -443,7 +451,6 @@ namespace Controller
                 dependencies += variable;
             }
             edit.dependencies = dependencies;
-
 
             //JSON serialize
             if (!Networking.Send(server, JsonConvert.SerializeObject(edit) + "\n\n"))

@@ -57,7 +57,7 @@ namespace Display
         /// This is a generic constructor used to initialize a new spreadsheet or be used to load one
         /// that was previously saved. The new spreadsheet will be empty and cell "A1" will be autoselected.
         /// </summary>
-        public SpreadsheetForm(ref Controller.SpreadsheetController controller):this()
+        public SpreadsheetForm(ref Controller.SpreadsheetController controller) : this()
         {
             //Added for server based spreadsheet
             this.controller = controller;
@@ -83,12 +83,14 @@ namespace Display
 
         public void UpdateSpreadsheet(Spreadsheet ss)
         {
+            IEnumerable<string> cells = new HashSet<string>();
             //update the spreadsheet view
-            IEnumerable<string> cells = ss.GetNamesOfAllNonemptyCells();
+
+            cells = ss.GetNamesOfAllNonemptyCells();
 
             foreach (string cell in cells)
             {
-                DisplayCellPanelValue(cell, ss.GetCellValue(cell).ToString());
+                this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(cell, ss.GetCellValue(cell).ToString())));
             }
         }
 
@@ -194,8 +196,12 @@ namespace Display
             ss.GetSelection(out int col, out int row);
 
             string name = ColRowToCellName(col, row);
-            string content = spreadsheet.GetCellContents(name).ToString();
-            string value = spreadsheet.GetCellValue(name).ToString();
+            string content = "";
+            string value = "";
+
+            content = spreadsheet.GetCellContents(name).ToString();
+            value = spreadsheet.GetCellValue(name).ToString();
+
 
             contentTextBox.Text = content;
             valueTextBox.Text = value;
@@ -365,7 +371,7 @@ namespace Display
                     MessageBox.Show("The formula entered in cell " + cellName + " is invalid. Please check that all formulas are formatted " +
                         "correctly.", "Formula Format Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                
+
             }
 
         }

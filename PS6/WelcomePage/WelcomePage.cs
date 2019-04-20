@@ -66,10 +66,10 @@ namespace Display
         /// <param name="list"></param>
         private void AddLists(List<string> list)
         {
-            foreach (string spreadsheet in list)
-            {
-                spreadsheetList.Items.Add(spreadsheet);
-            }
+                foreach (string spreadsheet in list)
+                {
+                    spreadsheetList.Items.Add(spreadsheet);
+                }
         }
 
         /// <summary>
