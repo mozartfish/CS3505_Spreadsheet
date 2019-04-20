@@ -25,7 +25,7 @@ class spreadsheet {
   std::string name;
   std::unordered_set<int> * listeners;
   std::vector<std::string> * spd_history;
-  std::vector<std::string> ** cell_history;
+  std::vector<std::vector<std::string>*> * cell_history;
   std::unordered_map<std::string, std::string> * users;
   DependencyGraph * dependencies;
 

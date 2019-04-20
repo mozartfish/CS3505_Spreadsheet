@@ -13,6 +13,7 @@
 #include <sstream>
 #include "spreadsheet.h"
 #include <queue>
+#include <iostream>
 
 /*
  *  Constructs a new spreadsheet of the given name, with empty cells
@@ -25,12 +26,13 @@ spreadsheet::spreadsheet(std::string name)
   this->spd_history = new std::vector<std::string>();
   this->users = new std::unordered_map<std::string, std::string>();
   this->dependencies = new DependencyGraph();
-  this->cell_history = new std::vector<std::string>* [DEFAULT_CELL_COUNT];
+  this->cell_history = new std::vector<std::vector<std::string> *>();
 
   for (int i = 0; i < DEFAULT_CELL_COUNT; i++)
     {
-      this->cell_history[i] = new std::vector<std::string>();
+      this->cell_history->push_back(new std::vector<std::string>());
     }
+
 }
 
 /*
@@ -129,10 +131,10 @@ bool spreadsheet::change_cell(std::string cell, std::string contents, std::vecto
     
   }
 
-  dependencies->ReplaceDependents(cell, *dep_set);
+  this->dependencies->ReplaceDependents(cell, *dep_set);
   
-  spd_history->push_back(cell);
-  cell_history[cell_idx]->push_back(contents);
+  this->spd_history->push_back(cell);
+  (*(this->cell_history))[cell_idx]->push_back(contents);
   
   return true;
 }
@@ -145,11 +147,11 @@ bool spreadsheet::change_cell(std::string cell, std::string contents, std::vecto
 std::string spreadsheet::undo()
 {
   std::string empty("");
-  if (spd_history->empty())
+  if (this->spd_history->empty())
     return empty;
 
-  std::string cell = spd_history->back();
-  spd_history->pop_back();
+  std::string cell = this->spd_history->back();
+  this->spd_history->pop_back();
 
   // Revert the cell that had the most recent edit
   return cell + "\t" + this->revert(cell);
@@ -165,7 +167,7 @@ std::string spreadsheet::revert(std::string cell)
   if (cell_idx < 0 || cell_idx >= DEFAULT_CELL_COUNT)
     return "\t";
 
-  std::vector<std::string> * cell_hist = cell_history[cell_idx];
+  std::vector<std::string> * cell_hist = (*(this->cell_history))[cell_idx];
   std::unordered_set<std::string> * dep_set = new std::unordered_set<std::string>();
 
   //TODO use dependency graph to make sure circ dep won't exist
@@ -173,10 +175,10 @@ std::string spreadsheet::revert(std::string cell)
   cell_hist->pop_back();
   if (cell_hist[cell_idx].back()[0] == '=')
   {
-    std::vector<std::string> * deps = cells_from_formula(cell_hist[cell_idx].back());
+    std::vector<std::string> * deps = cells_from_formula((*cell_hist).back());
     if (CircularDependency(cell, deps))
     {
-      cell_hist[cell_idx].push_back(curr_cont);
+      cell_hist->push_back(curr_cont);
       return "\t";
     }
 
@@ -319,7 +321,7 @@ std::vector<std::string> & spreadsheet::get_cell_history(int cell_as_num)
   if (cell_as_num < 0 || cell_as_num > DEFAULT_CELL_COUNT)
     return *(new std::vector<std::string>());
   
-  return *cell_history[cell_as_num];
+  return *((*cell_history)[cell_as_num]);
 }
 
 /*
@@ -335,15 +337,22 @@ std::vector<std::string> & spreadsheet::get_sheet_history()
  */
 std::string spreadsheet::get_cell_contents(std::string cell)
 {
+  
   int index = cell_to_index(cell);
-
+  
   if (index < 0)
+    {
     return NULL;
+    }
 
-  if (cell_history[index]->size() == 0)
+  
+  
+
+  if ((*cell_history)[index]->size() == 0)
     return "";
 
-  return cell_history[index]->back();
+  
+  return (*cell_history)[index]->back();
 }
 
 /*
@@ -353,9 +362,9 @@ std::string spreadsheet::get_cell_contents(std::string cell)
  */
 void spreadsheet::add_direct_sheet_history(std::vector<std::string> hist)
 {
-  delete spd_history;
+  delete this->spd_history;
   std::vector<std::string> * new_hist = &hist;
-  spd_history = new_hist;
+  this->spd_history = new_hist;
 }
 
 /*
@@ -370,10 +379,12 @@ void spreadsheet::add_direct_cell_history(int cell, std::vector<std::string> & h
   if (cell < 0 || cell > DEFAULT_CELL_COUNT)
     return;
 
+  std::cout << &cell_history << std::endl;
   // Delete old history and overwrite
-  delete cell_history[cell];
   std::vector<std::string> * cell_hist = &hist;
-  cell_history[cell] = cell_hist;
+  (*(this->cell_history))[cell] = cell_hist;
+
+  std::cout << &cell_history << std::endl;
 }
 
 

@@ -306,29 +306,45 @@ int write_sheets_to_file()
  */
 void process_updates()
 {
+  
 
   Json::CharReaderBuilder des_builder;
   Json::CharReader * deserializer = des_builder.newCharReader();
 
   while (updates->size() != 0)
     {
+
       // Get individual message
       string update = updates->front();
+      cout << update << endl;
       updates->pop();
+
+      vector<char *> message_split;
       
       // Get client ID
       char * token = strtok(&update[0], "\t");
-      int fd = atoi(token);
+      while (token != NULL)
+	{
+	  message_split.push_back(token);
+	  token = strtok(NULL, "\t");
+	}
+
+      // Message should always have the socket at 0
+      int fd = atoi(message_split[0]);
       
-      // Get the spreadsheet for the update
-      token = strtok(NULL, "\t");
-      string spread_name(token);
-      spreadsheet * sheet = (*sheets)[spread_name];
-      
+      // Get the spreadsheet for the update (if there is one)
+      string spread_name;
+      spreadsheet * sheet;
+
+      // Only get sheet if a name was specified
+      if (message_split.size() > 2)
+	{
+	  spread_name += message_split[1];
+	  sheet = (*sheets)[spread_name];
+	}
       
       // Get the JSON Serialized update
-      token = strtok(NULL, "\t");
-      string serialized_update(token);
+      string serialized_update(message_split[message_split.size() - 1]);
       
       //Deserialize
       Json::Value deserialized;
@@ -341,7 +357,6 @@ void process_updates()
 	  continue;
 	}
       
-      
       //Process update
       // Open
       if (deserialized["type"].asString() == "open")
@@ -351,24 +366,24 @@ void process_updates()
 	  // Send the full spreadsheet to the client
 	  if (check_sprd(deserialized["name"].asString(), deserialized["username"].asString(), deserialized["password"].asString(), fd))
 	    {
+
+	      
 	      // Get every cell with data
 	      for (char c = 'A'; c <= 'Z'; c++)
 		for (int i = 1; i <= 100; i++)
 		  {
 		    // Get current cell
-		    string cell = "" + c;
+		    string cell(1, c);
 		    cell += to_string(i);
-		    string contents = (*sheets)[spread_name]->get_cell_contents(cell);
-
-		    // We can ignore empty cells
-		    if (contents == "")
-		      continue;
+		    
+		    string contents = (*sheets)[deserialized["name"].asString()]->get_cell_contents(cell);
 
 		    // Otherwise add contents to the list
 		    send_back["spreadsheet"][cell] = contents;
 		  }
 	      
 	      string send_back_str = send_back.toStyledString()  + "\n\n";
+	      cout << send_back_str << endl;
 
 	      //Send error back only to client that sent the bad request
 	      socket_connections::SendData(fd, send_back_str.c_str(), send_back_str.size());
@@ -702,8 +717,7 @@ int main(int argc, char ** argv)
 	  // Iterate over each new client, and send required start data, and wait for data from them
 	  for (int idx = connections.size_before_update; idx < size; idx++)
 	    {
-	      cout << idx << " " << connections.sockets->size();
-	      cout << "Buffer section" << endl;
+	     
 	      // Add new buffers for getting data
               connections.buffers->push_back(new char[BUF_SIZE]);
 	      bzero((*connections.buffers)[idx - 1], BUF_SIZE);
@@ -719,10 +733,10 @@ int main(int argc, char ** argv)
 		     (*connections.buffers)[idx - 1], BUF_SIZE, &lock, &(*connections.needs_removed)).detach();
 
 	    }
-	  cout << "hello3" << endl;
+	  
 	  connections.new_socket_connected = false;
 	  connections.size_before_update = connections.sockets->size();
-	  cout << "hello" << endl;
+	 
       	}
        lock.unlock();
        
@@ -742,11 +756,6 @@ int main(int argc, char ** argv)
 	       // If a client needs removed, remove it
 	       if ((*connections.needs_removed)[fd])
 		 {
-		   cout << "removing client" << endl;
-		   cout << connections.sockets->size() << endl;
-		   cout << connections.buffers->size() << endl;
-		   cout << connections.partial_data->size() << endl;
-		   cout << connections.size_before_update << endl;
 		   // Erase the socket from the usermap and sheet map, and remove it from the spreadsheet listeners 
 		   // Remove client if associated with spreadsheet
 		   if ((*socket_sprdmap).count(fd) > 0)
@@ -769,11 +778,6 @@ int main(int argc, char ** argv)
 		   // Make sure double erasure doesn't happen
 		   connections.needs_removed->erase(fd);
 		   
-		   cout << "removing client" << endl;
-		   cout << connections.sockets->size() << endl;
-		   cout << connections.buffers->size() << endl;
-		   cout << connections.partial_data->size() << endl;
-		   cout << connections.size_before_update << endl;
 		 }
 	       else
 		 ++it;
@@ -819,11 +823,19 @@ int main(int argc, char ** argv)
 	   string  data = (*connections.partial_data)[idx]->substr(0, limit);
 	   (*connections.partial_data)[idx]->erase(0, limit + 1);
 
+	   cout << "data grabbed" << endl;
+
 	   // Format an update as socket_num, sheet_name, and then the data, separated with \t
 	   string * update = new string();
 	   *update += to_string((*connections.sockets)[idx + 1]) + '\t';
-	   *update += (*socket_sprdmap)[(*connections.sockets)[idx + 1]] + '\t';
+
+	   if ((*socket_sprdmap).find((*connections.sockets)[idx + 1]) != socket_sprdmap->end())
+	     *update += (*socket_sprdmap)[(*connections.sockets)[idx + 1]];
+
+	   *update += '\t';
 	   *update += data;
+
+	   cout << "update made" << endl;
 	   
 	   // Add data to the queue
 	   updates->push(*update);
