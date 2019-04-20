@@ -15,7 +15,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 
 namespace Controller
-{ 
+{
     /// <summary>
     /// SpreadsheetController class is a controller for the server-based spreadsheet
     /// </summary>
@@ -37,7 +37,7 @@ namespace Controller
         /// </summary>
         /// <param name="ss"></param>
         public delegate void SpreadsheetUpdate(SS.Spreadsheet ss);
-        
+
         /// <summary>
         /// Event that is triggered when a spreadsheet is received from the server
         /// </summary>
@@ -83,8 +83,8 @@ namespace Controller
         /// <summary>
         /// List of spreadsheets available on the server
         /// </summary>
-        private List<string> spreadsheets; 
-        
+        private List<string> spreadsheets;
+
         /// <summary>
         /// Current spreadsheet being edited by the client
         /// </summary>
@@ -179,11 +179,11 @@ namespace Controller
             {
                 server = Networking.ConnectToServer(hostName, FirstContact);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 NetworkError();
             }
-            
+
         }
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace Controller
         /// <param name="ss">SocketState for the server</param>
         public void FirstContact(SocketState ss)
         {
-            if(ss.Disconnected)
+            if (ss.Disconnected)
             {
                 NetworkError();
                 return;
@@ -211,31 +211,18 @@ namespace Controller
         /// <param name="ss">SocketState for the server</param>
         public void ReceiveStartup(SocketState ss)
         {
-            if(ss.Disconnected)
+            if (ss.Disconnected)
             {
                 NetworkError();
                 return;
             }
 
             // parse socket state for the list of spreadsheets
-            //string[] messages = Regex.Split(ss.sb.ToString(), @"(?<=[\n\n])");
-            Debug.WriteLine(ss.sb.ToString());
             string[] messages = Regex.Split(ss.sb.ToString(), @"(?<=[\n]{2})");
-            // string[] messages = Regex.Split(ss.sb.ToString(), @"(\n\n)");
 
-            Debug.WriteLine("*** message count: " + messages.Length + "\n");
-
-            int count = 1;
-            foreach (string m in messages)
+            foreach (string message in messages)
             {
-                
-                Debug.WriteLine(count++ + ": " + m);
-               
-            }
-
-            foreach(string message in messages)
-            {
-                if(message.Length <= 3)
+                if (message.Length <= 3)
                 {
                     continue;
                 }
@@ -244,20 +231,18 @@ namespace Controller
                     break;
                 }
 
-                Debug.WriteLine(message);
+                // remove the newline characters before parsing
+                message.Remove(message.Length - 2, 2);
 
-                //// remove the newline characters before parsing
-                //message.Remove(message.Length - 2, 2);
-
-                if(message[0] == '{' && message[message.Length - 3] == '}')
+                if (message[0] == '{' && message[message.Length - 3] == '}')
                 {
                     JObject obj = JObject.Parse(message);
-                    JToken listToken = obj["type"]; 
-                    
-                    if(listToken.ToString() == "list")
+                    JToken listToken = obj["type"];
+
+                    if (listToken.ToString() == "list")
                     {
                         SpreadsheetList list = JsonConvert.DeserializeObject<SpreadsheetList>(message);
-                        foreach(string spreadsheet in list.spreadsheets)
+                        foreach (string spreadsheet in list.spreadsheets)
                         {
                             spreadsheets.Add(spreadsheet);
                         }
@@ -279,7 +264,7 @@ namespace Controller
         /// <param name="ss"></param>
         public void ReceiveInitialSpreadsheet(SocketState ss)
         {
-            if(ss.Disconnected)
+            if (ss.Disconnected)
             {
                 NetworkError();
                 return;
@@ -313,7 +298,7 @@ namespace Controller
                         //trigger error event passing in error object
                         ErrorOccured(error.code, error.source);
                     }
-                    
+
                     else
                     {
                         if (messageToken.ToString() == "full send")
@@ -331,10 +316,10 @@ namespace Controller
 
             // trigger UpdateSpreadsheetEvent for redrawing
             SpreadsheetArrived(spreadsheet);
-            
+
             // set CallMe to ReceiveSpreadsheet
             ss.MessageProcessor = ReceiveSpreadsheet;
-            Networking.GetData(ss); 
+            Networking.GetData(ss);
         }
 
         /// <summary>
@@ -344,7 +329,7 @@ namespace Controller
         /// <param name="ss"></param>
         public void ReceiveSpreadsheet(SocketState ss)
         {
-            if(ss.Disconnected)
+            if (ss.Disconnected)
             {
                 NetworkError();
                 spreadsheet = new SS.Spreadsheet();
@@ -353,7 +338,7 @@ namespace Controller
 
             string[] messages = Regex.Split(ss.sb.ToString(), @"(?<=[\n]{2})");
 
-            Debug.WriteLine("**** message count: " + messages.Length + "\n");
+            // Debug.WriteLine("**** message count: " + messages.Length + "\n");
 
             foreach (string message in messages)
             {
@@ -371,20 +356,20 @@ namespace Controller
                 if (message[0] == '{' && message[message.Length - 3] == '}')
                 {
                     JObject obj = JObject.Parse(message);
-                    JToken messageToken = obj["type"]; 
+                    JToken messageToken = obj["type"];
 
-                    if(messageToken.ToString() == "error")
+                    if (messageToken.ToString() == "error")
                     {
                         Error error = JsonConvert.DeserializeObject<Error>(message);
                         ErrorOccured(error.code, error.source);
                         Networking.GetData(ss);
                         return;
                     }
-                    else if(messageToken.ToString() == "full send")
+                    else if (messageToken.ToString() == "full send")
                     {
                         FullSend fullSend = JsonConvert.DeserializeObject<FullSend>(message);
 
-                        foreach(string cell in fullSend.spreadsheet.Keys)
+                        foreach (string cell in fullSend.spreadsheet.Keys)
                         {
                             spreadsheet.SetContentsOfCell(cell, fullSend.spreadsheet[cell]);
                         }
@@ -412,19 +397,19 @@ namespace Controller
                 dependents = spreadsheet.ParseContents(cellName, contents);
                 SendEdit(cellName, contents, dependents);
             }
-            catch (SpreadsheetUtilities.FormulaFormatException e) 
+            catch (SpreadsheetUtilities.FormulaFormatException e)
             {
                 throw new SpreadsheetUtilities.FormulaFormatException(e.Message);
             }
-            catch(SS.InvalidNameException)
+            catch (SS.InvalidNameException)
             {
                 throw new SS.InvalidNameException();
             }
-            catch(ArgumentNullException)
+            catch (ArgumentNullException)
             {
                 throw new ArgumentNullException();
             }
-            catch(ArgumentException e)
+            catch (ArgumentException e)
             {
                 throw new ArgumentException();
             }
@@ -444,21 +429,19 @@ namespace Controller
             edit.value = contents;
 
             string dependencies = "";
-            foreach(string variable in set)
+            foreach (string variable in set)
             {
                 dependencies += variable;
             }
             edit.dependencies = dependencies;
 
-            try
-            {
-                //JSON serialize
-                Networking.Send(server, JsonConvert.SerializeObject(edit) + "\n\n");
-            }
-            catch(Exception)
+
+            //JSON serialize
+            if (!Networking.Send(server, JsonConvert.SerializeObject(edit) + "\n\n"))
             {
                 NetworkError();
             }
+
         }
 
         /// <summary>
@@ -473,14 +456,12 @@ namespace Controller
             open.username = username;
             open.password = password;
 
-            try
-            {
-                Networking.Send(server, JsonConvert.SerializeObject(open) + "\n\n");
-            }
-            catch(Exception)
+
+            if (!Networking.Send(server, JsonConvert.SerializeObject(open) + "\n\n"))
             {
                 NetworkError();
             }
+
         }
 
         /// <summary>
@@ -501,16 +482,14 @@ namespace Controller
             JsonClasses.Revert revert = new JsonClasses.Revert();
             revert.cell = cellName;
 
-            try
-            {
-                Networking.Send(server, JsonConvert.SerializeObject(revert) + "\n\n");
-            }
-            catch(Exception)
+            if (!Networking.Send(server, JsonConvert.SerializeObject(revert) + "\n\n"))
             {
                 NetworkError();
             }
+
+
         }
-        
+
         #endregion
 
         #region Spreadsheet Helpers
@@ -543,7 +522,7 @@ namespace Controller
         /// <param name="value">The cell value to check.</param>
         public bool FormulaErrorCheck(ref String value)
         {
-           
+
             return value.Equals("SpreadsheetUtilities.FormulaError");
         }
         #endregion

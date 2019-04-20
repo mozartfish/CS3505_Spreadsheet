@@ -112,6 +112,12 @@ namespace Controller
         /// Returns or sets whether or not the socket state has disconnected.
         /// </summary>
         public bool Disconnected { get { return disconnected; } set { disconnected = value; } }
+
+        public void RemoveProcessedMessages()
+        {
+            int index = sb.ToString().LastIndexOf("\n\n");
+            sb.Remove(0, index + 1);
+        }
     }
 
     /// <summary>
@@ -213,11 +219,11 @@ namespace Controller
                 //Complete the connection
                 ss.theSocket.EndConnect(ar);
             }
-            catch (SocketException)
+            catch (Exception)
             {
                 ss.Disconnected = true;
+                ss.MessageProcessor(ss);
             }
-
             ss.MessageProcessor(ss);
 
         }
@@ -245,15 +251,12 @@ namespace Controller
                     ss.MessageProcessor(ss);
                 }
             }
-            catch (SocketException)
+            catch (Exception)
             {
                 ss.Disconnected = true;
                 ss.MessageProcessor(ss);
             }
-            catch (ObjectDisposedException)
-            {
-
-            }
+           
         }
 
         /// <summary>
@@ -273,16 +276,15 @@ namespace Controller
         /// <param name="state"></param>
         public static void GetData(SocketState state)
         {
+            state.RemoveProcessedMessages();
             try
             {
                 state.theSocket.BeginReceive(state.messageBuffer, 0, state.messageBuffer.Length, SocketFlags.None, ReceiveCallback, state);
             }
-            catch (ObjectDisposedException)
-            {
-            }
-            catch (SocketException)
+           catch(Exception)
             {
                 state.Disconnected = true;
+                state.MessageProcessor(state);
             }
         }
 
@@ -299,9 +301,8 @@ namespace Controller
                 socket.BeginSend(messageBytes, 0, messageBytes.Length, SocketFlags.None, SendCallback, socket);
                 return true;
             }
-            catch (SocketException)
+            catch (Exception)
             {
-                socket.Close();
                 return false;
             }
         }
