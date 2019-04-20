@@ -38,26 +38,7 @@ namespace WindowsFormsApp1
                 controller.TestAddUse(i.ToString());
                 controller.TestAddSS(i.ToString());
             }
-
-            // Testing connection TODO: remove this here
-            //controller.Connect("localhost");
         }
-
-        //public Form1()
-        //{
-        //    InitializeComponent();
-        //    controller = new AdminController();
-
-
-        //    controller.UpdateInterface += HandleUpdateInterface;
-
-
-        //    // Register handlers
-        //    //controller.UpdateInterface += HandleUpdateInterface;
-
-        //    // Testing connection
-        //    //controller.Connect("localhost");
-        //}
 
         /// <summary>
         /// Event handler receiving User and Spreadsheet data from Admin Controller
@@ -227,9 +208,9 @@ namespace WindowsFormsApp1
             counter++;
         }
 
-        private void button8_Click(object sender, EventArgs e)
+        private void ConnectToServer_buttone(object sender, EventArgs e)
         {
-            string hostname = "localhost";
+            string hostname = "lab1-3.eng.utah.edu";
             if (IP.Text != "")
             {
                 hostname = IP.Text;

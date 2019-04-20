@@ -136,22 +136,22 @@ namespace Controller
             string totalData = ss.sb.ToString();
             //Console.WriteLine(totalData);
 
-            string[] messages = Regex.Split(totalData, @"(?<=[\n])");
+            string[] messages = Regex.Split(totalData, @"(?<=[\n]{2})");
 
             foreach (string message in messages)
             {
                 Console.WriteLine("Message: " + message);
-                if (message.Length == 0)
+                if (message.Length < 2)
                 {
                     continue;
                 }
-                if (message.Substring(message.Length - 1) != "\n")
+                if (message.Substring(message.Length - 2) != "\n\n")
                 {
                     //Console.WriteLine("EOL");
                     break;
                 }
 
-                if (message[0] == '{' && message[message.Length - 2] == '}')
+                if (message[0] == '{' && message[message.Length - 3] == '}')
                 {
                     Console.WriteLine("Object get updated");
                     object updateObj = Deserialize(message);
@@ -222,6 +222,7 @@ namespace Controller
         /// </summary>
         private void SendOpenMessage()
         {
+            Console.WriteLine("Sending admin message");
             StringBuilder messageBuilder = new StringBuilder();
 
             string msg = "admin";
@@ -236,6 +237,7 @@ namespace Controller
 
         private void SendShutDownMessage()
         {
+            Console.WriteLine("Sending shutdown message");
             StringBuilder messageBuilder = new StringBuilder();
 
             string msg = "shutdown";
@@ -259,6 +261,7 @@ namespace Controller
         /// </summary>
         private void SendUserChange(string username)
         {
+            Console.WriteLine("Sending user message, username: " + username);
             StringBuilder messageBuilder = new StringBuilder();
 
             User user = new User();
@@ -279,10 +282,11 @@ namespace Controller
         public void SendUserChange(string username, string pass, string workingOn, int status)
         {
             StringBuilder messageBuilder = new StringBuilder();
+            Console.WriteLine("Sending user message, type: user username: " + username + " pass: " + pass + " workingOn: " + workingOn + " status: " + status);
 
             User user = new User();
             user.SetUsername(username);
-            user.SetUserType("user");
+            user.SetUserType("User");
             user.SetPassword(pass);
             user.SetWorkingOn(workingOn);
             user.SetStatus(status);
@@ -300,10 +304,11 @@ namespace Controller
         public void SendSSChange(string SSname, int status)
         {
             StringBuilder messageBuilder = new StringBuilder();
+            Console.WriteLine("Sending SS message, type: SS ssName: " + SSname + " status: " + status);
 
             Spreadsheet spreadsheet = new Spreadsheet();
             spreadsheet.SetName(SSname);// model.GetSS(SSname);
-            spreadsheet.SetSSType("user");
+            spreadsheet.SetSSType("SS");
             spreadsheet.SetStatus(status);
             string serializedObj = JsonConvert.SerializeObject(spreadsheet) + "\n\n";
             messageBuilder.Append(serializedObj);
@@ -334,8 +339,8 @@ namespace Controller
             if (result == DialogResult.OK)
             {
                 //Send message to the server telling it to shut down 
-                //SendShutDownMessage();
-                CleanModel();
+                SendShutDownMessage();
+                //CleanModel();
             }
         }
 
