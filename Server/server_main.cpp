@@ -173,7 +173,7 @@ int process_spreadsheets_from_file()
 	      token = strtok(NULL, "\t");
 	    }
 
-	  curr_sheet->add_direct_sheet_history(*spd_hist);
+	  curr_sheet->add_direct_sheet_history(spd_hist);
 
        /**********************************************************************/
        /*                       CELL HISTORY READ                            */
@@ -212,7 +212,7 @@ int process_spreadsheets_from_file()
 		}
 	      
 	      // Add vector of histories to spreadsheet
-	      curr_sheet->add_direct_cell_history(cell_num, *cell_hist);
+	      curr_sheet->add_direct_cell_history(cell_num, cell_hist);
 	      
 	      } 
 

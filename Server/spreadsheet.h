@@ -50,8 +50,8 @@ class spreadsheet {
   std::vector<std::string> & get_sheet_history();
   std::string get_cell_contents(std::string cell);
 
-  void add_direct_sheet_history(std::vector<std::string> hist);
-  void add_direct_cell_history(int cell, std::vector<std::string> & hist);
+  void add_direct_sheet_history(std::vector<std::string> * hist);
+  void add_direct_cell_history(int cell, std::vector<std::string> * hist);
   std::string get_name();
   
   bool CircularDependency(std::string cell, std::vector<std::string> * dependencies);
