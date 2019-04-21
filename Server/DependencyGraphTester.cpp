@@ -14,7 +14,7 @@ using namespace std;
 
 int main()
 {
-  
+  /*
 //Empty Graph should contain nothing
   {
     DependencyGraph *t = new DependencyGraph();
@@ -65,7 +65,40 @@ int main()
     t->ReplaceDependents("x", empty_set);
     t->ReplaceDependees("y", empty_set);
   }
+  */
+  DependencyGraph g;
+  string cell("B5");
+  cout << "printing deps" << endl;
   
+  for (string h : *(g.GetDependents(cell)))
+    cout << h << endl;
+
+  cout << "adding deps" << endl;
+
+  unordered_set<string> deps;
+  deps.insert("B6");
+
+  g.ReplaceDependents(cell, deps);
+
+  for (string h : *(g.GetDependents(cell)))
+    cout << h << endl;
+
+  cout << "replacing deps" << endl;
+
+  unordered_set<string> * dep2 = new unordered_set<string>();
+  g.ReplaceDependents(cell, *dep2);
+
+  for (string h : *(g.GetDependents(cell)))
+    cout << h << endl;
+  
+  dep2->insert("B7");
+
+  cout << "replacing deps" << endl;
+
+  g.ReplaceDependents(cell, *dep2);
+
+  for (string h : *(g.GetDependents(cell)))
+    cout << h << endl;
   
   return 0;
   
