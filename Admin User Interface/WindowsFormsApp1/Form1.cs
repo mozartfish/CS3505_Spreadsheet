@@ -1,216 +1,222 @@
 ﻿using JsonClasses;
-using Newtonsoft.Json;
+using System.Collections.Generic;
 using System;
 using System.Text;
 using System.Windows.Forms;
-
-//using AdminModel;
+using Controller;
+using Model;
 
 namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
-        public delegate void NameEventHandle();
-        public event NameEventHandle OpenNewAcctMan;
+        //public delegate void NameEventHandle();
+        //public event NameEventHandle OpenNewAcctMan;
+
+        private SpreadsheetManagement ssMan;
+        private ManageUsers userMan;
+        private AdminController controller;
+
 
         public Form1()
         {
             InitializeComponent();
-            //logic = new AdminLogic();
+            controller = new AdminController();
 
-            // Test Scrolling Function - CurrentStatusList
-            for (int i = 0; i < 1000; i++)
+            //Populate the lists with anything in the model
+            RedrawSSList();
+            RedrawUserList();
+            
+            //events triggered by network sending
+            controller.UpdateInterface += HandleUpdateInterface;
+            //event triggered by server echoing our shut down message
+            controller.ShutdownServer += RecieveShutDownEcho;
+
+            //Testing TODO: remove this
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    controller.TestAddUse(i.ToString());
+            //    controller.TestAddSS(i.ToString());
+            //}
+        }
+
+        /// <summary>
+        /// Event handler receiving User and Spreadsheet data from Admin Controller
+        /// Update the GUI with new data
+        /// </summary>
+        /// <param name="users"></param>
+        /// <param name="spreadsheet"></param>
+        public void HandleUpdateInterface()
+        {
+            // Update the Current Status column with User data
+            this.Invoke(new MethodInvoker(() =>
+           {
+               RedrawUserList();
+           }));
+
+            // Update the Update column with Spreadsheet data
+            this.Invoke(new MethodInvoker(() =>
             {
-                //currentStatusList.Items.Add(i.ToString());
-            }
+                RedrawSSList();
+            }));
         }
 
         private void ShutDown(object sender, EventArgs e)
         {
-            //logic.ShutDownServer();
+            controller.ShutDown();
+        }
+
+        private void RecieveShutDownEcho()
+        {
+            this.Invoke(new MethodInvoker(() =>
+            {
+                //clean the models dictionaries
+                controller.CleanModel();
+
+                currentStatusList.Items.Clear();
+                updateList.Items.Clear();
+
+                this.Close();
+
+                //check if the user man is open
+                //if (userMan != null)
+                //{
+                //    //if so close the man tab
+                //    userMan.Close();
+                //}
+
+                ////check if the ssman is open
+                //if (ssMan != null)
+                //{
+                //    //if so, close the man tab
+                //    ssMan.Close();
+                //}
+            }));            
+
+            
         }
 
         private void AccountManagementButton(object sender, EventArgs e)
         {
-            //OpenNewAcctMan();
-            ManageUsers man = new ManageUsers();
-            man.Show();
-
+            if (controller.OpenAcctManPage())
+            {
+                userMan = new ManageUsers(controller);
+                userMan.Show();
+                controller.SetAcctManPageState(true);
+            }
         }
 
         private void SpreadsheetManagmentButton(object sender, EventArgs e)
         {
-            //if (logic.GetSSWindowsCount() == 0)
+
+            //Copied from ^ switch to work for spreadhseet
+            if (controller.OpenSSManPage())
             {
-                SpreadsheetManagement form = new SpreadsheetManagement();
-                form.Show();
-                //logic.SetSSWindowsCount(1);
+                ssMan = new SpreadsheetManagement(controller);
+                ssMan.Show();
+                controller.SetSSManPageState(true);
             }
         }
+
+        private void RedrawSSList()
+        {
+            if (updateList.Items.Count > 0)
+            {
+                updateList.Items.Clear();
+            }
+
+            List<string> SSList = new List<string>();
+            SSList = controller.GetAllSS();
+
+            foreach (string ss in SSList)
+            {
+                updateList.Items.Add(ss);
+            }
+        }
+
+        private void RedrawUserList()
+        {
+            if (currentStatusList.Items.Count > 0)
+            {
+                currentStatusList.Items.Clear();
+            }
+
+            //List<string> SSList = new List<string>();
+            //SSList = controller.GetAllUsers();
+
+            //foreach (string user in SSList)
+            //{
+            //    currentStatusList.Items.Add(user);
+            //}
+
+            //Dictionary<string, > SSDict = new Dictionary<string, string>();
+            List<string> list = new List<string>();
+            list = controller.GetAllUsers();
+
+            foreach (string user in list)
+            {
+                currentStatusList.Items.Add(user);
+            }
+        }
+
+
+
+        //private void UpdateList(Dictionary<string, User> users)
+        //{
+        //    foreach (string username in users.Keys)
+        //    {
+        //        Console.WriteLine(username);
+        //        currentStatusList.Items.Add(username);
+        //    }
+        //}
 
         private void button4_Click(object sender, EventArgs e)
         {
-
+            RedrawSSList();
+            RedrawUserList();
         }
 
-        private void textBox1_TextChanged_1(object sender, EventArgs e)
+        private void button6_Click(object sender, EventArgs e)
         {
-
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void listBox2_SelectedIndexChanged_1(object sender, EventArgs e)
-        {
-
-        }
-
-        /// <summary>
-        /// This test is to try to send an open Json
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PretendSendToServer(object sender, EventArgs e)
-        {
-            string json = OpenMessageToJson("cool.sprd", "pajensen", "Doofus");
-            string nonJson = JsonToString(json);
-
-            Console.WriteLine(ParseString(nonJson));
-
-
-            //old version made strings, but they were dropping the last thing added to the string somehow, may still be used later 
-
-            //string jsonString = ConvertStringToJson("\"type\": \"open\",   \"name\": \"cool.sprd\",   \"username\": \"pajensen\",   \"password\": \"Doofus\"");
-            //jsonData = JsonConvert.SerializeObject(jsonBuilder);
-            //ConvertJsonToString("");
-        }
-
-        private string[] ParseString(string input)
-        {
-            string[] line_array = input.Split('"');
-            string[] keeper = new string[8]; //8 because thats the max number of feilds there could be
-            int count = 0;
-
-            for (int i = 0; i < line_array.Length; i++)
+            for (int i = 0; i < 10; i++)
             {
-                //all the important bits
-                if (line_array[i] != "\r\n}" || line_array[i] != ",\r\n  " || line_array[i] != "{\r\n  " || line_array[i] != ": ")
-                {
-                    keeper[count] = line_array[i];
-                    count++;
-                }
+                controller.TestAddUse(i.ToString());
             }
-            return keeper;
         }
 
 
-        private string OpenMessageToJson(string name, string username, string password)
-        {
-            Open message = new Open()
-            {
-                type = "open",
-                name = name,
-                username = username,
-                password = password
-            };
-            string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
-            return jsonOpen;
-        }
-
-        private string EditMessageToJson(string cell, string value, string dep)
-        {
-            Edit message = new Edit()
-            {
-                type = "edit",
-                cell = cell,
-                value = value,
-                dependencies = dep
-            };
-            string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
-            return jsonOpen;
-        }
-
-        private string UndoMessageToJson()
-        {
-            //may need a Type = "undo"
-            Undo message = new Undo();
-            string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
-            return jsonOpen;
-        }
-
-        private string RevertMessageToJson(string cell)
-        {
-            Revert message = new Revert()
-            {
-                type = "revert",
-                cell = cell
-            };
-            string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
-            return jsonOpen;
-        }
-
-        private string ErrorMessageToJson(int code, string source)
-        {
-            Error message = new Error()
-            {
-                type = "error",
-                code = code,
-                source = source,
-            };
-            string jsonOpen = JsonConvert.SerializeObject(message) + "\n\n";    //TODO: is this the best way to add the 2 newlines?
-            return jsonOpen;
-        }
-
-        /// <summary>
-        /// Very general, returns the json in the form that the client is expecting
-        /// </summary>
-        /// <param name="json"></param>
-        /// <returns></returns>
-        private string JsonToString(string json)
-        {
-            object WriteIntoStudent = JsonConvert.DeserializeObject(json);
-            string result = WriteIntoStudent.ToString();
-            return result;
-        }
-
-
-        //private string ConvertStringToJson(string input)
+        //private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         //{
-        //    StringBuilder jsonBuilder = new StringBuilder();
-        //    jsonBuilder.Append(input);
-
-        //    return JsonConvert.SerializeObject(jsonBuilder);
-        //}
-
-        //private void ConvertJsonToString(string json)
-        //{
-        //    //string[] stuff1 = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-        //    //return stuff1;
-        //   //StringBuilder jsonBuilder = new StringBuilder();
-        //    //jsonBuilder.Append(input);
-
-        //   // return JsonConvert.SerializeObject(jsonBuilder);
+        //    //Fire an event to the WelcomePage to 
+        //    //KillProgram();
         //}
 
 
 
+        public static int counter = 0;
+        private void TESTinsertingTopOfList(object sender, EventArgs e)
+        {
+            updateList.Items.Insert(0, "ssname" + counter);
+            counter++;
+        }
 
+        private void ConnectToServer_buttone(object sender, EventArgs e)
+        {
+            string hostname = "lab1-2.eng.utah.edu";
+            if (IP.Text != "")
+            {
+                hostname = IP.Text;
+            }
+            int port = 2112;
+            if (Port.Text != "")
+            {
+                int.TryParse(Port.Text, out port);
+            }
+            button8.Enabled = false;
+            controller.Connect(hostname, port);
+        }
 
-
-
-
-
-
-        //NETWORKING
-        private void Network()
+        private void currentStatusList_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }

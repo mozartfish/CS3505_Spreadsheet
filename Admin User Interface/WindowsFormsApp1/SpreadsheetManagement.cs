@@ -27,6 +27,8 @@ namespace WindowsFormsApp1
             InitializeComponent();
             controller = contr;
 
+            controller.UpdateSSInterface += HandleUpdateInterface;
+
             RedrawSSList();
 
             //TODO: set up the SSman here! looking at all the data structures and grabbing SS information
@@ -62,7 +64,22 @@ namespace WindowsFormsApp1
         private void DeleteSS_button(object sender, EventArgs e)
         {
             string name = DeleteSS_Name.Text;
+
+            //only send the message if the ss is in the model, keeps the server lighter
+            if (controller.ModelHasSpreadsheet(name))
+            {
+               // controller.SendSSChange(name, -1);
+            }
             controller.SendSSChange(name, -1);
+        }
+
+        public void HandleUpdateInterface()
+        {
+            // Update the Update column with Spreadsheet data
+            this.Invoke(new MethodInvoker(() =>
+            {
+                RedrawSSList();
+            }));
         }
 
 

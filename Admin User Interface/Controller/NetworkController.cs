@@ -42,7 +42,7 @@ namespace Controller
         /// String builder for the message
         /// </summary>
         private StringBuilder stringBuilder = new StringBuilder();
-
+        
         /// <summary>
         /// Whether or not the SocketState has disconnected
         /// </summary>
@@ -187,7 +187,7 @@ namespace Controller
         public static Socket ConnectToServer(string hostName, int port, NetworkAction MessageProcessor)
         {
             SocketState ss = new SocketState(null, -1, MessageProcessor);
-
+            Console.WriteLine("networking attempting to connect to server");
             try
             {
                 System.Diagnostics.Debug.WriteLine("Connecting to " + hostName);
@@ -199,6 +199,8 @@ namespace Controller
                 Networking.MakeSocket(hostName, out socket, out ipAddress);
                 ss = new SocketState(socket, -1, MessageProcessor);
 
+                //TESTING, do not use localhost for connecting to the server!
+                //socket.BeginConnect(ipAddress, DEFAULT_PORT, ConnectedCallback, ss);
                 socket.BeginConnect(ipAddress, port, ConnectedCallback, ss);
                 return socket;
             }
@@ -317,6 +319,10 @@ namespace Controller
             catch (SocketException)
             {
                 socket.Close();
+                return false;
+            }
+            catch (ObjectDisposedException) //ADDED by Aaron, to deal with clicking connect multiple times in succession
+            {
                 return false;
             }
         }

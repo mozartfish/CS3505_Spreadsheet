@@ -12,18 +12,19 @@ namespace Model
     public class AdminModel
     {
         private Dictionary<string, Spreadsheet> ssDict;
-        private Dictionary<string, User> usersDict;
+        private Dictionary<string, Dictionary<string, User>> ss2user;
+
 
         public AdminModel()
         {
             ssDict = new Dictionary<string, Spreadsheet>();
-            usersDict = new Dictionary<string, User>();
+            ss2user = new Dictionary<string, Dictionary<string, User>>();
         }
 
         public void CleanModel()
         {
             ssDict.Clear();
-            usersDict.Clear();
+            ss2user.Clear();
         }
 
         #region Getters
@@ -37,6 +38,15 @@ namespace Model
             return new Spreadsheet();
         }
 
+        public bool ContainsSS(string name)
+        {
+            if (ssDict.ContainsKey(name))
+            {
+                return true;
+            }
+            return false;
+        }
+
         public Dictionary<string, Spreadsheet> GetSSDict()
         {
             return ssDict;
@@ -46,14 +56,17 @@ namespace Model
             return ssDict.Values.ToList();
         }
 
-        public List<User> GetUsersList()
+        public Dictionary<string, User> GetUsersDict(string ssName)
         {
-            return usersDict.Values.ToList();
+            return ss2user[ssName];
         }
-
-        public Dictionary<string, User> GetUsersDict()
+        public bool ContainsUser(string ssName, string username)
         {
-            return usersDict;
+            if (ss2user[ssName].ContainsKey(username))
+            {
+                return true;
+            }
+            return false;
         }
 
         //public List<User> GetOrderedUsersList()
@@ -87,7 +100,7 @@ namespace Model
         //        {
 
         //            string user = entry.Value.GetUsername() + "  " + entry.Value.GetPassword() + "   " + entry.Value.GetActive() + " " + entry.Value.GetWorkingOn().ToString();
-                    
+
         //            activeList.Add(user);
 
         //        }
@@ -138,48 +151,87 @@ namespace Model
 
 
 
-        public User GetUser(string username)
-        {
-            if (usersDict.ContainsKey(username))
-            {
-                return usersDict[username];
-            }
-            return new User(username);
-        }
         #endregion Getters
 
         #region Setters
         public void SetSS(string ssName, Spreadsheet ss)
         {
-            ssDict[ssName] = ss;
+            // First check the status for add/remove
+            int status = ss.GetStatus();
+
+            if(status == -1)
+            {
+                ssDict.Remove(ssName);
+                ss2user.Remove(ssName);
+            }
+            else
+            {
+                // Set SSDict
+                ssDict[ssName] = ss;
+
+                // Set ss2user dictionary
+                Dictionary<string, User> userDict = new Dictionary<string, User>();
+
+                foreach (KeyValuePair<string, string> user in ss.GetUsers())
+                {
+                    User u = new User();
+                    u.SetUsername(user.Key);
+                    u.SetPassword(user.Value);
+                    u.SetUserType("user");
+                    u.SetWorkingOn(ssName);
+                    u.SetStatus(0);
+
+                    // Add to userList
+                    userDict[u.GetUsername()] = u;
+                }
+
+                ss2user[ssName] = userDict;
+            }            
         }
 
-        public void SetUser(string username, User user)
+        public void SetUser(string ssName, string username, User user)
         {
-            usersDict[username] = user;
+            // Get the userDict from ss2user dictionary
+            Dictionary<string, User> userDict = ss2user[ssName];
+
+            // First check the status for add/remove
+            int status = user.GetStatus();
+
+            if(status == -1)
+            {
+                userDict.Remove(username);
+            }
+            else
+            {
+                userDict[username] = user;
+            }
+                                   
         }
 
-        public void TESTAddUser(string user)
-        {
-            User use = new User();
-            use.SetUsername("user");
-            use.SetPassword("pass");
-            use.SetWorkingOn("working on this one");
+        //public void TESTAddUser(string user)
+        //{
+        //    User use = new User();
+        //    use.SetUsername("user");
+        //    use.SetPassword("pass");
+        //    use.SetWorkingOn("working on this one");
 
-            usersDict.Add(user, use);
-        }
+        //    usersDict.Add(user, use);
+        //}
 
-        public void TESTAddSSs(string name)
-        {
-            Spreadsheet ss = new Spreadsheet();
+        //public void TESTAddSSs(string name)
+        //{
+        //    Spreadsheet ss = new Spreadsheet();
 
-            ss.SetName(name);
-            ss.SetStatus(0);
-            List<string> list = new List<string> { "ssUser1"};
-            ss.SetUsers(list);
+        //    ss.SetName(name);
+        //    ss.SetStatus(0);
 
-            ssDict.Add(name, ss);
-        }
+        //    List<string> list = new List<string> { "ssUser1"};
+        //    //ss.SetUsers(list);
+
+        //    ssDict.Add(name, ss);
+        //}
+
+        
 
         #endregion
 

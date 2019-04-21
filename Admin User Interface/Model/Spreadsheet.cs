@@ -25,8 +25,15 @@ namespace Model
         /// <summary>
         /// List of usernames representing all users working on spreadsheet
         /// </summary>
+        //[JsonProperty]
+        //private List<string> //users;
+
+
+        /// <summary>
+        /// A dict of all users connected to passwords as value
+        /// </summary>
         [JsonProperty]
-        private List<string> users;
+        private Dictionary<string, string> users;
 
         /// <summary>
         /// Status code for spreadsheet
@@ -39,7 +46,7 @@ namespace Model
 
         public Spreadsheet()
         {
-            users = new List<string>();
+            users = new Dictionary<string, string>();
         }
 
         public string GetSSType()
@@ -62,24 +69,28 @@ namespace Model
             ssName = newName;
         }
 
-        public List<string> GetUsers()
+        public Dictionary<string, string> GetUsers()
         {
             return users;
         }
 
-        public void SetUsers(List<string> usersList)
+        public void SetUsers(Dictionary<string, string> usersList)
         {
             users = usersList;
         }
 
-        public void AddUsers(string newUser)
+        public void AddUsers(string newUser, string userPass)
         {
-            users.Add(newUser);
+            //Dont try and add a user that is not there
+            if (!users.ContainsKey(newUser))
+            {
+                users.Add(newUser, userPass);
+            }
         }
 
         public void RemoveUser(string name)
         {
-            if (users.Contains(name))
+            if (users.ContainsKey(name))
             {
                 users.Remove(name);
             }
@@ -94,5 +105,63 @@ namespace Model
         {
             status = newStatus;
         }
+
+        //public Spreadsheet()
+        //{
+        //    users = new List<string>();
+        //}
+
+        //public string GetSSType()
+        //{
+        //    return type;
+        //}
+
+        //public void SetSSType(string t)
+        //{
+        //    type = t;
+        //}
+
+        //public string GetName()
+        //{
+        //    return ssName;
+        //}
+
+        //public void SetName(string newName)
+        //{
+        //    ssName = newName;
+        //}
+
+        //public List<string> GetUsers()
+        //{
+        //    return users;
+        //}
+
+        //public void SetUsers(List<string> usersList)
+        //{
+        //    users = usersList;
+        //}
+
+        //public void AddUsers(string newUser)
+        //{
+        //    users.Add(newUser);
+        //}
+
+        //public void RemoveUser(string name)
+        //{
+        //    if (users.Contains(name))
+        //    {
+        //        users.Remove(name);
+        //    }
+        //}
+
+        //public int GetStatus()
+        //{
+        //    return status;
+        //}
+
+        //public void SetStatus(int newStatus)
+        //{
+        //    status = newStatus;
+        //}
     }
 }
