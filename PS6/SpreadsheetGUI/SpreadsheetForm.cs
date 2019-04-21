@@ -69,7 +69,7 @@ namespace Display
 
             spreadsheetPanel1.SelectionChanged += DisplaySelection;
             spreadsheet = this.controller.spreadsheet;
-                //new Spreadsheet(s => this.controller.IsValid(s), s => this.controller.Normalize(s), "ps6");
+            //new Spreadsheet(s => this.controller.IsValid(s), s => this.controller.Normalize(s), "ps6");
 
             spreadsheetPanel1.SetSelection(0, 0);
             contentTextBox.Select();
@@ -235,9 +235,9 @@ namespace Display
             {
                 string letter = m.Groups[1].ToString();
                 double.TryParse(m.Groups[2].ToString(), out double result);
-                
-                    spreadsheetPanel1.SetValue(LetterToNumber[letter], (int)result - 1, value);
-                
+
+                spreadsheetPanel1.SetValue(LetterToNumber[letter], (int)result - 1, value);
+
                 m = m.NextMatch();
             }
         }

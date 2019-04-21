@@ -87,7 +87,7 @@ namespace SS
                         {
                             throw new ArgumentException();
                         }
-                        if(Cells[var].Type == typeof(string))
+                        if (Cells[var].Type == typeof(string))
                         {
                             throw new ArgumentException();
                         }
@@ -225,7 +225,7 @@ namespace SS
                 }
             }
             return -1;
-          //  throw new ArgumentException();
+            //throw new ArgumentException();
         }
 
         /// <summary>

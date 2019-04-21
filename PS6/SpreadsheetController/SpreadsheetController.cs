@@ -410,7 +410,6 @@ namespace Controller
                 {
                     dependents = spreadsheet.ParseContents(cellName, contents);
                 }
-
                 SendEdit(cellName, contents, dependents);
             }
             catch (SpreadsheetUtilities.FormulaFormatException e)
@@ -501,8 +500,6 @@ namespace Controller
             {
                 NetworkError();
             }
-
-
         }
 
         #endregion

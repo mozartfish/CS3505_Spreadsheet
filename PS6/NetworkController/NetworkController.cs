@@ -225,7 +225,6 @@ namespace Controller
             catch (Exception)
             {
                 ss.Disconnected = true;
-                ss.MessageProcessor(ss);
             }
             ss.MessageProcessor(ss);
 
@@ -257,7 +256,6 @@ namespace Controller
             catch (Exception)
             {
                 ss.Disconnected = true;
-                ss.MessageProcessor(ss);
             }
            
         }
