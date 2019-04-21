@@ -100,91 +100,6 @@ namespace Display
                 //this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(cell, ss.GetCellValue(cell).ToString()))); 
             }
             this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(list)));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            //here the value and contents should be updated, but whenever I try anything it fucks with the sspanel where the selection is
-
-
-
-
-
-            spreadsheetPanel1.GetSelection(out int col, out int row);
-
-            //attempt 3
-            //if (row > 2)
-            //{
-            //    spreadsheetPanel1.SetSelection(col, row+1);
-            //    spreadsheetPanel1.SetSelection(col, row);
-            //}
-
-
-            //if (row != 98)
-            //{
-            //    spreadsheetPanel1.SetSelection(col, row + 1);
-            //    row = row + 1;
-            //}
-            //DisplaySelection(this.spreadsheetPanel1);
-            //contentTextBox.SelectionStart = contentTextBox.Text.Length;
-
-            //attpemt 2
-
-            //spreadsheetPanel1.SetSelection(col, row - 1);
-            //row = row - 1;
-            //DisplaySelection(this.spreadsheetPanel1);
-            //contentTextBox.SelectionStart = contentTextBox.Text.Length;
-
-
-
-
-            //Attempt1
-
-            // spreadsheetPanel1.SetSelection();
-
-            //DisplaySelection(spreadsheetPanel1);
-            //contentTextBox.SelectionStart = contentTextBox.Text.Length;
-            //string name = nameTextBox.Text;
-            //string content = spreadsheet.GetCellContents(name).ToString();
-            //string value = spreadsheet.GetCellValue(name).ToString();
-
-
-            //contentTextBox.Text = content;
-            //valueTextBox.Text = value; 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
 
 
@@ -326,6 +241,14 @@ namespace Display
                     name = true;
                 }
             }
+            //contentTextBox.Text;
+            string thing = nameTextBox.Text;
+            string content = spreadsheet.GetCellContents(thing).ToString();
+            string value = spreadsheet.GetCellValue(thing).ToString();
+
+
+            contentTextBox.Text = content;
+            valueTextBox.Text = value;
         }
 
         /// <summary>
