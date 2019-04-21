@@ -344,11 +344,12 @@ bool spreadsheet::CircularDependency(std::string cell, std::vector<std::string> 
 //Helper function that performs a DFS on the dependency graph looking for circular dependcies
 bool spreadsheet::Visit(std::string start, std::string goal)
 {
-  std::queue <std::string> queue = std::queue <std::string>();
+  std::queue <std::string> queue;
   queue.push(start);
   
   while (!queue.empty())
   {
+    std::cout << "start " << start << std::endl;
     std::string start = queue.front();
     queue.pop();
     if (start == goal)
@@ -358,6 +359,7 @@ bool spreadsheet::Visit(std::string start, std::string goal)
       std::unordered_set<std::string> * get_dependents = this->dependencies->GetDependents(start);
       for (std::string s : *get_dependents)
       {
+	std::cout << "adding cell " << s << std::endl;
 	queue.push(s);
       }
     }
@@ -398,7 +400,7 @@ std::string spreadsheet::get_cell_contents(std::string cell)
   
   if (index < 0)
     {
-    return NULL;
+    return "";
     }
   
 

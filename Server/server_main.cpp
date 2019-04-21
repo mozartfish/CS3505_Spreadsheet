@@ -19,7 +19,7 @@
 #include <chrono>
 #include "jsoncpp-master/dist/json/json.h"
 #include "spreadsheet.h"
-#include "../Connection/socket_connections.h"
+#include "Connection/socket_connections.h"
 
 using namespace std;
 
