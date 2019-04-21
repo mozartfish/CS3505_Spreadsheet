@@ -199,15 +199,26 @@ std::string spreadsheet::revert(std::string cell)
   // No history just means 
   if (cell_hist->size() == 0)
     return "";
-  
-  if (cell_hist[cell_idx].back()[0] == '=')
+
+  std::cout << "attempting revert" << std::endl;
+  std::cout << (*cell_hist).back() << std::endl;
+  if ((*cell_hist).back()[0] == '=')
   {
     std::vector<std::string> * deps = cells_from_formula((*cell_hist).back());
+
+    for (std::string s : *deps)
+      std::cout << s << std::endl;
+
+    std::cout << deps->size() << std::endl;
+
+    std::cout << "cirdep check" << std::endl;
     if (CircularDependency(cell, deps))
     {
+      std::cout << "cirdep found" << std::endl;
       cell_hist->push_back(curr_cont);
       return "\t";
     }
+    std::cout << "cirdep not" << std::endl;
 
     for (std::string cell_dep : *deps)
       dep_set->insert(cell_dep);
@@ -216,6 +227,7 @@ std::string spreadsheet::revert(std::string cell)
 
   dependencies->ReplaceDependents(cell, *dep_set);
   
+  std::cout << "finished revert" << std::endl;
   // Return the current top contents
   return cell_hist->back();
 }
@@ -269,6 +281,9 @@ std::vector<std::string> *  spreadsheet::cells_from_formula(std::string formula)
 
   // Find any letter occurances
   int idx = formula.find_first_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+
+  std::cout << formula << std::endl;
+  std::cout << idx << std::endl;
   while(idx != -1)
     {
       int num_idx;
@@ -278,7 +293,8 @@ std::vector<std::string> *  spreadsheet::cells_from_formula(std::string formula)
 	   (formula.find_first_of("0123456789", num_idx + 1) - num_idx) == 1; num_idx++);
 
       // Get cell as substring
-      std::string cell = formula.substr(idx, num_idx + 1);
+      std::string cell = formula.substr(idx, num_idx);
+      std::cout << cell << std::endl;
       
       // Push back cell, find next cell
       dependencies->push_back(cell);
@@ -292,19 +308,10 @@ std::vector<std::string> *  spreadsheet::cells_from_formula(std::string formula)
 //Function that detects circular dependcies in the spreadsheet
 bool spreadsheet::CircularDependency(std::string cell, std::vector<std::string> * dependencies)
 {
-  //https://stackoverflow.com/questions/16029324/c-splitting-a-string-into-an-array
-  
-  /*std::string string_tokens[Formula.length()];
-  int j = 0;
-  std:: stringstream read_tokens(Formula);
-  while (read_tokens.good() && j < Formula.length())
-  {
-    read_tokens >> string_tokens[j];
-    j++;
-    } */
   
   for (std::string s : *dependencies)
   {
+    std::cout << "visiting" << s << std::endl;
     if (Visit(s, cell))
       return true;
   }
@@ -322,6 +329,7 @@ bool spreadsheet::Visit(std::string start, std::string goal)
   while (!queue.empty())
   {
     std::string start = queue.front();
+    queue.pop();
     if (start == goal)
       return true;
     else

@@ -457,6 +457,7 @@ void process_updates(volatile socks * socks_list)
 	  // If there is a failure
 	  else
 	    {
+	      cout << "circ dep" << endl;
 	      send_back["type"] = "error";
 	      send_back["code"] = 2;
 	      send_back["source"] = deserialized["cell"].asString();
@@ -530,6 +531,7 @@ void process_updates(volatile socks * socks_list)
 	  // Result returned \t, error character (choice was arbitrary)
 	  else
 	    {
+	      cout << "circ dep" << endl;
 	      send_back["type"] = "error";
 	      send_back["code"] = 2;
 	      send_back["source"] = deserialized["cell"].asString();
@@ -674,7 +676,8 @@ void process_updates(volatile socks * socks_list)
       // Send updates to all that should be notified if successful
       for (int client : (*sheets)[spread_name]->get_listeners())
 	{
-	  socket_connections::SendData(client, send_back_c, send_back_str.size());
+	  if (!(*(socks_list->needs_removed))[client])
+	    socket_connections::SendData(client, send_back_c, send_back_str.size());
 	}
     }
 
@@ -837,7 +840,11 @@ int main(int argc, char ** argv)
 	  // Iterate over each new client, and send required start data, and wait for data from them
 	  for (int idx = connections.size_before_update; idx < size; idx++)
 	    {
-	     
+	      cout << idx << endl;
+	      cout << connections.buffers->size() << endl;
+	      cout << connections.partial_data->size() << endl;
+	      cout << connections.needs_removed->size() << endl;
+	      cout << connections.size_before_update << endl;
 	      // Add new buffers for getting data
               connections.buffers->push_back(new char[BUF_SIZE]);
 	      bzero((*connections.buffers)[idx - 1], BUF_SIZE);
@@ -857,6 +864,11 @@ int main(int argc, char ** argv)
 	  connections.new_socket_connected = false;
 	  connections.size_before_update = connections.sockets->size();
 	 
+	  
+	  cout << connections.buffers->size() << endl;
+	  cout << connections.partial_data->size() << endl;
+	  cout << connections.needs_removed->size() << endl;
+	  cout << connections.size_before_update << endl;
       	}
        lock.unlock();
        
@@ -877,6 +889,12 @@ int main(int argc, char ** argv)
 	       if ((*connections.needs_removed)[fd])
 		 {
 		   cout << "Removing client from socket " << fd << endl;
+
+		   cout << connections.buffers->size() << endl;
+		   cout << connections.partial_data->size() << endl;
+		   cout << connections.needs_removed->size() << endl;
+		   cout << connections.size_before_update << endl;
+
 		   // Erase the socket from the usermap and sheet map, and remove it from the spreadsheet listeners 
 		   // Remove client if associated with spreadsheet
 		   if ((*socket_sprdmap).count(fd) > 0)
@@ -893,16 +911,26 @@ int main(int argc, char ** argv)
 		   
 		   // Close the socket
 		   socket_connections::CloseSocket(fd);
+
+		   cout << "socket closed for " << fd << endl;
 		   
 		   // Erase the socket from the connections struct
 		   it = connections.sockets->erase(it);
 		   --(connections.size_before_update);
 		   connections.buffers->erase(connections.buffers->begin() + it_idx - 1);
 		   connections.partial_data->erase(connections.partial_data->begin() + it_idx - 1);
+
+		   cout << "data erased for " << fd << endl;
 		   
 		   // Make sure double erasure doesn't happen
 		   connections.needs_removed->erase(fd);
 		   
+		   cout << "erased bool " << fd << endl;
+
+		   cout << connections.buffers->size() << endl;
+		   cout << connections.partial_data->size() << endl;
+		   cout << connections.needs_removed->size() << endl;
+		   cout << connections.size_before_update << endl;
 		 }
 	       else
 		 ++it;
