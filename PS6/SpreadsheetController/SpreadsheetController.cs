@@ -271,7 +271,6 @@ namespace Controller
             string[] messages = Regex.Split(ss.sb.ToString(), @"(?<=[\n]{2})");
             foreach (string message in messages)
             {
-                Debug.WriteLine(message);
                 // ignore empty messages
                 if (message.Length < 2)
                 {
@@ -358,8 +357,6 @@ namespace Controller
                     break;
                 }
 
-                Debug.WriteLine(message);
-
                 if (message[0] == '{' && message[message.Length - 3] == '}')
                 {
                     JObject obj = JObject.Parse(message);
@@ -404,30 +401,11 @@ namespace Controller
         public void ProcessEdit(string cellName, string contents)
         {
             IEnumerable<string> dependents = new HashSet<string>();
-            try
-            {
                 lock (spreadsheet)
                 {
                     dependents = spreadsheet.ParseContents(cellName, contents);
                 }
                 SendEdit(cellName, contents, dependents);
-            }
-            catch (SpreadsheetUtilities.FormulaFormatException e)
-            {
-                throw new SpreadsheetUtilities.FormulaFormatException(e.Message);
-            }
-            catch (SS.InvalidNameException)
-            {
-                throw new SS.InvalidNameException();
-            }
-            catch (ArgumentNullException)
-            {
-                throw new ArgumentNullException();
-            }
-            catch (ArgumentException)
-            {
-                throw new ArgumentException();
-            }
         }
 
         /// <summary>

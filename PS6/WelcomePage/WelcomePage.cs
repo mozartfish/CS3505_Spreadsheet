@@ -150,7 +150,7 @@ namespace Display
             Display.SpreadsheetForm ssForm = new Display.SpreadsheetForm(ref controller);
             Display.SpreadsheetApplicationContext appContext =
                 Display.SpreadsheetApplicationContext.getAppContext();
-            appContext.RunForm(ssForm);
+            this.Invoke(new MethodInvoker(() => appContext.RunForm(ssForm)));
 
             ssForm.FormClosed += (o, ev) => this.Close();
 
