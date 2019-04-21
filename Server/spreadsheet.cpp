@@ -406,6 +406,22 @@ void spreadsheet::add_direct_cell_history(int cell, std::vector<std::string> * h
   // Delete old history and overwrite
   (*(this->cell_history))[cell] = hist;
 
+  std::string contents = hist->back();
+  if (contents[0] == '=')
+    {
+      std::vector<std::string> * deps = cells_from_formula(hist->back());
+      char letter = (char)((cell / 99) + 65);
+      int row = (cell % 99) + 1;
+      std::string cell(1, letter);
+      cell += std::to_string(row);
+      
+      std::unordered_set<std::string> * dep_set = new std::unordered_set<std::string>();
+      
+      for (std::string cell_dep : *deps)
+	dep_set->insert(cell_dep);
+      
+      dependencies->ReplaceDependents(cell, *dep_set);
+    }
 }
 
 
