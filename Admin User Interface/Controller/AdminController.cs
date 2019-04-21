@@ -39,6 +39,10 @@ namespace Controller
 
         public event UpdateInterfaceHandler UpdateInterface;
 
+        public event UpdateInterfaceHandler UpdateUserInterface;
+
+        public event UpdateInterfaceHandler UpdateSSInterface;
+
         public delegate void ShutdownHandler();
 
         public event ShutdownHandler ShutdownServer;
@@ -163,7 +167,7 @@ namespace Controller
                 }
             }
 
-            UpdateInterface?.Invoke();
+            UpdateInterface?.Invoke();                        
         }
 
         /// <summary>
@@ -209,6 +213,8 @@ namespace Controller
                 Spreadsheet ss = (Spreadsheet)updateObj;
                 string SSname = ss.GetName();
                 model.SetSS(SSname, ss);
+
+                UpdateSSInterface?.Invoke();
             }
             else if (updateObj is User)
             {
@@ -216,6 +222,8 @@ namespace Controller
                 string username = user.GetUsername();
                 string ssName = user.GetWorkingOn();
                 model.SetUser(ssName, username, user);
+
+                UpdateUserInterface?.Invoke();
             }
         }
 
