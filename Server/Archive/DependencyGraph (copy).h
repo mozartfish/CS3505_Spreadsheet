@@ -23,15 +23,22 @@ class DependencyGraph
   //Value:: A set of strings that depend on the key
   std::unordered_map<std::string, std::unordered_set<std::string>> dependents_map;
   
+  //Key: String that the value depends on
+  //Value: A set of strings that the key depends on
+  std::unordered_map<std::string, std::unordered_set<std::string>> dependees_map;
+  
  public:
   DependencyGraph();
   //~DependencyGraph();
   int Size();
+  int DependeesSize(std::string s);
   bool HasDependents(std::string s);
-  std::unordered_set<std::string> * GetDependents(std::string s);
+  bool HasDependees(std::string s);
+  std::unordered_set<std::string> GetDependents(std::string s);
+  std::unordered_set<std::string> GetDependees(std::string s);
   void AddDependency(std::string s, std::string t);
   void RemoveDependency(std::string s, std::string t);
   void ReplaceDependents(std::string s, std::unordered_set<std::string> new_dependents);
-  
+  void ReplaceDependees(std::string s, std::unordered_set<std::string> new_dependees);
 };
 #endif

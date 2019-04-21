@@ -425,7 +425,7 @@ void process_updates(volatile socks * socks_list)
       else if (deserialized["type"].asString() == "edit" && sheet)
 	{
 	  vector<string> * dependencies = new vector<string>();
-
+	  cout << deserialized["dependencies"].size() << " depsize" << endl;
 	  // Add each dependency from json to a string vector
 	  for (int i = 0; i < deserialized["dependencies"].size(); i++)
 	    dependencies->push_back(deserialized["dependencies"][i].asString());

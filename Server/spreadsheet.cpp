@@ -137,9 +137,15 @@ bool spreadsheet::change_cell(std::string cell, std::string contents, std::vecto
 
   std::unordered_set<std::string> * dep_set = new std::unordered_set<std::string>();
 
+  std::cout << contents << "\t" << contents[0] << std::endl;
+
   //check for circular dependencies
   if (contents[0] == '=')
   {
+    std::cout << "checking circ" << std::endl;
+    for (std::string f : *dep_list)
+	std::cout << f << std::endl;
+      
     if (CircularDependency(cell, dep_list))
       return false;
     
@@ -150,6 +156,11 @@ bool spreadsheet::change_cell(std::string cell, std::string contents, std::vecto
 
   // Replace dependents and update cell
   this->dependencies->ReplaceDependents(cell, *dep_set);
+
+  std::cout << "Deps replaced" << std::endl;
+  
+  for (std::string f : *(dependencies->GetDependents(cell)))
+    std::cout << f << std::endl;
  
   this->spd_history->push_back(cell);
   (*(*(this->cell_history))[cell_idx]).push_back(contents);
@@ -202,7 +213,7 @@ std::string spreadsheet::revert(std::string cell)
 
   std::cout << "attempting revert" << std::endl;
 
-  for (std::string s : dependencies->GetDependents(cell))
+  for (std::string s : *(dependencies->GetDependents(cell)))
 	 std::cout << s << std::endl;
 
 
@@ -237,7 +248,7 @@ std::string spreadsheet::revert(std::string cell)
 
   dependencies->ReplaceDependents(cell, *dep_set);
 
-  for (std::string s : dependencies->GetDependents(cell))
+  for (std::string s : *(dependencies->GetDependents(cell)))
 	 std::cout << s << std::endl;
   
   std::cout << "finished revert" << std::endl;
@@ -344,8 +355,8 @@ bool spreadsheet::Visit(std::string start, std::string goal)
       return true;
     else
     {
-      std::unordered_set<std::string> get_dependents = this->dependencies->GetDependents(start);
-      for (std::string s : get_dependents)
+      std::unordered_set<std::string> * get_dependents = this->dependencies->GetDependents(start);
+      for (std::string s : *get_dependents)
       {
 	queue.push(s);
       }
@@ -437,8 +448,11 @@ void spreadsheet::add_direct_cell_history(int cell, std::vector<std::string> * h
       
       for (std::string cell_dep : *deps)
 	dep_set->insert(cell_dep);
+
       
       dependencies->ReplaceDependents(cell, *dep_set);
+
+
     }
 }
 
