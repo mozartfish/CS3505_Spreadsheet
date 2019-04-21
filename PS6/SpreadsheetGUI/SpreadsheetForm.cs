@@ -27,7 +27,7 @@ namespace Display
     /// </summary>
     public partial class SpreadsheetForm : Form
     {
-        private static int cellFocused;
+        //private static int cellFocused;
 
 
         /// <summary>
@@ -91,10 +91,17 @@ namespace Display
             //update the spreadsheet view
             cells = ss.GetNamesOfAllNonemptyCells();
 
+            List<string> list = new List<string>();
             foreach (string cell in cells)
             {
-                this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(cell, ss.GetCellValue(cell).ToString())));
+                list.Add(cell);
+                list.Add(ss.GetCellValue(cell).ToString());
+                //this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(cell, ss.GetCellValue(cell).ToString())));
+                //AARON changed this, to not invoke, but rather call explicitly. Thought: the invoke is not neccisary, as we are currently on the thread 
+                //DisplayCellPanelValue(cell, ss.GetCellValue(cell).ToString()); //This significantly reduces the time, but I think the spreadsheetform needs to be run on a seperate thread
             }
+            this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(list)));
+
         }
 
 
@@ -213,6 +220,29 @@ namespace Display
             //Sets the caret to the end of the contents text box.
             contentTextBox.SelectionStart = contentTextBox.Text.Length;
             DisplayCellPanelValue(name, value);
+        }
+
+        /// <summary>
+        /// Instead of having a method that must be invoked for all cells, have a method that you call once, 
+        /// and does all the logic and setting for a list of inputs
+        /// </summary>
+        public void DisplayCellPanelValue(List<string> list)
+        {
+            bool name = true;
+            string nameString = "";
+            foreach (string nameOrValue in list)
+            {
+                if (name)
+                {
+                    nameString = nameOrValue;
+                    name = false;
+                }
+                else
+                {
+                    DisplayCellPanelValue(nameString, nameOrValue);
+                    name = true;
+                }
+            }
         }
 
         /// <summary>
@@ -411,8 +441,9 @@ namespace Display
 
             controller.SendUndo();
 
-            spreadsheetPanel1.Focus();
-            spreadsheetPanel1.SetSelection(col, row);
+            contentTextBox.Focus();
+            //spreadsheetPanel1.Focus();
+            //spreadsheetPanel1.SetSelection(col, row);
         }
 
         /// <summary>
@@ -426,8 +457,9 @@ namespace Display
             spreadsheetPanel1.GetSelection(out int col, out int row);
             string cellName = ColRowToCellName(col, row);
             controller.SendRevert(cellName);
-            spreadsheetPanel1.Focus();
-            spreadsheetPanel1.SetSelection(col, row);
+            contentTextBox.Focus();
+            //spreadsheetPanel1.Focus();
+            //spreadsheetPanel1.SetSelection(col, row);
         }
 
         /// <summary>
