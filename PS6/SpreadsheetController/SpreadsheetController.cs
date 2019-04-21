@@ -33,6 +33,17 @@ namespace Controller
         private event ListUpdate ListArrived;
 
         /// <summary>
+        /// Delegate for the CredentialsAccepted event
+        /// </summary>
+        public delegate void CredentialsAccepted();
+
+        /// <summary>
+        /// Event that is triggered when the server has accepted the user's authorization credentials
+        /// and has decided to send us a spreadsheet
+        /// </summary>
+        public event CredentialsAccepted SpreadsheetNeedsOpening;
+
+        /// <summary>
         /// Delegate for the SpreadsheetArived event
         /// </summary>
         /// <param name="ss"></param>
@@ -79,8 +90,6 @@ namespace Controller
         /// Password of the client
         /// </summary>
         private string password;
-
-
 
         /// <summary>
         /// Current spreadsheet being edited by the client
@@ -145,6 +154,15 @@ namespace Controller
         public void RegisterNetworkErrorHandler(NetWorkErrorHandler handler)
         {
             NetworkError += handler;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="handler"></param>
+        public void RegisterCredentialsAcceptedHandler(CredentialsAccepted handler)
+        {
+            SpreadsheetNeedsOpening += handler;
         }
 
         /// <summary>
@@ -284,6 +302,8 @@ namespace Controller
 
                 if (message[0] == '{' && message[message.Length - 3] == '}')
                 {
+                    Debug.WriteLine(message);
+
                     JObject obj = JObject.Parse(message);
                     JToken messageToken = obj["type"];
 
@@ -300,8 +320,10 @@ namespace Controller
                     {
                         if (messageToken.ToString() == "full send")
                         {
-                            FullSend fullSend = JsonConvert.DeserializeObject<FullSend>(message);
+                            // trigger the spreadsheet form to open
+                            SpreadsheetNeedsOpening();
 
+                            FullSend fullSend = JsonConvert.DeserializeObject<FullSend>(message);
                             foreach (string cell in fullSend.spreadsheet.Keys)
                             {
                                 lock (spreadsheet)

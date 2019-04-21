@@ -33,8 +33,9 @@ namespace Display
             controller.RegisterListUpdateHandler(UpdateListView);
             controller.RegisterErrorHandler(UpdateError);
             controller.RegisterNetworkErrorHandler(NetworkError);
+            controller.RegisterCredentialsAcceptedHandler(LaunchSpreadsheetForm);
         }
-
+        
 
         /// <summary>
         /// Event handler for the network error event.
@@ -91,7 +92,22 @@ namespace Display
             }
         }
 
+        /// <summary>
+        /// Launches the Spreadsheet GUI and hides the welcome page.
+        /// Registered as a handler for the SpreadsheetNeedsOpening event
+        /// </summary>
+        /// <param name="list"></param>
+        private void LaunchSpreadsheetForm()
+        {
+            Display.SpreadsheetForm ssForm = new Display.SpreadsheetForm(ref controller);  // shares the same SpreadsheetController instance
+            Display.SpreadsheetApplicationContext appContext =
+                Display.SpreadsheetApplicationContext.getAppContext();
+            this.Invoke(new MethodInvoker(() => appContext.RunForm(ssForm)));
+  
+            ssForm.FormClosed += (o, ev) => this.Close();
 
+            this.Invoke(new MethodInvoker(() => this.Hide()));
+        }
 
         /// <summary>
         /// Connects to the server on connectButton click
@@ -136,23 +152,27 @@ namespace Display
                 //controller.Username = Username.Text;
 
                 string currSpreadsheet = spreadsheetList.SelectedItem.ToString();
-                OpenSpreadsheet(currSpreadsheet);
+                RequestSpreadsheet(currSpreadsheet);
             }
         }
 
-        private void OpenSpreadsheet(string spreadsheet)
+        /// <summary>
+        /// Sends the server the user's credentials and requests the chosen spreadsheet
+        /// </summary>
+        /// <param name="spreadsheet">The desired spreadsheet to open</param>
+        private void RequestSpreadsheet(string spreadsheet)
         {
             // Store their credentials
             controller.Password = Password.Text;
             controller.Username = Username.Text;
 
-            this.Hide();
-            Display.SpreadsheetForm ssForm = new Display.SpreadsheetForm(ref controller);
-            Display.SpreadsheetApplicationContext appContext =
-                Display.SpreadsheetApplicationContext.getAppContext();
-            this.Invoke(new MethodInvoker(() => appContext.RunForm(ssForm)));
+            //this.Hide();
+            //Display.SpreadsheetForm ssForm = new Display.SpreadsheetForm(ref controller);
+            //Display.SpreadsheetApplicationContext appContext =
+            //    Display.SpreadsheetApplicationContext.getAppContext();
+            //this.Invoke(new MethodInvoker(() => appContext.RunForm(ssForm)));
 
-            ssForm.FormClosed += (o, ev) => this.Close();
+            //ssForm.FormClosed += (o, ev) => this.Close();
 
             controller.SendOpen(spreadsheet);
         }
@@ -170,7 +190,7 @@ namespace Display
 
             if (spreadsheet != "")
             {
-                OpenSpreadsheet(spreadsheet);
+                RequestSpreadsheet(spreadsheet);
             }
         }
 
