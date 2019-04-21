@@ -94,13 +94,96 @@ namespace Display
             List<string> list = new List<string>();
             foreach (string cell in cells)
             {
+                //AARON changed this, to not invoke for every cell, but rather invoke only once and just pass it a list of strings to use.
                 list.Add(cell);
                 list.Add(ss.GetCellValue(cell).ToString());
-                //this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(cell, ss.GetCellValue(cell).ToString())));
-                //AARON changed this, to not invoke, but rather call explicitly. Thought: the invoke is not neccisary, as we are currently on the thread 
-                //DisplayCellPanelValue(cell, ss.GetCellValue(cell).ToString()); //This significantly reduces the time, but I think the spreadsheetform needs to be run on a seperate thread
+                //this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(cell, ss.GetCellValue(cell).ToString()))); 
             }
-            this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(list))); 
+            this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(list)));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            //here the value and contents should be updated, but whenever I try anything it fucks with the sspanel where the selection is
+
+
+
+
+
+            spreadsheetPanel1.GetSelection(out int col, out int row);
+
+            //attempt 3
+            //if (row > 2)
+            //{
+            //    spreadsheetPanel1.SetSelection(col, row+1);
+            //    spreadsheetPanel1.SetSelection(col, row);
+            //}
+
+
+            //if (row != 98)
+            //{
+            //    spreadsheetPanel1.SetSelection(col, row + 1);
+            //    row = row + 1;
+            //}
+            //DisplaySelection(this.spreadsheetPanel1);
+            //contentTextBox.SelectionStart = contentTextBox.Text.Length;
+
+            //attpemt 2
+
+            //spreadsheetPanel1.SetSelection(col, row - 1);
+            //row = row - 1;
+            //DisplaySelection(this.spreadsheetPanel1);
+            //contentTextBox.SelectionStart = contentTextBox.Text.Length;
+
+
+
+
+            //Attempt1
+
+            // spreadsheetPanel1.SetSelection();
+
+            //DisplaySelection(spreadsheetPanel1);
+            //contentTextBox.SelectionStart = contentTextBox.Text.Length;
+            //string name = nameTextBox.Text;
+            //string content = spreadsheet.GetCellContents(name).ToString();
+            //string value = spreadsheet.GetCellValue(name).ToString();
+
+
+            //contentTextBox.Text = content;
+            //valueTextBox.Text = value; 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         }
 
