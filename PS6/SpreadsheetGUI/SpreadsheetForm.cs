@@ -100,7 +100,7 @@ namespace Display
                 //AARON changed this, to not invoke, but rather call explicitly. Thought: the invoke is not neccisary, as we are currently on the thread 
                 //DisplayCellPanelValue(cell, ss.GetCellValue(cell).ToString()); //This significantly reduces the time, but I think the spreadsheetform needs to be run on a seperate thread
             }
-            this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(list)));
+            this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(list))); 
 
         }
 
