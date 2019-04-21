@@ -201,6 +201,11 @@ std::string spreadsheet::revert(std::string cell)
     return "";
 
   std::cout << "attempting revert" << std::endl;
+
+  for (std::string s : dependencies->GetDependents(cell))
+	 std::cout << s << std::endl;
+
+
   std::cout << (*cell_hist).back() << std::endl;
   if ((*cell_hist).back()[0] == '=')
   {
@@ -225,7 +230,15 @@ std::string spreadsheet::revert(std::string cell)
     
   }
 
+  for (std::string s : *dep_set)
+	 std::cout << s << std::endl;
+
+  std::cout << "printed deps" << std::endl;
+
   dependencies->ReplaceDependents(cell, *dep_set);
+
+  for (std::string s : dependencies->GetDependents(cell))
+	 std::cout << s << std::endl;
   
   std::cout << "finished revert" << std::endl;
   // Return the current top contents
@@ -282,8 +295,6 @@ std::vector<std::string> *  spreadsheet::cells_from_formula(std::string formula)
   // Find any letter occurances
   int idx = formula.find_first_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
-  std::cout << formula << std::endl;
-  std::cout << idx << std::endl;
   while(idx != -1)
     {
       int num_idx;
@@ -294,7 +305,6 @@ std::vector<std::string> *  spreadsheet::cells_from_formula(std::string formula)
 
       // Get cell as substring
       std::string cell = formula.substr(idx, num_idx);
-      std::cout << cell << std::endl;
       
       // Push back cell, find next cell
       dependencies->push_back(cell);

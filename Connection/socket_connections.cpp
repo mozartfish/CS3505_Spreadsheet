@@ -83,25 +83,21 @@ void socket_connections::WaitForClientConnections(volatile socks * sock_list, st
       struct sockaddr_in cli_addr;
       socklen_t clilen = sizeof(cli_addr);
       int fd = accept((*socket_list)[0], (struct sockaddr *) &cli_addr, &clilen);
-      std::cout << "connected" << std::endl;
 
       lock->lock();
-      socket_list->push_back(fd);
 
       // In case could not connect
-      if ((*socket_list)[socket_list->size()] < 0)
+      if (fd < 0)
 	{
 	  std::cout << "ERR: Failed connection to client, continuing waiting for connections" << std::endl;
 	  continue;
 	}
 
-      std::cout << "new socket connected" << std::endl;
+      socket_list->push_back(fd);
 
       // set new connection
       sock_list->new_socket_connected = true;
       lock->unlock();
-
-      std::cout << "unlocked" << std::endl;
     }
   }
   
@@ -122,10 +118,11 @@ void socket_connections::WaitForData(int socket_fd, char* buf, int bytes, std::m
     if (read(socket_fd, buf, bytes) < 0)
       {
 	std::cout << "Error reading data from socket" << std::endl;
-	
+        
         if (should_disc->find(socket_fd) != should_disc->end() && !has_mod_val) 
 	  (*should_disc)[socket_fd] = true;
 	has_mod_val = true;
+
       }
 
     std::cout << buf << std::endl;
