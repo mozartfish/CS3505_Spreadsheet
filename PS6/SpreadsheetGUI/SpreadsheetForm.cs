@@ -241,7 +241,7 @@ namespace Display
                     name = true;
                 }
             }
-            //contentTextBox.Text;
+
             string thing = nameTextBox.Text;
             string content = spreadsheet.GetCellContents(thing).ToString();
             string value = spreadsheet.GetCellValue(thing).ToString();
@@ -249,6 +249,9 @@ namespace Display
 
             contentTextBox.Text = content;
             valueTextBox.Text = value;
+
+            spreadsheetPanel1.GetSelection(out int col, out int row);
+            spreadsheetPanel1.SetValue(col, row, value);
         }
 
         /// <summary>
