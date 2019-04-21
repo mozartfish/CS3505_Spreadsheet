@@ -65,6 +65,7 @@ namespace WindowsFormsApp1
         private void ManageUsers_FormClosing(object sender, FormClosingEventArgs e)
         {
             controller.SetAcctManPageState(false);
+
         }
 
         private void Create_user_button(object sender, EventArgs e)
