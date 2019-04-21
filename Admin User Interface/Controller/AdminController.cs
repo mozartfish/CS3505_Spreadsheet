@@ -35,9 +35,13 @@ namespace Controller
 
         #endregion Gui Definitions
         #region Events
-        public delegate void UpdateInterfaceHandler(Dictionary<string, User> users, Dictionary<string, Spreadsheet> spreadsheets);
+        public delegate void UpdateInterfaceHandler();
 
         public event UpdateInterfaceHandler UpdateInterface;
+
+        public event UpdateInterfaceHandler UpdateUserInterface;
+
+        public event UpdateInterfaceHandler UpdateSSInterface;
 
         public delegate void ShutdownHandler();
 
@@ -62,11 +66,11 @@ namespace Controller
             #endregion Gui Var Initialize
 
             // testing TODO: remove this 
-            User user = new User();
-            user.SetUsername("Peter Jensen");
-            user.SetPassword("12345678");
-            user.SetWorkingOn("ss1.sprd");
-            user.SetStatus(0);
+            //User user = new User();
+            //user.SetUsername("Peter Jensen");
+            //user.SetPassword("12345678");
+            //user.SetWorkingOn("ss1.sprd");
+            //user.SetStatus(0);
         }
 
         #region NetworkControl
@@ -77,7 +81,17 @@ namespace Controller
         /// <param name="hostName"></param>
         public void Connect(string hostName, int port)
         {
-            this.server = Networking.ConnectToServer(hostName, port, FirstContact);
+            try
+            {
+                this.server = Networking.ConnectToServer(hostName, port, FirstContact);
+            }
+            catch (Exception)
+            {
+                string title = "Error";
+                string text = "You entered a non working IP.\nPlease do it right this time.";
+
+                DialogResult result = MessageBox.Show(text, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         /// <summary>
@@ -96,6 +110,7 @@ namespace Controller
             //start listening for data
             Networking.GetData(ss);
         }
+
 
         /// <summary>
         /// Method used as SocketState.networkAction delegate
@@ -136,22 +151,22 @@ namespace Controller
             string totalData = ss.sb.ToString();
             //Console.WriteLine(totalData);
 
-            string[] messages = Regex.Split(totalData, @"(?<=[\n])");
+            string[] messages = Regex.Split(totalData, @"(?<=[\n]{2})");
 
             foreach (string message in messages)
             {
                 Console.WriteLine("Message: " + message);
-                if (message.Length == 0)
+                if (message.Length < 2)
                 {
                     continue;
                 }
-                if (message.Substring(message.Length - 1) != "\n")
+                if (message.Substring(message.Length - 2) != "\n\n")
                 {
                     //Console.WriteLine("EOL");
                     break;
                 }
 
-                if (message[0] == '{' && message[message.Length - 2] == '}')
+                if (message[0] == '{' && message[message.Length - 3] == '}')
                 {
                     Console.WriteLine("Object get updated");
                     object updateObj = Deserialize(message);
@@ -162,7 +177,7 @@ namespace Controller
                 }
             }
 
-            UpdateInterface?.Invoke(model.GetUsersDict(), model.GetSSDict());
+            UpdateInterface?.Invoke();                        
         }
 
         /// <summary>
@@ -178,7 +193,7 @@ namespace Controller
                 //deserialize spreadsheet
                 return JsonConvert.DeserializeObject<Spreadsheet>(jsonString);
             }
-            else if ((string)jsonObject["type"] == "user")
+            else if ((string)jsonObject["type"] == "User")
             {
                 //deserialize user
                 return JsonConvert.DeserializeObject<User>(jsonString);
@@ -208,12 +223,17 @@ namespace Controller
                 Spreadsheet ss = (Spreadsheet)updateObj;
                 string SSname = ss.GetName();
                 model.SetSS(SSname, ss);
+
+                UpdateSSInterface?.Invoke();
             }
             else if (updateObj is User)
             {
                 User user = (User)updateObj;
                 string username = user.GetUsername();
-                model.SetUser(username, user);
+                string ssName = user.GetWorkingOn();
+                model.SetUser(ssName, username, user);
+
+                UpdateUserInterface?.Invoke();
             }
         }
 
@@ -222,6 +242,7 @@ namespace Controller
         /// </summary>
         private void SendOpenMessage()
         {
+            Console.WriteLine("Sending admin message");
             StringBuilder messageBuilder = new StringBuilder();
 
             string msg = "admin";
@@ -236,6 +257,7 @@ namespace Controller
 
         private void SendShutDownMessage()
         {
+            Console.WriteLine("Sending shutdown message");
             StringBuilder messageBuilder = new StringBuilder();
 
             string msg = "shutdown";
@@ -259,6 +281,7 @@ namespace Controller
         /// </summary>
         private void SendUserChange(string username)
         {
+            Console.WriteLine("Sending user message, username: " + username);
             StringBuilder messageBuilder = new StringBuilder();
 
             User user = new User();
@@ -279,10 +302,11 @@ namespace Controller
         public void SendUserChange(string username, string pass, string workingOn, int status)
         {
             StringBuilder messageBuilder = new StringBuilder();
+            Console.WriteLine("Sending user message, type: user username: " + username + " pass: " + pass + " workingOn: " + workingOn + " status: " + status);
 
             User user = new User();
             user.SetUsername(username);
-            user.SetUserType("user");
+            user.SetUserType("User");
             user.SetPassword(pass);
             user.SetWorkingOn(workingOn);
             user.SetStatus(status);
@@ -300,10 +324,11 @@ namespace Controller
         public void SendSSChange(string SSname, int status)
         {
             StringBuilder messageBuilder = new StringBuilder();
+            Console.WriteLine("Sending SS message, type: SS ssName: " + SSname + " status: " + status);
 
             Spreadsheet spreadsheet = new Spreadsheet();
             spreadsheet.SetName(SSname);// model.GetSS(SSname);
-            spreadsheet.SetSSType("user");
+            spreadsheet.SetSSType("SS");
             spreadsheet.SetStatus(status);
             string serializedObj = JsonConvert.SerializeObject(spreadsheet) + "\n\n";
             messageBuilder.Append(serializedObj);
@@ -334,9 +359,28 @@ namespace Controller
             if (result == DialogResult.OK)
             {
                 //Send message to the server telling it to shut down 
-                //SendShutDownMessage();
-                CleanModel();
+                SendShutDownMessage();
+                //CleanModel();
             }
+        }
+
+        public bool ModelHasSpreadsheet(string name)
+        {
+            if (model.ContainsSS(name))
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+        public bool ModelHasUser(string ssName, string username)
+        {
+            if (model.ContainsUser(ssName, username))
+            {
+                return true;
+            }
+            return false;
         }
 
         public void CleanModel()
@@ -380,23 +424,25 @@ namespace Controller
         public List<string> GetAllUsers()
         {
             List<string> list = new List<string>();
-            foreach (User user in model.GetUsersList())
+            foreach(string ssName in model.GetSSDict().Keys)
             {
-                list.Add(user.GetUsername() + "  ||  " + user.GetPassword() + "  ||  " + user.GetWorkingOn());
+                foreach (KeyValuePair<string, User> user in model.GetUsersDict(ssName))
+                {
+                    list.Add(user.Key + "  ||  " + user.Value.GetPassword() + "  ||  " + ssName);
+                }                
             }
             return list;
-            //return model.GetUsersList();
         }
 
         public void TestAddUse(string user)
         {
-            model.TESTAddUser(user);
+            //model.TESTAddUser(user);
         }
 
 
         public void TestAddSS(string user)
         {
-            model.TESTAddSSs(user);
+            //model.TESTAddSSs(user);
         }
 
 

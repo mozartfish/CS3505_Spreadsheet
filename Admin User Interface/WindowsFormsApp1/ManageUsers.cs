@@ -42,7 +42,7 @@ namespace WindowsFormsApp1
             InitializeComponent();
             controller = contr;
 
-            controller.UpdateInterface += HandleUpdateInterface;
+            controller.UpdateUserInterface += HandleUpdateInterface;
 
             RedrawUsersList();
 
@@ -62,6 +62,7 @@ namespace WindowsFormsApp1
         private void ManageUsers_FormClosing(object sender, FormClosingEventArgs e)
         {
             controller.SetAcctManPageState(false);
+
         }
 
         private void Create_user_button(object sender, EventArgs e)
@@ -77,7 +78,13 @@ namespace WindowsFormsApp1
             string username = ChangeUser_User.Text;
             string password = ChangeUser_Pass.Text;
             string workingOn = ChangeUser_WorkingOn.Text;
-            controller.SendUserChange(username, password, workingOn, 0);
+
+            //only send the message if the user is in the model, keeps the server lighter
+            if (controller.ModelHasUser(workingOn, username))
+            {
+                controller.SendUserChange(username, password, workingOn, 0);
+            }
+            //controller.SendUserChange(username, password, workingOn, 0);
         }
 
         private void DeleteUser_button(object sender, EventArgs e)
@@ -85,9 +92,15 @@ namespace WindowsFormsApp1
             string username = DeleteUser_User.Text;
             string password = DeleteUser_Pass.Text;
             string workingOn = DeleteUser_WorkingOn.Text;
-            controller.SendUserChange(username, password, workingOn, -1);
+
+            //only send the message if the user is in the model, keeps the server lighter
+            if (controller.ModelHasUser(workingOn, username))
+            {
+                controller.SendUserChange(username, password, workingOn, -1);
+            }
+            //controller.SendUserChange(username, password, workingOn, -1);
         }
-        
+
 
         #endregion events form admin
 
@@ -145,25 +158,43 @@ namespace WindowsFormsApp1
         /// </summary>
         /// <param name="users"></param>
         /// <param name="spreadsheet"></param>
-        public void HandleUpdateInterface(Dictionary<string, User> users, Dictionary<string, Spreadsheet> spreadsheets)
+        public void HandleUpdateInterface()
         {
-
             // Update the Update column with Spreadsheet data
             this.Invoke(new MethodInvoker(() =>
             {
-                if (listBox1.Items.Count > 0)
-                {
-                    listBox1.Items.Clear();
-                }
-                foreach (Spreadsheet ss in spreadsheets.Values)
-                {
-                    if (ss.GetStatus() == 2)
-                    {
-                        //Console.WriteLine(ss.GetName());
-                        listBox1.Items.Add(ss.GetName());
-                    }
-                }
+                RedrawUserList();
             }));
+        }
+
+        private void RedrawUserList()
+        {
+            if (listBox1.Items.Count > 0)
+            {
+                listBox1.Items.Clear();
+            }
+
+            //List<string> SSList = new List<string>();
+            //SSList = controller.GetAllUsers();
+
+            //foreach (string user in SSList)
+            //{
+            //    currentStatusList.Items.Add(user);
+            //}
+
+            //Dictionary<string, > SSDict = new Dictionary<string, string>();
+            List<string> list = new List<string>();
+            list = controller.GetAllUsers();
+
+            foreach (string user in list)
+            {
+                listBox1.Items.Add(user);
+            }
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

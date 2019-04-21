@@ -75,10 +75,11 @@ namespace JsonClasses
         public string type { get; set; }
         public string cell { get; set; }
         public string value { get; set; }
-        public string dependencies { get; set; }
+        public List<string> dependencies { get; set; }
         public Edit()
         {
             type = "edit";
+            dependencies = new List<string>();
         }
     }
 
