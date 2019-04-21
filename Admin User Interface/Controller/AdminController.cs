@@ -81,7 +81,17 @@ namespace Controller
         /// <param name="hostName"></param>
         public void Connect(string hostName, int port)
         {
-            this.server = Networking.ConnectToServer(hostName, port, FirstContact);
+            try
+            {
+                this.server = Networking.ConnectToServer(hostName, port, FirstContact);
+            }
+            catch (Exception)
+            {
+                string title = "Error";
+                string text = "You entered a non working IP.\nPlease do it right this time.";
+
+                DialogResult result = MessageBox.Show(text, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         /// <summary>
