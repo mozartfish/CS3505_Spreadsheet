@@ -343,7 +343,7 @@ void process_updates(volatile socks * socks_list)
       
       // Get the spreadsheet for the update (if there is one)
       string spread_name;
-      spreadsheet * sheet;
+      spreadsheet * sheet = NULL;
 
       // Only get sheet if a name was specified
       if (message_split.size() > 2)
@@ -422,7 +422,7 @@ void process_updates(volatile socks * socks_list)
 	}
       
       // Edit
-      else if (deserialized["type"].asString() == "edit")
+      else if (deserialized["type"].asString() == "edit" && sheet)
 	{
 	  vector<string> * dependencies = new vector<string>();
 
@@ -471,7 +471,7 @@ void process_updates(volatile socks * socks_list)
 	}
       
       // Undo
-      else if (deserialized["type"].asString() == "undo")
+      else if (deserialized["type"].asString() == "undo" && sheet)
 	{
 	  string result = sheet->undo();
 	  // Nothing needed for an empty undo
@@ -502,7 +502,7 @@ void process_updates(volatile socks * socks_list)
 	}
       
       // Revert
-      else if (deserialized["type"].asString() == "revert")
+      else if (deserialized["type"].asString() == "revert" && sheet)
 	{
 	  string result = sheet->revert(deserialized["cell"].asString());
 
@@ -668,6 +668,9 @@ void process_updates(volatile socks * socks_list)
 
 	  continue;
 	}
+      // Don't do anything to bad messages
+      else
+	continue;
 
 
       string send_back_str = send_back.toStyledString()  + "\n\n";
@@ -840,18 +843,13 @@ int main(int argc, char ** argv)
 	  // Iterate over each new client, and send required start data, and wait for data from them
 	  for (int idx = connections.size_before_update; idx < size; idx++)
 	    {
-	      cout << idx << endl;
-	      cout << connections.buffers->size() << endl;
-	      cout << connections.partial_data->size() << endl;
-	      cout << connections.needs_removed->size() << endl;
-	      cout << connections.size_before_update << endl;
+	      
 	      // Add new buffers for getting data
               connections.buffers->push_back(new char[BUF_SIZE]);
 	      bzero((*connections.buffers)[idx - 1], BUF_SIZE);
 	      connections.partial_data->push_back(new string());
-	      (*connections.needs_removed)[(*connections.sockets)[idx]] = false;;
+	      (*connections.needs_removed)[(*connections.sockets)[idx]] = false;
 
-	      
 	      // Send list of spreadsheet names
 	      socket_connections::SendData((*connections.sockets)[idx], mess_c, message.size());
 
@@ -864,12 +862,8 @@ int main(int argc, char ** argv)
 	  connections.new_socket_connected = false;
 	  connections.size_before_update = connections.sockets->size();
 	 
-	  
-	  cout << connections.buffers->size() << endl;
-	  cout << connections.partial_data->size() << endl;
-	  cout << connections.needs_removed->size() << endl;
-	  cout << connections.size_before_update << endl;
       	}
+
        lock.unlock();
        
 
@@ -890,11 +884,6 @@ int main(int argc, char ** argv)
 		 {
 		   cout << "Removing client from socket " << fd << endl;
 
-		   cout << connections.buffers->size() << endl;
-		   cout << connections.partial_data->size() << endl;
-		   cout << connections.needs_removed->size() << endl;
-		   cout << connections.size_before_update << endl;
-
 		   // Erase the socket from the usermap and sheet map, and remove it from the spreadsheet listeners 
 		   // Remove client if associated with spreadsheet
 		   if ((*socket_sprdmap).count(fd) > 0)
@@ -911,30 +900,26 @@ int main(int argc, char ** argv)
 		   
 		   // Close the socket
 		   socket_connections::CloseSocket(fd);
-
-		   cout << "socket closed for " << fd << endl;
 		   
 		   // Erase the socket from the connections struct
 		   it = connections.sockets->erase(it);
 		   --(connections.size_before_update);
-		   connections.buffers->erase(connections.buffers->begin() + it_idx - 1);
-		   connections.partial_data->erase(connections.partial_data->begin() + it_idx - 1);
+		   connections.buffers->erase(connections.buffers->begin() + it_idx);
+		   connections.partial_data->erase(connections.partial_data->begin() + it_idx);
 
-		   cout << "data erased for " << fd << endl;
 		   
 		   // Make sure double erasure doesn't happen
 		   connections.needs_removed->erase(fd);
 		   
-		   cout << "erased bool " << fd << endl;
-
-		   cout << connections.buffers->size() << endl;
-		   cout << connections.partial_data->size() << endl;
-		   cout << connections.needs_removed->size() << endl;
-		   cout << connections.size_before_update << endl;
+		   //If admin make sure to remove from admin list
+		   auto ad_it = admins->find(fd);
+		   if (ad_it != admins->end())
+		     admins->erase(ad_it);
 		 }
 	       else
 		 ++it;
 	       
+	       ++it_idx;
 	     }
 	 }
        lock.unlock();
@@ -951,12 +936,10 @@ int main(int argc, char ** argv)
 	   // If data exists, grab and reset buffer (If not chars are null)
 	   if ((*connections.buffers)[idx][0] > 0)
 	     {
-
 	       (*(*connections.partial_data)[idx]) += (*connections.buffers)[idx];
 	       (*connections.buffers)[idx] = new char[BUF_SIZE];
 	       bzero((*connections.buffers)[idx], BUF_SIZE);
 	     
-
 	       // Resume getting data
 	       thread(socket_connections::WaitForData, (*connections.sockets)[idx + 1],  (*connections.buffers)[idx], 
 		      BUF_SIZE, &lock, &(*connections.needs_removed)).detach();

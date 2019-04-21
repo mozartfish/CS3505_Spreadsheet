@@ -83,25 +83,21 @@ void socket_connections::WaitForClientConnections(volatile socks * sock_list, st
       struct sockaddr_in cli_addr;
       socklen_t clilen = sizeof(cli_addr);
       int fd = accept((*socket_list)[0], (struct sockaddr *) &cli_addr, &clilen);
-      std::cout << "connected" << std::endl;
 
       lock->lock();
-      socket_list->push_back(fd);
 
       // In case could not connect
-      if ((*socket_list)[socket_list->size()] < 0)
+      if (fd < 0)
 	{
 	  std::cout << "ERR: Failed connection to client, continuing waiting for connections" << std::endl;
 	  continue;
 	}
 
-      std::cout << "new socket connected" << std::endl;
+      socket_list->push_back(fd);
 
       // set new connection
       sock_list->new_socket_connected = true;
       lock->unlock();
-
-      std::cout << "unlocked" << std::endl;
     }
   }
   
@@ -116,19 +112,22 @@ void socket_connections::WaitForData(int socket_fd, char* buf, int bytes, std::m
     bool has_mod_val = false;
 
     // WE want this to block when the destructor happens
-    //  auto launch = std::async(std::launch::async, socket_connections::WaitForDataTimer, &buf[0], 
-    //			     &(*lock), socket_fd, should_disc, &has_mod_val);
+    auto launch = std::async(std::launch::async, socket_connections::WaitForDataTimer, &buf[0], 
+			       &(*lock), socket_fd, should_disc, &has_mod_val);
 
     if (read(socket_fd, buf, bytes) < 0)
       {
 	std::cout << "Error reading data from socket" << std::endl;
-	
+        
         if (should_disc->find(socket_fd) != should_disc->end() && !has_mod_val) 
 	  (*should_disc)[socket_fd] = true;
 	has_mod_val = true;
-      }
 
+      }
+			       
     std::cout << buf << std::endl;
+    launch.get();
+			       
   
   }
 
@@ -140,16 +139,13 @@ void socket_connections::WaitForDataTimer(char* buf, std::mutex* lock, int socke
 {
 
   auto begin = std::chrono::steady_clock::now();
-  while (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - begin).count() < 10);
-
-  std::cout << "disconnect time" << std::endl;
+  while (std::chrono::duration_cast<std::chrono::minutes>(std::chrono::steady_clock::now() - begin).count() < 10);
 
   // If there is data after the time, return
-  if(buf[0] || buf[0] < 0)
+  if(should_disc->find(socket_fd) == should_disc->end() || *has_mod_val ||  buf[0] || buf[0] < 0)
     return;
 
   // Set disconnect to true if no data has been found yet
-  std::cout << "good disc" << std::endl;
   if (should_disc->find(socket_fd) != should_disc->end() && !(*has_mod_val)) 
     (*should_disc)[socket_fd] = true;
   (*has_mod_val) = true;
@@ -184,6 +180,9 @@ void socket_connections::SendData(int socket_fd, const char *data, int bytes)
  */
 void socket_connections::CloseSocket(int socket_fd)
 {
+  if(shutdown(socket_fd, SHUT_RDWR) < 0)
+    std::cout << "Error shutting down socket of file descriptor " << socket_fd << std::endl;
+
   if (close(socket_fd) < 0)
     std::cout << "Error closing socket of file descriptor " << socket_fd << std::endl;
 }
