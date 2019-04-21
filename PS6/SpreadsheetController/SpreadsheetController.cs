@@ -231,10 +231,6 @@ namespace Controller
                 {
                     break;
                 }
-
-                // remove the newline characters before parsing
-                message.Remove(message.Length - 2, 2);
-
                 if (message[0] == '{' && message[message.Length - 3] == '}')
                 {
                     JObject obj = JObject.Parse(message);

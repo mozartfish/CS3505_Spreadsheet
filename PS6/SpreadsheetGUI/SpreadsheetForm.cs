@@ -83,7 +83,6 @@ namespace Display
             }
             DisplaySelection(spreadsheetPanel1);
 
-
         }
 
         public void UpdateSpreadsheet(Spreadsheet ss)
@@ -286,7 +285,7 @@ namespace Display
             //    contents = spreadsheet.GetCellContents(cellName).ToString();
             //}
 
-            EnterData(cellName, contents);
+            //EnterData(cellName, contents);
 
             // The following ifs are used to capture the users key pressing data.
             // This captures the up arrow key
