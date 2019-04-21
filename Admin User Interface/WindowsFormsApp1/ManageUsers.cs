@@ -26,8 +26,6 @@ namespace WindowsFormsApp1
 
         AdminController controller;
 
-        AdminModel model;
-
         #endregion definitions
 
 
@@ -43,9 +41,8 @@ namespace WindowsFormsApp1
         {
             InitializeComponent();
             controller = contr;
-            model = new AdminModel();
 
-            controller.UpdateInterface += HandleUpdateInterface;
+            controller.UpdateUserInterface += HandleUpdateInterface;
 
             RedrawUsersList();
 
@@ -163,7 +160,6 @@ namespace WindowsFormsApp1
         /// <param name="spreadsheet"></param>
         public void HandleUpdateInterface()
         {
-
             // Update the Update column with Spreadsheet data
             this.Invoke(new MethodInvoker(() =>
             {
@@ -194,6 +190,11 @@ namespace WindowsFormsApp1
             {
                 listBox1.Items.Add(user);
             }
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

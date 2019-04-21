@@ -27,6 +27,8 @@ namespace WindowsFormsApp1
             InitializeComponent();
             controller = contr;
 
+            controller.UpdateSSInterface += HandleUpdateInterface;
+
             RedrawSSList();
 
             //TODO: set up the SSman here! looking at all the data structures and grabbing SS information
@@ -69,6 +71,15 @@ namespace WindowsFormsApp1
                // controller.SendSSChange(name, -1);
             }
             controller.SendSSChange(name, -1);
+        }
+
+        public void HandleUpdateInterface()
+        {
+            // Update the Update column with Spreadsheet data
+            this.Invoke(new MethodInvoker(() =>
+            {
+                RedrawSSList();
+            }));
         }
 
 
