@@ -94,14 +94,12 @@ namespace Display
             List<string> list = new List<string>();
             foreach (string cell in cells)
             {
+                //AARON changed this, to not invoke for every cell, but rather invoke only once and just pass it a list of strings to use.
                 list.Add(cell);
                 list.Add(ss.GetCellValue(cell).ToString());
-                //this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(cell, ss.GetCellValue(cell).ToString())));
-                //AARON changed this, to not invoke, but rather call explicitly. Thought: the invoke is not neccisary, as we are currently on the thread 
-                //DisplayCellPanelValue(cell, ss.GetCellValue(cell).ToString()); //This significantly reduces the time, but I think the spreadsheetform needs to be run on a seperate thread
+                //this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(cell, ss.GetCellValue(cell).ToString()))); 
             }
-            this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(list))); 
-
+            this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(list)));
         }
 
 
@@ -243,6 +241,14 @@ namespace Display
                     name = true;
                 }
             }
+            //contentTextBox.Text;
+            string thing = nameTextBox.Text;
+            string content = spreadsheet.GetCellContents(thing).ToString();
+            string value = spreadsheet.GetCellValue(thing).ToString();
+
+
+            contentTextBox.Text = content;
+            valueTextBox.Text = value;
         }
 
         /// <summary>
