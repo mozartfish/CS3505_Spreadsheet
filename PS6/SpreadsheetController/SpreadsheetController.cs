@@ -446,9 +446,10 @@ namespace Controller
             string dependencies = "";
             foreach (string variable in set)
             {
-                dependencies += variable;
+                //dependencies += variable;
+                edit.dependencies.Add(variable);
             }
-            edit.dependencies = dependencies;
+            //edit.dependencies = dependencies;
 
             //JSON serialize
             if (!Networking.Send(server, JsonConvert.SerializeObject(edit) + "\n\n"))
