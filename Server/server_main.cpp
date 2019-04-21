@@ -632,6 +632,11 @@ void process_updates(volatile socks * socks_list)
 	  string user = deserialized["username"].asString();
 	  string pass = deserialized["pass"].asString();
 	  string sheet_name = deserialized["workingOn"].asString();
+
+	  // Don't do anything for user message with nonexistant sheet
+	  if (sheets->find(sheet_name) == sheets->end())
+	    continue;
+
 	  spreadsheet * sheet = (*sheets)[sheet_name];
 
 	  // Delete user
