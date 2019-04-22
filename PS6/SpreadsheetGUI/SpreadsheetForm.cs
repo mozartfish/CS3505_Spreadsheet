@@ -238,27 +238,24 @@ namespace Display
         /// </summary>
         public void DisplayCellPanelValue(List<string> list)
         {
-            bool name = true;
+            bool isName = true;
             string nameString = "";
             foreach (string nameOrValue in list)
             {
-                if (name)
+                if (isName)
                 {
                     nameString = nameOrValue;
-                    name = false;
+                    isName = false;
                 }
                 else
                 {
                     DisplayCellPanelValue(nameString, nameOrValue);
-                    name = true;
+                    isName = true;
                 }
             }
 
-            string thing = nameTextBox.Text;
-            string content = spreadsheet.GetCellContents(thing).ToString();
-            string value = spreadsheet.GetCellValue(thing).ToString();
-
-            contentTextBox.Text = content;
+            string name = nameTextBox.Text;
+            string value = spreadsheet.GetCellValue(name).ToString();
             valueTextBox.Text = value;
 
             spreadsheetPanel1.GetSelection(out int col, out int row);
