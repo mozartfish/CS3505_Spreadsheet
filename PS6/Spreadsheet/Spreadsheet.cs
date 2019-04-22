@@ -77,6 +77,17 @@ namespace SS
                 IEnumerable<string> dependents = new HashSet<string>();
                 contents = Normalize(contents);
                 CheckInput(cellName, contents);
+
+                IEnumerable<string> dependencies = new HashSet<string>();
+                dependencies = (HashSet<string>)Dependencies.GetDependents(cellName);
+                foreach(string dependent in dependencies)
+                {
+                    if(Cells[cellName].Type == typeof(string))
+                    {
+                        throw new ArgumentException();
+                    }
+                }
+
                 if (Regex.IsMatch(contents, @"^="))
                 {
                     Formula formula = new Formula(contents.Split('=').Last(), Normalize, IsValid);
