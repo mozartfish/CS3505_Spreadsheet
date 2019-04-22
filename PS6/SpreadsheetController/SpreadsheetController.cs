@@ -104,18 +104,10 @@ namespace Controller
         {
             server = null;
             username = "";
-            // spreadsheets = new List<string>();
-            spreadsheet = new SS.Spreadsheet();
+            spreadsheet = new SS.Spreadsheet(IsValid, s => s.ToUpper(), "Server-Based Spreadsheet");
         }
 
         #region Properties
-        ///// <summary>
-        ///// Get property for the SpreadsheetList
-        ///// </summary>
-        //public List<string> Spreadsheets
-        //{
-        //    get { return spreadsheets; }
-        //}
 
         /// <summary>
         /// Get and Set property for the Username
