@@ -66,11 +66,11 @@ namespace Display
             //Added for server based spreadsheet
             this.controller = controller;
             controller.RegisterSpreadsheetUpdateHandler(UpdateSpreadsheet);
-
+            controller.RegisterErrorHandler(ErrorHandler);
 
             spreadsheetPanel1.SelectionChanged += DisplaySelection;
             spreadsheet = this.controller.spreadsheet;
-            //new Spreadsheet(s => this.controller.IsValid(s), s => this.controller.Normalize(s), "ps6");
+
 
             spreadsheetPanel1.SetSelection(0, 0);
             contentTextBox.Select();
@@ -86,6 +86,11 @@ namespace Display
 
         }
 
+        private void ErrorHandler(int code, string source)
+        {
+            this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(source, spreadsheet.GetCellValue(source).ToString())));
+        }
+
         public void UpdateSpreadsheet(Spreadsheet ss)
         {
             IEnumerable<string> cells = new HashSet<string>();
@@ -98,7 +103,6 @@ namespace Display
                 //AARON changed this, to not invoke for every cell, but rather invoke only once and just pass it a list of strings to use.
                 list.Add(cell);
                 list.Add(ss.GetCellValue(cell).ToString());
-                //this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(cell, ss.GetCellValue(cell).ToString()))); 
             }
             this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(list)));
         }
@@ -420,6 +424,14 @@ namespace Display
                 contentTextBox.Clear();
                 EnterData(cellName, contents);
 
+                if (row != 98)
+                {
+                    spreadsheetPanel1.SetSelection(col, row + 1);
+                    row = row + 1;
+                }
+                DisplaySelection(this.spreadsheetPanel1);
+                contentTextBox.SelectionStart = contentTextBox.Text.Length;
+
             }
         }
 
@@ -435,16 +447,21 @@ namespace Display
             {
                 MessageBox.Show("The formula entered in cell " + cellName + " is invalid. Please check that all formulas are formatted " +
                     "correctly.", "Formula Format Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(cellName, spreadsheet.GetCellValue(cellName).ToString())));
+
             }
             catch (InvalidNameException)
             {
                 MessageBox.Show("The formula entered in cell " + cellName + " is invalid. Please check that all formulas are formatted " +
                     "correctly.", "Formula Format Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(cellName, spreadsheet.GetCellValue(cellName).ToString())));
+
             }
-            catch (ArgumentException)
+            catch (ArgumentException e)
             {
                 MessageBox.Show("The formula entered in cell " + cellName + " is invalid. Please check that all formulas are formatted " +
                     "correctly.", "Formula Format Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(cellName, spreadsheet.GetCellValue(cellName).ToString())));
             }
         }
         #endregion

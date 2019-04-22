@@ -77,6 +77,14 @@ namespace SS
                 IEnumerable<string> dependents = new HashSet<string>();
                 contents = Normalize(contents);
                 CheckInput(cellName, contents);
+
+               
+                if(Dependencies.HasDependents(cellName) && !Regex.IsMatch(contents, @"^=") )
+                {
+                    throw new ArgumentException();
+                }
+
+
                 if (Regex.IsMatch(contents, @"^="))
                 {
                     Formula formula = new Formula(contents.Split('=').Last(), Normalize, IsValid);
@@ -112,9 +120,9 @@ namespace SS
             {
                 throw new FormulaFormatException(e.Message);
             }
-            catch (Exception)
+            catch (ArgumentException e)
             {
-                throw new ArgumentException();
+                throw new ArgumentException(e.Message);
             }
 
 
