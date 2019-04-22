@@ -324,7 +324,6 @@ void process_updates(volatile socks * socks_list)
 
       // Get individual message
       string update = updates->front();
-      cout << "update: " << update << endl;
       updates->pop();
 
       vector<char *> message_split;
