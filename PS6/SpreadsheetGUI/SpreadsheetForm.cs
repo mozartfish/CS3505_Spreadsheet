@@ -7,6 +7,7 @@
 //04/07/2019
 //Added functionality for a server based spreadsheet
 
+using SpreadsheetUtilities;
 using SS;
 using System;
 using System.Collections.Generic;
@@ -204,14 +205,23 @@ namespace Display
             ss.GetSelection(out int col, out int row);
 
             string name = ColRowToCellName(col, row);
-            string content = "";
+            object content = "";
             string value = "";
+            string contents = "";
 
-            content = spreadsheet.GetCellContents(name).ToString();
+            content = spreadsheet.GetCellContents(name);
+            if (content is Formula)
+            {
+                contents = "=" + spreadsheet.GetCellContents(name).ToString();
+            }
+            else
+            {
+                contents = spreadsheet.GetCellContents(name).ToString();
+            }
             value = spreadsheet.GetCellValue(name).ToString();
 
 
-            contentTextBox.Text = content;
+            contentTextBox.Text = contents;
             valueTextBox.Text = value;
             nameTextBox.Text = name;
 
@@ -485,10 +495,6 @@ namespace Display
         }
     }
 }
-
-
-
-
 
 
 
