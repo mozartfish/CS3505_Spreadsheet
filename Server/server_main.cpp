@@ -391,6 +391,10 @@ void process_updates(volatile socks * socks_list)
 		    
 		    string contents = (*sheets)[deserialized["name"].asString()]->get_cell_contents(cell);
 
+		    //Don't send empty cells
+		    if (contents == "")
+		      continue;
+
 		    // Otherwise add contents to the list
 		    send_back["spreadsheet"][cell] = contents;
 		  }
@@ -946,7 +950,6 @@ int main(int argc, char ** argv)
 	   if ((*connections.buffers)[idx][0] > 0)
 	     {
 	       (*(*connections.partial_data)[idx]) += (*connections.buffers)[idx];
-	       (*connections.buffers)[idx] = new char[BUF_SIZE];
 	       bzero((*connections.buffers)[idx], BUF_SIZE);
 	     
 	       // Resume getting data

@@ -41,10 +41,9 @@
             // 
             // ConnectButton
             // 
-            this.ConnectButton.Location = new System.Drawing.Point(693, 33);
-            this.ConnectButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.ConnectButton.Location = new System.Drawing.Point(462, 21);
             this.ConnectButton.Name = "ConnectButton";
-            this.ConnectButton.Size = new System.Drawing.Size(150, 53);
+            this.ConnectButton.Size = new System.Drawing.Size(100, 34);
             this.ConnectButton.TabIndex = 0;
             this.ConnectButton.Text = "Connect";
             this.ConnectButton.UseVisualStyleBackColor = true;
@@ -52,77 +51,68 @@
             // 
             // Username
             // 
-            this.Username.Location = new System.Drawing.Point(154, 33);
-            this.Username.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.Username.Location = new System.Drawing.Point(103, 21);
             this.Username.Name = "Username";
-            this.Username.Size = new System.Drawing.Size(476, 31);
+            this.Username.Size = new System.Drawing.Size(319, 22);
             this.Username.TabIndex = 1;
             // 
             // Password
             // 
-            this.Password.Location = new System.Drawing.Point(154, 86);
-            this.Password.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.Password.Location = new System.Drawing.Point(103, 55);
             this.Password.Name = "Password";
-            this.Password.Size = new System.Drawing.Size(476, 31);
+            this.Password.Size = new System.Drawing.Size(319, 22);
             this.Password.TabIndex = 2;
             // 
             // UsernameLabel
             // 
             this.UsernameLabel.AutoSize = true;
-            this.UsernameLabel.Location = new System.Drawing.Point(30, 33);
-            this.UsernameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.UsernameLabel.Location = new System.Drawing.Point(20, 21);
             this.UsernameLabel.Name = "UsernameLabel";
-            this.UsernameLabel.Size = new System.Drawing.Size(116, 25);
+            this.UsernameLabel.Size = new System.Drawing.Size(77, 17);
             this.UsernameLabel.TabIndex = 3;
             this.UsernameLabel.Text = "Username:";
             // 
             // PasswordLabel
             // 
             this.PasswordLabel.AutoSize = true;
-            this.PasswordLabel.Location = new System.Drawing.Point(34, 94);
-            this.PasswordLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.PasswordLabel.Location = new System.Drawing.Point(23, 60);
             this.PasswordLabel.Name = "PasswordLabel";
-            this.PasswordLabel.Size = new System.Drawing.Size(112, 25);
+            this.PasswordLabel.Size = new System.Drawing.Size(73, 17);
             this.PasswordLabel.TabIndex = 4;
             this.PasswordLabel.Text = "Password:";
             // 
             // ServerAddress
             // 
-            this.ServerAddress.Location = new System.Drawing.Point(154, 139);
-            this.ServerAddress.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.ServerAddress.Location = new System.Drawing.Point(103, 89);
             this.ServerAddress.Name = "ServerAddress";
-            this.ServerAddress.Size = new System.Drawing.Size(476, 31);
+            this.ServerAddress.Size = new System.Drawing.Size(319, 22);
             this.ServerAddress.TabIndex = 5;
-            this.ServerAddress.Text = "lab1-2.eng.utah.edu";
             this.ServerAddress.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ServerAddress_KeyDown);
             // 
             // ServerLabel
             // 
             this.ServerLabel.AutoSize = true;
-            this.ServerLabel.Location = new System.Drawing.Point(34, 145);
-            this.ServerLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ServerLabel.Location = new System.Drawing.Point(23, 93);
             this.ServerLabel.Name = "ServerLabel";
-            this.ServerLabel.Size = new System.Drawing.Size(81, 25);
+            this.ServerLabel.Size = new System.Drawing.Size(54, 17);
             this.ServerLabel.TabIndex = 6;
             this.ServerLabel.Text = "Server:";
             // 
             // spreadsheetList
             // 
             this.spreadsheetList.FormattingEnabled = true;
-            this.spreadsheetList.ItemHeight = 25;
-            this.spreadsheetList.Location = new System.Drawing.Point(154, 227);
-            this.spreadsheetList.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.spreadsheetList.ItemHeight = 16;
+            this.spreadsheetList.Location = new System.Drawing.Point(103, 145);
             this.spreadsheetList.Name = "spreadsheetList";
-            this.spreadsheetList.Size = new System.Drawing.Size(916, 454);
+            this.spreadsheetList.Size = new System.Drawing.Size(612, 292);
             this.spreadsheetList.TabIndex = 7;
             this.spreadsheetList.DoubleClick += new System.EventHandler(this.spreadsheetList_SelectedIndexChanged);
             // 
             // NewSpreadsheet
             // 
-            this.NewSpreadsheet.Location = new System.Drawing.Point(837, 173);
-            this.NewSpreadsheet.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.NewSpreadsheet.Location = new System.Drawing.Point(558, 111);
             this.NewSpreadsheet.Name = "NewSpreadsheet";
-            this.NewSpreadsheet.Size = new System.Drawing.Size(236, 44);
+            this.NewSpreadsheet.Size = new System.Drawing.Size(157, 28);
             this.NewSpreadsheet.TabIndex = 8;
             this.NewSpreadsheet.Text = "New Spreadsheet";
             this.NewSpreadsheet.UseVisualStyleBackColor = true;
@@ -130,9 +120,9 @@
             // 
             // WelcomePage
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1200, 703);
+            this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.NewSpreadsheet);
             this.Controls.Add(this.spreadsheetList);
             this.Controls.Add(this.ServerLabel);
@@ -142,7 +132,6 @@
             this.Controls.Add(this.Password);
             this.Controls.Add(this.Username);
             this.Controls.Add(this.ConnectButton);
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "WelcomePage";
             this.Text = "Form1";
             this.ResumeLayout(false);
