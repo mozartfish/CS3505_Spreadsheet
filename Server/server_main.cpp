@@ -205,6 +205,9 @@ int process_spreadsheets_from_file()
 		  if ((*token_str)[0] == ':' && (*token_str)[token_str->length() - 1] == ':')
 		    break;
 
+		  if (*token_str == "~@empty~")
+		    token_str->clear();
+
 		  // Add histories to a vector
 		  cell_hist->push_back(*token_str);
 
@@ -282,8 +285,12 @@ int write_sheets_to_file()
 	      file << cell;
 
 	      for (auto cell_contents : *cell_hist)
-		file  << '\t' << cell_contents;
-
+		{
+		  if (cell_contents == "")
+		    cell_contents = "~@empty~";
+		  file  << '\t' << cell_contents;
+		}
+	      
 	      // If not the last cell
 	      if (i < DEFAULT_CELL_COUNT - 1)
 		file << '\t';
@@ -572,6 +579,7 @@ void process_updates(volatile socks * socks_list)
 	      Json::Value ad_mess;
 	      ad_mess["type"] = "SS";
 	      ad_mess["SSname"] = sheet_pair.second->get_name();
+	      ad_mess["users"];
 
 	      for (auto user_pair : sheet_pair.second->get_users())
 		{
