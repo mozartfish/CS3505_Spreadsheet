@@ -76,21 +76,21 @@ namespace WindowsFormsApp1
                 currentStatusList.Items.Clear();
                 updateList.Items.Clear();
 
-                //this.Close();
+                this.Close();
 
                 //check if the user man is open
-                if (userMan != null)
-                {
-                    //if so close the man tab
-                    userMan.Close();
-                }
+                //if (userMan != null)
+                //{
+                //    //if so close the man tab
+                //    userMan.Close();
+                //}
 
-                //check if the ssman is open
-                if (ssMan != null)
-                {
-                    //if so, close the man tab
-                    ssMan.Close();
-                }
+                ////check if the ssman is open
+                //if (ssMan != null)
+                //{
+                //    //if so, close the man tab
+                //    ssMan.Close();
+                //}
             }));            
 
             
@@ -202,7 +202,7 @@ namespace WindowsFormsApp1
 
         private void ConnectToServer_buttone(object sender, EventArgs e)
         {
-            string hostname = "lab1-5.eng.utah.edu";
+            string hostname = "lab1-2.eng.utah.edu";
             if (IP.Text != "")
             {
                 hostname = IP.Text;
@@ -212,7 +212,7 @@ namespace WindowsFormsApp1
             {
                 int.TryParse(Port.Text, out port);
             }
-
+            button8.Enabled = false;
             controller.Connect(hostname, port);
         }
 

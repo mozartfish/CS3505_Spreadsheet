@@ -62,6 +62,7 @@ namespace WindowsFormsApp1
         private void ManageUsers_FormClosing(object sender, FormClosingEventArgs e)
         {
             controller.SetAcctManPageState(false);
+
         }
 
         private void Create_user_button(object sender, EventArgs e)
@@ -81,10 +82,9 @@ namespace WindowsFormsApp1
             //only send the message if the user is in the model, keeps the server lighter
             if (controller.ModelHasUser(workingOn, username))
             {
-                //controller.SendUserChange(username, password, workingOn, 0);
+                controller.SendUserChange(username, password, workingOn, 0);
             }
-            controller.SendUserChange(username, password, workingOn, 0);
-
+            //controller.SendUserChange(username, password, workingOn, 0);
         }
 
         private void DeleteUser_button(object sender, EventArgs e)
@@ -96,10 +96,9 @@ namespace WindowsFormsApp1
             //only send the message if the user is in the model, keeps the server lighter
             if (controller.ModelHasUser(workingOn, username))
             {
-                //controller.SendUserChange(username, password, workingOn, -1);
+                controller.SendUserChange(username, password, workingOn, -1);
             }
-            controller.SendUserChange(username, password, workingOn, -1);
-
+            //controller.SendUserChange(username, password, workingOn, -1);
         }
 
 
