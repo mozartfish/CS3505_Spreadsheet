@@ -424,6 +424,14 @@ namespace Display
                 contentTextBox.Clear();
                 EnterData(cellName, contents);
 
+                if (row != 98)
+                {
+                    spreadsheetPanel1.SetSelection(col, row + 1);
+                    row = row + 1;
+                }
+                DisplaySelection(this.spreadsheetPanel1);
+                contentTextBox.SelectionStart = contentTextBox.Text.Length;
+
             }
         }
 
