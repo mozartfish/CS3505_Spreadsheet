@@ -48,17 +48,26 @@ namespace WindowsFormsApp1
         /// <param name="spreadsheet"></param>
         public void HandleUpdateInterface()
         {
-            // Update the Current Status column with User data
-            this.Invoke(new MethodInvoker(() =>
-           {
-               RedrawUserList();
-           }));
-
-            // Update the Update column with Spreadsheet data
-            this.Invoke(new MethodInvoker(() =>
+            if (this.IsHandleCreated)
             {
-                RedrawSSList();
-            }));
+                // Update the Current Status column with User data
+                this.Invoke(new MethodInvoker(() =>
+                {
+                    RedrawUserList();
+                }));
+
+                // Update the Update column with Spreadsheet data
+                this.Invoke(new MethodInvoker(() =>
+                {
+                    RedrawSSList();
+                }));
+            }
+            else
+            {
+                return;
+            }
+            
+            
         }
 
         private void ShutDown(object sender, EventArgs e)
@@ -217,6 +226,11 @@ namespace WindowsFormsApp1
         }
 
         private void currentStatusList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void updateList_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
