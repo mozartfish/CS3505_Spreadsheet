@@ -1,4 +1,4 @@
-﻿namespace SpreadsheetGUI
+﻿namespace Display
 {
     partial class HelpForm
     {
