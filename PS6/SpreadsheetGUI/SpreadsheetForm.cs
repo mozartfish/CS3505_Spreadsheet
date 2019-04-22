@@ -28,9 +28,6 @@ namespace Display
     /// </summary>
     public partial class SpreadsheetForm : Form
     {
-        //private static int cellFocused;
-
-
         /// <summary>
         /// The controller for the spreadsheet
         /// </summary>
@@ -63,7 +60,7 @@ namespace Display
         /// </summary>
         public SpreadsheetForm(ref Controller.SpreadsheetController controller) : this()
         {
-            //Added for server based spreadsheet
+            // Added for server based spreadsheet
             this.controller = controller;
             controller.RegisterSpreadsheetUpdateHandler(UpdateSpreadsheet);
             controller.RegisterErrorHandler(ErrorHandler);
@@ -71,11 +68,11 @@ namespace Display
             spreadsheetPanel1.SelectionChanged += DisplaySelection;
             spreadsheet = this.controller.spreadsheet;
 
-
+            // Initialize with cell A1 selected
             spreadsheetPanel1.SetSelection(0, 0);
             contentTextBox.Select();
 
-            //this dictionary maps key: letter to value: row number
+            // This dictionary maps key: letter to value: row number
             LetterToNumber = new Dictionary<string, int>();
             for (int i = 0; i < 26; i++)
             {
@@ -83,14 +80,23 @@ namespace Display
                 LetterToNumber.Add(uppercharshouldbestring.ToString(), i);
             }
             DisplaySelection(spreadsheetPanel1);
-
         }
 
+        /// <summary>
+        /// This is executed if an Error event is detected in the spreadsheet controller. 
+        /// It is used to notify the user that the server has detected an error.
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="source"></param>
         private void ErrorHandler(int code, string source)
         {
             this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(source, spreadsheet.GetCellValue(source).ToString())));
         }
 
+        /// <summary>
+        /// Updates the spreadsheet view based on new content contained in the spreadsheet
+        /// </summary>
+        /// <param name="ss"></param>
         public void UpdateSpreadsheet(Spreadsheet ss)
         {
             IEnumerable<string> cells = new HashSet<string>();
@@ -106,7 +112,6 @@ namespace Display
             }
             this.Invoke(new MethodInvoker(() => DisplayCellPanelValue(list)));
         }
-
 
         /// <summary>
         /// This references the arrow key handing.
@@ -133,7 +138,6 @@ namespace Display
             PressEnter(e);
         }
 
-
         /// <summary>
         /// Handles closing the spreadsheet from the menu bar.
         /// </summary>
@@ -144,8 +148,6 @@ namespace Display
             Close();
         }
 
-
-        //TODO: Fix the help information
         /// <summary>
         /// Handles the clicking the "help" option from the menu.
         /// </summary>
@@ -155,7 +157,6 @@ namespace Display
         {
             ClickHelp();
         }
-
 
         /// <summary>
         /// Handles closing the current spreadsheet.
@@ -171,10 +172,8 @@ namespace Display
             }
         }
 
+
         #region Spreadsheet Helpers
-
-
-
 
         /// <summary>
         /// This converts the index of the row and column to a string representation
@@ -224,12 +223,11 @@ namespace Display
             }
             value = spreadsheet.GetCellValue(name).ToString();
 
-
             contentTextBox.Text = contents;
             valueTextBox.Text = value;
             nameTextBox.Text = name;
 
-            //Sets the caret to the end of the contents text box.
+            // Sets the caret to the end of the contents text box.
             contentTextBox.SelectionStart = contentTextBox.Text.Length;
             DisplayCellPanelValue(name, value);
         }
@@ -259,7 +257,6 @@ namespace Display
             string thing = nameTextBox.Text;
             string content = spreadsheet.GetCellContents(thing).ToString();
             string value = spreadsheet.GetCellValue(thing).ToString();
-
 
             contentTextBox.Text = content;
             valueTextBox.Text = value;
@@ -467,35 +464,29 @@ namespace Display
         #endregion
 
         /// <summary>
-        /// this event is fired when the 
+        /// This event is fired when the Undo button is clicked by the user.
+        /// The server is sent a request to undo the previous edit.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void UndoButton_Click(object sender, EventArgs e)
         {
-            spreadsheetPanel1.GetSelection(out int col, out int row);
-
             controller.SendUndo();
-
             contentTextBox.Focus();
-            //spreadsheetPanel1.Focus();
-            //spreadsheetPanel1.SetSelection(col, row);
         }
 
         /// <summary>
-        /// 
+        /// This event is fired when the Revert button is clicked by the user.
+        /// The server is sent a request to revert the most recent change made to the selected cell.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void RevertButton_Click(object sender, EventArgs e)
         {
-
             spreadsheetPanel1.GetSelection(out int col, out int row);
             string cellName = ColRowToCellName(col, row);
             controller.SendRevert(cellName);
             contentTextBox.Focus();
-            //spreadsheetPanel1.Focus();
-            //spreadsheetPanel1.SetSelection(col, row);
         }
 
         /// <summary>

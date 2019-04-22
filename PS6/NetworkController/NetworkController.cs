@@ -18,20 +18,17 @@ using System.Threading.Tasks;
 
 namespace Controller
 {
-
     /// <summary>
     /// Handles any network action ("CALLME")
     /// </summary>
     /// <param name="ss"></param>
     public delegate void NetworkAction(SocketState ss);
 
-
     /// <summary>
     /// This class holds all the necessary state to hold a socket connection
     /// </summary>
     public class SocketState
     {
-
         /// <summary>
         /// Handles the messages received
         /// </summary>
@@ -57,7 +54,14 @@ namespace Controller
         /// </summary>
         private bool disconnected;
 
+        /// <summary>
+        /// A flag indicating an error has occurred
+        /// </summary>
         public bool error;
+
+        /// <summary>
+        /// The error message associated with the error that occurreds
+        /// </summary>
         public string errorMessage;
 
         /// <summary>
@@ -82,6 +86,9 @@ namespace Controller
             errorMessage = "";
         }
 
+        /// <summary>
+        /// Property to get and set the messageProcessor member
+        /// </summary>
         public NetworkAction MessageProcessor
         {
             get { return messageProcessor; }
@@ -113,6 +120,9 @@ namespace Controller
         /// </summary>
         public bool Disconnected { get { return disconnected; } set { disconnected = value; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void RemoveProcessedMessages()
         {
             int index = sb.ToString().LastIndexOf("\n\n");
@@ -181,7 +191,6 @@ namespace Controller
 
             // Disable Nagle's algorithm
             socket.NoDelay = true;
-
         }
 
         /// <summary>
@@ -205,8 +214,6 @@ namespace Controller
 
             socket.BeginConnect(ipAddress, Networking.DEFAULT_PORT, ConnectedCallback, ss);
             return socket;
-
-
         }
 
         /// <summary>
@@ -227,7 +234,6 @@ namespace Controller
                 ss.Disconnected = true;
             }
             ss.MessageProcessor(ss);
-
         }
 
         /// <summary>
@@ -239,7 +245,6 @@ namespace Controller
             SocketState ss = (SocketState)ar.AsyncState;
             try
             {
-
                 int bytesRead = ss.theSocket.EndReceive(ar);
 
                 // If the socket is still open
@@ -257,7 +262,6 @@ namespace Controller
             {
                 ss.Disconnected = true;
             }
-           
         }
 
         /// <summary>
@@ -266,15 +270,14 @@ namespace Controller
         /// <param name="ar"></param>
         public static void SendCallback(IAsyncResult ar)
         {
-
             Socket socket = (Socket)ar.AsyncState;
             socket.EndSend(ar);
         }
 
         /// <summary>
         /// Requests data from the server
-        /// </summary>
-        /// <param name="state"></param>
+        /// </summary>>
+        /// <param name="state"></param
         public static void GetData(SocketState state)
         {
             state.RemoveProcessedMessages();

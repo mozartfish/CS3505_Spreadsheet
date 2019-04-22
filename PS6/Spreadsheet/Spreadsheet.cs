@@ -18,9 +18,20 @@ namespace SS
     /// </summary>
     public class Spreadsheet : AbstractSpreadsheet
     {
-        private Dictionary<String, Cell> Cells; //Takes the Cell Name and links it to a string
-        private DependencyGraph Dependencies; //Contains the cell dependencies
-        public override bool Changed { get; protected set; } //Tracks if spreadsheet has been changed
+        /// <summary>
+        /// The backing structure for the spreadsheet model
+        /// </summary>
+        private Dictionary<String, Cell> Cells;
+
+        /// <summary>
+        /// Contains the cell dependencies
+        /// </summary>
+        private DependencyGraph Dependencies;
+
+        /// <summary>
+        /// Tracks if spreadsheet has been changed
+        /// </summary>
+        public override bool Changed { get; protected set; }
 
         /// <summary>
         /// Generic constructor, initializes class variables
@@ -29,7 +40,6 @@ namespace SS
         {
             Cells = new Dictionary<string, Cell>();
             Dependencies = new DependencyGraph();
-
             Changed = false;
         }
 
@@ -78,8 +88,8 @@ namespace SS
                 contents = Normalize(contents);
                 CheckInput(cellName, contents);
 
-               
-                if(Dependencies.HasDependents(cellName) && !Regex.IsMatch(contents, @"^=") )
+
+                if (Dependencies.HasDependents(cellName) && !Regex.IsMatch(contents, @"^="))
                 {
                     throw new ArgumentException();
                 }
@@ -143,7 +153,6 @@ namespace SS
         {
             Cells = new Dictionary<string, Cell>();
             Dependencies = new DependencyGraph();
-
             Changed = false;
 
             if (version != GetSavedVersion(fileToPath))
@@ -181,6 +190,7 @@ namespace SS
                         }
             }
         }
+
         /// <summary>
         /// If name is null or invalid, throws an InvalidNameException.
         /// 
@@ -213,7 +223,6 @@ namespace SS
                 return "";
         }
 
-
         /// <summary>
         /// Finds Value of variable
         /// </summary>
@@ -232,8 +241,8 @@ namespace SS
                     return (double)formula.Evaluate(cell.Lookup);
                 }
             }
-            return -1;
-            //throw new ArgumentException();
+
+            throw new ArgumentException();
         }
 
         /// <summary>
@@ -459,7 +468,6 @@ namespace SS
             }
             Changed = true;
 
-
             HashSet<String> dependents = new HashSet<string>(GetCellsToRecalculate(name));
             return dependents;
         }
@@ -519,10 +527,7 @@ namespace SS
 
             HashSet<String> dependents = new HashSet<string>(GetCellsToRecalculate(name));
             return dependents;
-
         }
-
-
 
         /// <summary>
         /// Sets the contents of the cell generically
@@ -532,7 +537,7 @@ namespace SS
         /// <returns></returns>
         public override ISet<string> SetContentsOfCell(string name, string content)
         {
-            //Checks to make sure the name is valid
+            // Checks to make sure the name is valid
             if (name is null)
                 throw new InvalidNameException();
 
@@ -545,13 +550,13 @@ namespace SS
             if (content is null)
                 throw new ArgumentNullException("Error: Cell Content is null");
 
-            //Case: Formula
+            // Case: Formula
             if (content.Length != 0 && content[0] == '=')
                 return SetCellContents(name, new Formula(content.Substring(1), Normalize, IsValid));
-            //Case: Double
+            // Case: Double
             else if (Double.TryParse(content, out double num))
                 return SetCellContents(name, num);
-            //Case: String
+            // Case: String
             else
                 return SetCellContents(name, content);
         }

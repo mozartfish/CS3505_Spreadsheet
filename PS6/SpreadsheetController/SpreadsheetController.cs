@@ -150,7 +150,7 @@ namespace Controller
         }
 
         /// <summary>
-        /// 
+        /// Registers a handler for the CredentialsAccepted handler
         /// </summary>
         /// <param name="handler"></param>
         public void RegisterCredentialsAcceptedHandler(CredentialsAccepted handler)
@@ -193,7 +193,6 @@ namespace Controller
             {
                 NetworkError();
             }
-
         }
 
         /// <summary>
@@ -221,7 +220,6 @@ namespace Controller
         /// <param name="ss">SocketState for the server</param>
         public void ReceiveStartup(SocketState ss)
         {
-
             List<string> spreadsheets = new List<string>();
             if (ss.Disconnected)
             {
@@ -258,10 +256,10 @@ namespace Controller
                 }
             }
 
-            //populate spreadsheet list on welcome page
+            // populate spreadsheet list on welcome page
             ListArrived(spreadsheets);
 
-            //set CallMe to ReceiveInitialSpreadsheet
+            // set CallMe to ReceiveInitialSpreadsheet
             ss.MessageProcessor = ReceiveInitialSpreadsheet;
             Networking.GetData(ss);
         }
@@ -279,6 +277,7 @@ namespace Controller
                 return;
             }
 
+            // A complete message is followed by two newline characters
             string[] messages = Regex.Split(ss.sb.ToString(), @"(?<=[\n]{2})");
             foreach (string message in messages)
             {
@@ -295,8 +294,7 @@ namespace Controller
 
                 if (message[0] == '{' && message[message.Length - 3] == '}')
                 {
-                    Debug.WriteLine(message);
-
+                    //Debug.WriteLine(message);
                     JObject obj = JObject.Parse(message);
                     JToken messageToken = obj["type"];
 
@@ -335,12 +333,11 @@ namespace Controller
             if (initialized)
             {
                 // trigger UpdateSpreadsheetEvent for redrawing
-
                 SpreadsheetArrived(spreadsheet);
+
                 // set CallMe to ReceiveSpreadsheet
                 ss.MessageProcessor = ReceiveSpreadsheet;
             }
-
             Networking.GetData(ss);
         }
 
@@ -358,9 +355,8 @@ namespace Controller
                 return;
             }
 
+            // A complete message is followed by two newline characters
             string[] messages = Regex.Split(ss.sb.ToString(), @"(?<=[\n]{2})");
-
-
             foreach (string message in messages)
             {
                 if (message.Length < 2)
@@ -374,6 +370,7 @@ namespace Controller
 
                 if (message[0] == '{' && message[message.Length - 3] == '}')
                 {
+                    //Debug.WriteLine(message);
                     JObject obj = JObject.Parse(message);
                     JToken messageToken = obj["type"];
 
@@ -400,7 +397,6 @@ namespace Controller
                 }
             }
 
-
             // trigger UpdateSpreadsheetEvent for redrawing
             SpreadsheetArrived(spreadsheet);
 
@@ -415,7 +411,6 @@ namespace Controller
         /// <param name="contents"></param>
         public void ProcessEdit(string cellName, string contents)
         {
-            
             IEnumerable<string> dependents = new HashSet<string>();
             try
             {
@@ -437,8 +432,6 @@ namespace Controller
                 throw new ArgumentException();
             }
             SendEdit(cellName, contents, dependents);
-
-
         }
 
         /// <summary>
@@ -454,20 +447,16 @@ namespace Controller
             edit.cell = cellName;
             edit.value = contents;
 
-            string dependencies = "";
             foreach (string variable in set)
             {
-                //dependencies += variable;
                 edit.dependencies.Add(variable);
             }
-            //edit.dependencies = dependencies;
 
             //JSON serialize
             if (!Networking.Send(server, JsonConvert.SerializeObject(edit) + "\n\n"))
             {
                 NetworkError();
             }
-
         }
 
         /// <summary>
@@ -482,12 +471,10 @@ namespace Controller
             open.username = username;
             open.password = password;
 
-
             if (!Networking.Send(server, JsonConvert.SerializeObject(open) + "\n\n"))
             {
                 NetworkError();
             }
-
         }
 
         /// <summary>
@@ -496,7 +483,11 @@ namespace Controller
         public void SendUndo()
         {
             JsonClasses.Undo undo = new JsonClasses.Undo();
-            Networking.Send(server, JsonConvert.SerializeObject(undo) + "\n\n");
+
+            if (!Networking.Send(server, JsonConvert.SerializeObject(undo) + "\n\n"))
+            {
+                NetworkError();
+            }
         }
 
         /// <summary>
@@ -529,26 +520,6 @@ namespace Controller
             return Regex.IsMatch(name, @"^[a-zA-Z][1-9][0-9]?$");
         }
 
-        /// <summary>
-        /// A normalization helper method that will convert all user's variable inputs to
-        /// uppercase.
-        /// </summary>
-        /// <param name="name">Variable name</param>
-        /// <returns></returns>
-        public string Normalize(String name)
-        {
-            return name.ToUpper();
-        }
-
-        /// <summary>
-        /// Checks if the updated value is a formula error and displays that if necessary.
-        /// </summary>
-        /// <param name="value">The cell value to check.</param>
-        public bool FormulaErrorCheck(ref String value)
-        {
-
-            return value.Equals("SpreadsheetUtilities.FormulaError");
-        }
         #endregion
     }
 }
