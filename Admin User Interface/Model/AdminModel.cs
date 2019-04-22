@@ -14,15 +14,19 @@ namespace Model
         private Dictionary<string, Spreadsheet> ssDict;
         private Dictionary<string, Dictionary<string, User>> ss2user;
 
+        private List<string> ssList;
+
 
         public AdminModel()
         {
             ssDict = new Dictionary<string, Spreadsheet>();
             ss2user = new Dictionary<string, Dictionary<string, User>>();
+            ssList = new List<string>();
         }
 
         public void CleanModel()
         {
+            ssList.Clear();
             ssDict.Clear();
             ss2user.Clear();
         }
