@@ -415,12 +415,30 @@ namespace Controller
         /// <param name="contents"></param>
         public void ProcessEdit(string cellName, string contents)
         {
+            
             IEnumerable<string> dependents = new HashSet<string>();
+            try
+            {
                 lock (spreadsheet)
                 {
                     dependents = spreadsheet.ParseContents(cellName, contents);
                 }
-                SendEdit(cellName, contents, dependents);
+            }
+            catch (SS.InvalidNameException)
+            {
+                throw new SS.InvalidNameException();
+            }
+            catch(SpreadsheetUtilities.FormulaFormatException e)
+            {
+                throw new SpreadsheetUtilities.FormulaFormatException(e.Message);
+            }
+            catch(ArgumentException)
+            {
+                throw new ArgumentException();
+            }
+            SendEdit(cellName, contents, dependents);
+
+
         }
 
         /// <summary>

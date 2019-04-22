@@ -78,15 +78,12 @@ namespace SS
                 contents = Normalize(contents);
                 CheckInput(cellName, contents);
 
-                IEnumerable<string> dependencies = new HashSet<string>();
-                dependencies = (HashSet<string>)Dependencies.GetDependents(cellName);
-                foreach(string dependent in dependencies)
+               
+                if(Dependencies.HasDependents(cellName) && !Regex.IsMatch(contents, @"^=") )
                 {
-                    if(Cells[cellName].Type == typeof(string))
-                    {
-                        throw new ArgumentException();
-                    }
+                    throw new ArgumentException();
                 }
+
 
                 if (Regex.IsMatch(contents, @"^="))
                 {
@@ -123,9 +120,9 @@ namespace SS
             {
                 throw new FormulaFormatException(e.Message);
             }
-            catch (Exception)
+            catch (ArgumentException e)
             {
-                throw new ArgumentException();
+                throw new ArgumentException(e.Message);
             }
 
 

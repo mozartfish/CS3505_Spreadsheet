@@ -441,7 +441,7 @@ namespace Display
                 MessageBox.Show("The formula entered in cell " + cellName + " is invalid. Please check that all formulas are formatted " +
                     "correctly.", "Formula Format Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            catch (ArgumentException)
+            catch (ArgumentException e)
             {
                 MessageBox.Show("The formula entered in cell " + cellName + " is invalid. Please check that all formulas are formatted " +
                     "correctly.", "Formula Format Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
