@@ -19,15 +19,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "JsonClasses", "JsonClasses"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonClasses", "JsonClasses\JsonClasses.csproj", "{40487D0E-AE12-4EF6-B1C4-FD8EE02D1E5D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controller", "Controller\Controller.csproj", "{C2952F9A-1F73-4EB0-958A-E6EAE6D7FA1F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{D1B72B76-1DC2-406B-897C-3F133996FE35}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{439F04C0-05A0-4500-A424-22F5628DBAC2}"
-	ProjectSection(SolutionItems) = preProject
-		AdminREADME.txt = AdminREADME.txt
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,14 +37,6 @@ Global
 		{40487D0E-AE12-4EF6-B1C4-FD8EE02D1E5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40487D0E-AE12-4EF6-B1C4-FD8EE02D1E5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40487D0E-AE12-4EF6-B1C4-FD8EE02D1E5D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C2952F9A-1F73-4EB0-958A-E6EAE6D7FA1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C2952F9A-1F73-4EB0-958A-E6EAE6D7FA1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C2952F9A-1F73-4EB0-958A-E6EAE6D7FA1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C2952F9A-1F73-4EB0-958A-E6EAE6D7FA1F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D1B72B76-1DC2-406B-897C-3F133996FE35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D1B72B76-1DC2-406B-897C-3F133996FE35}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D1B72B76-1DC2-406B-897C-3F133996FE35}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D1B72B76-1DC2-406B-897C-3F133996FE35}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
