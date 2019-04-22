@@ -86,20 +86,6 @@ namespace WindowsFormsApp1
                 updateList.Items.Clear();
 
                 this.Close();
-
-                //check if the user man is open
-                //if (userMan != null)
-                //{
-                //    //if so close the man tab
-                //    userMan.Close();
-                //}
-
-                ////check if the ssman is open
-                //if (ssMan != null)
-                //{
-                //    //if so, close the man tab
-                //    ssMan.Close();
-                //}
             }));            
 
             
@@ -135,11 +121,13 @@ namespace WindowsFormsApp1
             }
 
             List<string> SSList = new List<string>();
-            SSList = controller.GetAllSS();
+            //SSList = controller.GetAllSS();
+            SSList = controller.GetSSList();
 
             foreach (string ss in SSList)
             {
-                updateList.Items.Add(ss);
+                //updateList.Items.Add(ss);
+                updateList.Items.Insert(0, ss);
             }
         }
 
@@ -211,7 +199,7 @@ namespace WindowsFormsApp1
 
         private void ConnectToServer_buttone(object sender, EventArgs e)
         {
-            string hostname = "lab1-20.eng.utah.edu";//lab1-5.eng.utah.edu
+            string hostname = "lab1-5.eng.utah.edu";//lab1-5.eng.utah.edu
             if (IP.Text != "")
             {
                 hostname = IP.Text;

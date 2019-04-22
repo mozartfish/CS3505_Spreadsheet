@@ -14,19 +14,19 @@ namespace Model
         private Dictionary<string, Spreadsheet> ssDict;
         private Dictionary<string, Dictionary<string, User>> ss2user;
 
-        private List<string> ssList;
+        private List<string> ssUpdateList;
 
 
         public AdminModel()
         {
             ssDict = new Dictionary<string, Spreadsheet>();
             ss2user = new Dictionary<string, Dictionary<string, User>>();
-            ssList = new List<string>();
+            ssUpdateList = new List<string>();
         }
 
         public void CleanModel()
         {
-            ssList.Clear();
+            ssUpdateList.Clear();
             ssDict.Clear();
             ss2user.Clear();
         }
@@ -51,13 +51,17 @@ namespace Model
             return false;
         }
 
-        public List<string> SSList()
+        public List<string> GetSSUpdateList()
         {
-
-            List<string> list = new List<string>();
-            return list;
             //TODO:
+            List<string> list = ssUpdateList;
+            return list;
+        }
 
+        public void InsertToList(string name, int status)
+        {
+            ssUpdateList.Insert(0, name);
+            //ssUpdateList.Add(name);
         }
 
         public Dictionary<string, Spreadsheet> GetSSDict()
@@ -73,99 +77,28 @@ namespace Model
 
         public Dictionary<string, User> GetUsersDict(string ssName)
         {
-            return ss2user[ssName];
+            if (ss2user.ContainsKey(ssName))
+            {
+                return ss2user[ssName];
+            }
+            else
+            {
+                return new Dictionary<string, User>();
+            }
         }
+
         public bool ContainsUser(string ssName, string username)
         {
-            if (ss2user[ssName].ContainsKey(username))
+            if (ss2user.ContainsKey(ssName))
             {
-                return true;
+                if (ss2user[ssName].ContainsKey(username))
+                {
+                    return true;
+                }
             }
+
             return false;
         }
-
-        //public List<User> GetOrderedUsersList()
-        //public List<string> GetOrderedUsersList()
-        //{
-        //    //List<User> activeList = new List<User>();
-        //    //List<User> inactiveList = new List<User>();
-
-        //    //foreach (KeyValuePair<string, User> entry in usersDict)
-        //    //{
-        //    //    if (usersDict[entry.Key].GetActive() == 1)
-        //    //    {
-        //    //        activeList.Add(entry.Value);
-        //    //    }
-        //    //    else
-        //    //    {
-        //    //        inactiveList.Add(entry.Value);
-        //    //    }
-        //    //}
-
-        //    //activeList.AddRange(inactiveList);
-
-        //    //return activeList;
-
-        //    List<string> activeList = new List<string>();
-        //    List<string> inactiveList = new List<string>();
-
-        //    foreach (KeyValuePair<string, User> entry in usersDict)
-        //    {
-        //        if (usersDict[entry.Key].GetActive() == 1)
-        //        {
-
-        //            string user = entry.Value.GetUsername() + "  " + entry.Value.GetPassword() + "   " + entry.Value.GetActive() + " " + entry.Value.GetWorkingOn().ToString();
-
-        //            activeList.Add(user);
-
-        //        }
-        //        else
-        //        {
-        //            string user = entry.Value.GetUsername() + "  " + entry.Value.GetPassword() + "   " + entry.Value.GetActive();
-
-        //            inactiveList.Add(user);
-        //        }
-        //    }
-
-        //    activeList.AddRange(inactiveList);
-
-        //    return activeList;
-        //}
-
-
-
-        //public List<string> GetOrderedSSList()
-        //{
-
-        //    List<string> activeList = new List<string>();
-        //    List<string> inactiveList = new List<string>();
-
-        //    foreach (KeyValuePair<string, User> entry in usersDict)
-        //    {
-        //        if (usersDict[entry.Key].GetActive() == 1)
-        //        {
-
-        //            string user = entry.Value.GetUsername() + "  " + entry.Value.GetPassword() + "   " + entry.Value.GetActive() + " " + entry.Value.GetWorkingOn().ToString();
-
-        //            activeList.Add(user);
-
-        //        }
-        //        else
-        //        {
-        //            string user = entry.Value.GetUsername() + "  " + entry.Value.GetPassword() + "   " + entry.Value.GetActive();
-
-        //            inactiveList.Add(user);
-        //        }
-        //    }
-
-        //    activeList.AddRange(inactiveList);
-
-        //    return activeList;
-        //}
-
-
-
-
         #endregion Getters
 
         #region Setters

@@ -54,6 +54,15 @@ namespace Model
             return type;
         }
 
+        public bool HasUsers()
+        {
+            if (users.Count > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public void SetSSType(string t)
         {
             type = t;

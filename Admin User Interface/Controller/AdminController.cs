@@ -211,7 +211,13 @@ namespace Controller
             {
                 Spreadsheet ss = (Spreadsheet)updateObj;
                 string SSname = ss.GetName();
+                if (!ss.HasUsers())
+                {
+                    Dictionary<string, string> crapPass = new Dictionary<string, string>();
+                    ss.SetUsers(crapPass);
+                }
                 model.SetSS(SSname, ss);
+                model.InsertToList(SSname, ss.GetStatus());
 
                 UpdateSSInterface?.Invoke();
             }
@@ -328,6 +334,10 @@ namespace Controller
         #endregion NetworkControl
 
 
+        public List<string> GetSSList()
+        {
+            return model.GetSSUpdateList();
+        }
 
 
         #region GuiControl

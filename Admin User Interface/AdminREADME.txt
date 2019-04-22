@@ -43,3 +43,13 @@ SHUT DOWN BUTTON CLICKED:
 - notify the server that it must shut down. Once the server echos the shut down message
   FORM1 informs the welcomePage to show itself, and kill Form1 to allow new server to be selected
 
+
+
+
+
+
+
+
+
+  The NuGet Json must be up to date
+  Start the program from main
