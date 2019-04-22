@@ -35,7 +35,7 @@ namespace Display
             controller.RegisterNetworkErrorHandler(NetworkError);
             controller.RegisterCredentialsAcceptedHandler(LaunchSpreadsheetForm);
         }
-        
+
 
         /// <summary>
         /// Event handler for the network error event.
@@ -52,11 +52,11 @@ namespace Display
         /// Updates the list view on the welcome page, registered as a handler for the ListUpdate event
         /// </summary>
         /// <param name="list"></param>
-        private void UpdateListView(List<string>  list)
+        private void UpdateListView(List<string> list)
         {
-            //updated the list display
-            //method invoker invokes AddLists
-            // this method will not run on the same thread as the form
+            // Updated the list display
+            // Method invoker invokes AddLists
+            // This method will not run on the same thread as the form
             this.Invoke(new MethodInvoker(() => AddLists(list)));
         }
 
@@ -67,25 +67,24 @@ namespace Display
         /// <param name="list"></param>
         private void AddLists(List<string> list)
         {
-                foreach (string spreadsheet in list)
-                {
-                    spreadsheetList.Items.Add(spreadsheet);
-                }
+            foreach (string spreadsheet in list)
+            {
+                spreadsheetList.Items.Add(spreadsheet);
+            }
         }
 
         /// <summary>
-        /// Handler for the ErrorUpdate event. Displays a warning dialog with the appropriate error message
+        /// Handler for the ErrorUpdate event. Displays a warning dialog with the appropriate error message.
         /// </summary>
         /// <param name="e"></param>
         private void UpdateError(int errorCode, string source)
         {
             if (errorCode == 1)  // invalid authorization
             {
-               // DialogResult result =
-              MessageBox.Show("Your password is incorrect, please re-enter your password before selecting a spreadsheet",
-                        "Invalid Authorization", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Your password is incorrect, please re-enter your password before selecting a spreadsheet",
+                          "Invalid Authorization", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            else //it is a circulardependency error
+            else // circulardependency error
             {
                 MessageBox.Show("A circular dependency was detected at cell " + source + ". Note: the offending edit has not been applied.",
                         "Circular Dependency", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -103,8 +102,9 @@ namespace Display
             Display.SpreadsheetApplicationContext appContext =
                 Display.SpreadsheetApplicationContext.getAppContext();
             this.Invoke(new MethodInvoker(() => appContext.RunForm(ssForm)));
-  
-            ssForm.FormClosed += (o, ev) => this.Close();
+
+            // If the spreadsheet form is closed, the welcome page needs to be informed so that it can close the application
+            ssForm.FormClosed += (o, ev) => this.Close();  
 
             this.Invoke(new MethodInvoker(() => this.Hide()));
         }
@@ -145,12 +145,8 @@ namespace Display
         /// <param name="e"></param>
         private void spreadsheetList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(spreadsheetList.SelectedItem != null) // make sure a spreadsheet has been selected
+            if (spreadsheetList.SelectedItem != null) // make sure a spreadsheet has been selected
             {
-                //// Store their credentials
-                //controller.Password = Password.Text;
-                //controller.Username = Username.Text;
-
                 string currSpreadsheet = spreadsheetList.SelectedItem.ToString();
                 RequestSpreadsheet(currSpreadsheet);
             }
@@ -165,15 +161,6 @@ namespace Display
             // Store their credentials
             controller.Password = Password.Text;
             controller.Username = Username.Text;
-
-            //this.Hide();
-            //Display.SpreadsheetForm ssForm = new Display.SpreadsheetForm(ref controller);
-            //Display.SpreadsheetApplicationContext appContext =
-            //    Display.SpreadsheetApplicationContext.getAppContext();
-            //this.Invoke(new MethodInvoker(() => appContext.RunForm(ssForm)));
-
-            //ssForm.FormClosed += (o, ev) => this.Close();
-
             controller.SendOpen(spreadsheet);
         }
 
@@ -184,7 +171,7 @@ namespace Display
         /// <param name="e"></param>
         private void NewSpreadsheet_Click(object sender, EventArgs e)
         {
-            //option to name the spreadsheet via dialog box
+            // option to name the spreadsheet via dialog box
             string spreadsheet = Microsoft.VisualBasic.Interaction.InputBox
                 ("Please Enter Name of Spreadsheet", "New Spreadsheet", "NewSpreadsheet");
 
@@ -194,10 +181,15 @@ namespace Display
             }
         }
 
-
+        /// <summary>
+        /// Initiate contact with the server when a user specifies an address and presses
+        /// the Enter key
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ServerAddress_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyValue == 13)
+            if (e.KeyValue == 13)
             {
                 ConnectToServer(ServerAddress.Text);
             }
