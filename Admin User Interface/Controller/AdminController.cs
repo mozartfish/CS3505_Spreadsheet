@@ -79,14 +79,16 @@ namespace Controller
         /// Start the network connection
         /// </summary>
         /// <param name="hostName"></param>
-        public void Connect(string hostName, int port)
+        public void Connect(string hostName, int port, out bool success)
         {
             try
             {
                 this.server = Networking.ConnectToServer(hostName, port, FirstContact);
+                success = true;
             }
             catch (Exception)
             {
+                success = false;
                 string title = "Error";
                 string text = "You entered a non working IP.\nPlease do it right this time.";
 

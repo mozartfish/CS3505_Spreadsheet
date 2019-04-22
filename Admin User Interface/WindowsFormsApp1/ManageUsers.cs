@@ -160,11 +160,19 @@ namespace WindowsFormsApp1
         /// <param name="spreadsheet"></param>
         public void HandleUpdateInterface()
         {
-            // Update the Update column with Spreadsheet data
-            this.Invoke(new MethodInvoker(() =>
+            if (this.IsHandleCreated)
             {
-                RedrawUserList();
-            }));
+                // Update the Update column with Spreadsheet data
+                this.Invoke(new MethodInvoker(() =>
+                {
+                    RedrawUserList();
+                }));
+            }
+            else
+            {
+                return;
+            }
+            
         }
 
         private void RedrawUserList()
