@@ -211,7 +211,7 @@ namespace WindowsFormsApp1
 
         private void ConnectToServer_buttone(object sender, EventArgs e)
         {
-            string hostname = "garbage";//lab1-5.eng.utah.edu
+            string hostname = "lab1-20.eng.utah.edu";//lab1-5.eng.utah.edu
             if (IP.Text != "")
             {
                 hostname = IP.Text;
@@ -231,16 +231,6 @@ namespace WindowsFormsApp1
             {
                 button8.Enabled = true;
             }
-        }
-
-        private void currentStatusList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void updateList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

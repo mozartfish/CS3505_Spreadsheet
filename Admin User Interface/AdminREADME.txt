@@ -4,10 +4,12 @@ TODO:
 - make ss list, for ss display better
 - HELP MENU!!! Last Thing Done!
   Aaron will do this :) Bruce just needs to do a confirmation near the end that it covers all needed
+- Clean
 
 
 
 PRE PRESENTING TO JENSON:
+- Work on decreasing the time between 
 - resize all the gui windows for the machines in lower cade
 - make sure all connection, sending, and model updating work
 - Final test on concurrent users

@@ -14,17 +14,12 @@ namespace Controller
 {
     public class AdminController
     {
-        #region Events
-
-        #endregion Events
-        
-
-
         #region Controller Definitions
 
         private Socket server;
 
         private AdminModel model;
+
         #endregion Controller Definitions
 
 
@@ -34,6 +29,7 @@ namespace Controller
         private bool acctManOpen, ssManOpen;
 
         #endregion Gui Definitions
+
         #region Events
         public delegate void UpdateInterfaceHandler();
 
@@ -58,19 +54,10 @@ namespace Controller
 
             #region Gui Var Initialize
 
-
             acctManOpen = false;
             ssManOpen = false;
 
-
             #endregion Gui Var Initialize
-
-            // testing TODO: remove this 
-            //User user = new User();
-            //user.SetUsername("Peter Jensen");
-            //user.SetPassword("12345678");
-            //user.SetWorkingOn("ss1.sprd");
-            //user.SetStatus(0);
         }
 
         #region NetworkControl
@@ -90,7 +77,7 @@ namespace Controller
             {
                 success = false;
                 string title = "Error";
-                string text = "You entered a non working IP.\nPlease do it right this time.";
+                string text = "You entered a non working IP or Port.";//\nPlease do it right this time.";
 
                 DialogResult result = MessageBox.Show(text, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
