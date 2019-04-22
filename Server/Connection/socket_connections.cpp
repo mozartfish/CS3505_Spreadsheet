@@ -117,7 +117,7 @@ void socket_connections::WaitForData(int socket_fd, char* buf, int bytes, std::m
 
     if (read(socket_fd, buf, bytes) < 0)
       {
-	std::cout << "Error reading data from socket" << std::endl;
+	std::cout << "Error reading data from socket, client may have disconnected" << std::endl;
         
         if (should_disc->find(socket_fd) != should_disc->end() && !has_mod_val) 
 	  (*should_disc)[socket_fd] = true;
@@ -125,10 +125,7 @@ void socket_connections::WaitForData(int socket_fd, char* buf, int bytes, std::m
 
       }
 			       
-    std::cout << buf << std::endl;
     launch.get();
-			       
-  
   }
 
 /*
@@ -147,8 +144,11 @@ void socket_connections::WaitForDataTimer(char* buf, std::mutex* lock, int socke
 
   // Set disconnect to true if no data has been found yet
   if (should_disc->find(socket_fd) != should_disc->end() && !(*has_mod_val)) 
-    (*should_disc)[socket_fd] = true;
-  (*has_mod_val) = true;
+    {
+      std::cout << "Client inactive timeout for socket " << socket_fd << std::endl;
+      (*should_disc)[socket_fd] = true;
+      (*has_mod_val) = true;
+    }
 }
 
   /*
@@ -181,7 +181,7 @@ void socket_connections::SendData(int socket_fd, const char *data, int bytes)
 void socket_connections::CloseSocket(int socket_fd)
 {
   if(shutdown(socket_fd, SHUT_RDWR) < 0)
-    std::cout << "Error shutting down socket of file descriptor " << socket_fd << std::endl;
+    std::cout << "Error shutting down socket of file descriptor " << socket_fd << ", client likely disconnected" << std::endl;
 
   if (close(socket_fd) < 0)
     std::cout << "Error closing socket of file descriptor " << socket_fd << std::endl;

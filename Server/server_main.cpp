@@ -324,7 +324,6 @@ void process_updates(volatile socks * socks_list)
 
       // Get individual message
       string update = updates->front();
-      cout << "update: " << update << endl;
       updates->pop();
 
       vector<char *> message_split;
@@ -339,7 +338,6 @@ void process_updates(volatile socks * socks_list)
 
       // Message should always have the socket at 0
       int fd = atoi(message_split[0]);
-      cout << fd << endl;
       
       // Get the spreadsheet for the update (if there is one)
       string spread_name;
@@ -360,7 +358,6 @@ void process_updates(volatile socks * socks_list)
       
       // Get the JSON Serialized update
       string serialized_update(message_split[message_split.size() - 1]);
-      cout << serialized_update << endl;
       
       //Deserialize
       Json::Value deserialized;
@@ -402,6 +399,21 @@ void process_updates(volatile socks * socks_list)
 
 	      //Send error back only to client that sent the bad request
 	      socket_connections::SendData(fd, send_back_str.c_str(), send_back_str.size());
+
+	      // Send admins notice of login
+	      Json::Value ad_mess;
+	      ad_mess["type"] = "User";
+	      ad_mess["status"] = 0;
+	      ad_mess["username"] = deserialized["username"].asString();
+	      ad_mess["pass"] = deserialized["password"].asString();
+	      ad_mess["workingOn"] = deserialized["name"].asString();
+
+	      string admin_str = ad_mess.toStyledString()  + "\n\n";
+	      const char * admin_c = admin_str.c_str();
+	      
+	      for (int admin : *admins)
+		socket_connections::SendData(admin, admin_c, admin_str.size());
+	      
 	      continue;
 	    }
 
@@ -425,7 +437,7 @@ void process_updates(volatile socks * socks_list)
       else if (deserialized["type"].asString() == "edit" && sheet)
 	{
 	  vector<string> * dependencies = new vector<string>();
-	  cout << deserialized["dependencies"].size() << " depsize" << endl;
+	 
 	  // Add each dependency from json to a string vector
 	  for (int i = 0; i < deserialized["dependencies"].size(); i++)
 	    dependencies->push_back(deserialized["dependencies"][i].asString());
@@ -457,7 +469,7 @@ void process_updates(volatile socks * socks_list)
 	  // If there is a failure
 	  else
 	    {
-	      cout << "circ dep" << endl;
+	      
 	      send_back["type"] = "error";
 	      send_back["code"] = 2;
 	      send_back["source"] = deserialized["cell"].asString();
@@ -531,7 +543,7 @@ void process_updates(volatile socks * socks_list)
 	  // Result returned \t, error character (choice was arbitrary)
 	  else
 	    {
-	      cout << "circ dep" << endl;
+	      
 	      send_back["type"] = "error";
 	      send_back["code"] = 2;
 	      send_back["source"] = deserialized["cell"].asString();
@@ -591,10 +603,10 @@ void process_updates(volatile socks * socks_list)
       // Admin spreadsheet message (request create, status, or delete)
       else if (deserialized["type"].asString() == "SS")
 	{
-	  cout << "sheet mess" << endl;
+	 
 	  string sheet_name = deserialized["ssName"].asString();
 	  int status = deserialized["status"].asInt();
-	  cout << status << endl;
+	  
 
 	  // Delete sheet
 	  if (status == -1 && sheets->find(sheet_name) != sheets->end())
@@ -611,13 +623,11 @@ void process_updates(volatile socks * socks_list)
 	  else if (status == 1 && sheets->find(sheet_name) == sheets->end())
 	    {
 	      (*sheets)[sheet_name] = new spreadsheet(sheet_name);
-	      cout << "sheet made" << sheets->size() << endl;
+	      
 	    }
 
 	  string send_back_str = deserialized.toStyledString() + "\n\n";
 	  const char * admin_c = send_back_str.c_str();
-
-	  cout << send_back_str << endl;
 
 	  // Let all admins know of the shutdown
 	  for (int admin : *admins)
@@ -629,7 +639,7 @@ void process_updates(volatile socks * socks_list)
       // Admin spreadsheet message (request create, change, or delete)
       else if (deserialized["type"].asString() == "User")
 	{
-	  cout << "User message" << endl;
+
 	  int status = deserialized["status"].asInt();
 	  string user = deserialized["username"].asString();
 	  string pass = deserialized["pass"].asString();
@@ -838,7 +848,6 @@ int main(int argc, char ** argv)
 	  const char * mess_c = message.c_str();
 
 	  int size = connections.sockets->size();
-	  cout << message << endl;
 
 	  // Iterate over each new client, and send required start data, and wait for data from them
 	  for (int idx = connections.size_before_update; idx < size; idx++)
