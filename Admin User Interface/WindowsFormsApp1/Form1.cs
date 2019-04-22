@@ -202,7 +202,7 @@ namespace WindowsFormsApp1
 
         private void ConnectToServer_buttone(object sender, EventArgs e)
         {
-            string hostname = "lab1-2.eng.utah.edu";
+            string hostname = "lab1-20.eng.utah.edu";
             if (IP.Text != "")
             {
                 hostname = IP.Text;
