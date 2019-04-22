@@ -125,10 +125,7 @@ void socket_connections::WaitForData(int socket_fd, char* buf, int bytes, std::m
 
       }
 			       
-    std::cout << buf << std::endl;
     launch.get();
-			       
-  
   }
 
 /*
@@ -147,8 +144,11 @@ void socket_connections::WaitForDataTimer(char* buf, std::mutex* lock, int socke
 
   // Set disconnect to true if no data has been found yet
   if (should_disc->find(socket_fd) != should_disc->end() && !(*has_mod_val)) 
-    (*should_disc)[socket_fd] = true;
-  (*has_mod_val) = true;
+    {
+      std::cout << "Client inactive timeout for socket " << socket_fd << std::endl;
+      (*should_disc)[socket_fd] = true;
+      (*has_mod_val) = true;
+    }
 }
 
   /*

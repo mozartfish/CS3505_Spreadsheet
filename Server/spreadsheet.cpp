@@ -137,14 +137,9 @@ bool spreadsheet::change_cell(std::string cell, std::string contents, std::vecto
 
   std::unordered_set<std::string> * dep_set = new std::unordered_set<std::string>();
 
-  std::cout << contents << "\t" << contents[0] << std::endl;
-
   //check for circular dependencies
   if (contents[0] == '=')
   {
-    std::cout << "checking circ" << std::endl;
-    for (std::string f : *dep_list)
-	std::cout << f << std::endl;
       
     if (CircularDependency(cell, dep_list))
       return false;
@@ -156,11 +151,6 @@ bool spreadsheet::change_cell(std::string cell, std::string contents, std::vecto
 
   // Replace dependents and update cell
   this->dependencies->ReplaceDependents(cell, *dep_set);
-
-  std::cout << "Deps replaced" << std::endl;
-  
-  for (std::string f : *(dependencies->GetDependents(cell)))
-    std::cout << f << std::endl;
  
   this->spd_history->push_back(cell);
   (*(*(this->cell_history))[cell_idx]).push_back(contents);
@@ -211,47 +201,23 @@ std::string spreadsheet::revert(std::string cell)
   if (cell_hist->size() == 0)
     return "";
 
-  std::cout << "attempting revert" << std::endl;
-
-  for (std::string s : *(dependencies->GetDependents(cell)))
-	 std::cout << s << std::endl;
-
-
-  std::cout << (*cell_hist).back() << std::endl;
   if ((*cell_hist).back()[0] == '=')
   {
     std::vector<std::string> * deps = cells_from_formula((*cell_hist).back());
 
-    for (std::string s : *deps)
-      std::cout << s << std::endl;
-
-    std::cout << deps->size() << std::endl;
-
-    std::cout << "cirdep check" << std::endl;
     if (CircularDependency(cell, deps))
     {
-      std::cout << "cirdep found" << std::endl;
       cell_hist->push_back(curr_cont);
       return "\t";
     }
-    std::cout << "cirdep not" << std::endl;
 
     for (std::string cell_dep : *deps)
       dep_set->insert(cell_dep);
     
   }
 
-  for (std::string s : *dep_set)
-	 std::cout << s << std::endl;
-
-  std::cout << "printed deps" << std::endl;
-
   dependencies->ReplaceDependents(cell, *dep_set);
-
-  for (std::string s : *(dependencies->GetDependents(cell)))
-	 std::cout << s << std::endl;
   
-  std::cout << "finished revert" << std::endl;
   // Return the current top contents
   return cell_hist->back();
 }
@@ -332,7 +298,6 @@ bool spreadsheet::CircularDependency(std::string cell, std::vector<std::string> 
   
   for (std::string s : *dependencies)
   {
-    std::cout << "visiting" << s << std::endl;
     if (Visit(s, cell))
       return true;
   }
@@ -349,7 +314,7 @@ bool spreadsheet::Visit(std::string start, std::string goal)
   
   while (!queue.empty())
   {
-    std::cout << "start " << start << std::endl;
+  
     std::string start = queue.front();
     queue.pop();
     if (start == goal)
@@ -359,7 +324,6 @@ bool spreadsheet::Visit(std::string start, std::string goal)
       std::unordered_set<std::string> * get_dependents = this->dependencies->GetDependents(start);
       for (std::string s : *get_dependents)
       {
-	std::cout << "adding cell " << s << std::endl;
 	queue.push(s);
       }
     }
