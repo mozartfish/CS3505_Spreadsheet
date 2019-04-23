@@ -26,6 +26,7 @@ class spreadsheet {
   std::unordered_set<int> * listeners;
   std::vector<std::string> * spd_history;
   std::vector<std::vector<std::string>*> * cell_history;
+  std::vector<std::vector<std::string>*> * revert_history;
   std::unordered_map<std::string, std::string> * users;
   DependencyGraph * dependencies;
 
@@ -47,11 +48,13 @@ class spreadsheet {
   std::string revert(std::string cell);
   std::unordered_map<std::string, std::string> & get_users();
   std::vector<std::string> * get_cell_history(int cell_as_num);
+  std::vector<std::string> * get_revert_history(int cell_as_num);
   std::vector<std::string> * get_sheet_history();
   std::string get_cell_contents(std::string cell);
 
   void add_direct_sheet_history(std::vector<std::string> * hist);
   void add_direct_cell_history(int cell, std::vector<std::string> * hist);
+  void add_direct_revert_history(int cell, std::vector<std::string> * hist);
   std::string get_name();
   
   bool CircularDependency(std::string cell, std::vector<std::string> * dependencies);

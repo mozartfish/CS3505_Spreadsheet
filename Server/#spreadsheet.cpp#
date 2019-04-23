@@ -42,6 +42,11 @@ spreadsheet::spreadsheet(std::string name)
  */
 spreadsheet::~spreadsheet()
 {
+  for (int i = 0; i < DEFAULT_CELL_COUNT; i++)
+    {
+      delete *(*this->cell_history)[i];
+      this->revert_history->push_back(new std::vector<std::string>());
+    }
   delete this->cell_history;
   delete this->revert_history;
   delete this->spd_history;

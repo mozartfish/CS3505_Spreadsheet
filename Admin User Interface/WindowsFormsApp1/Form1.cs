@@ -24,8 +24,8 @@ namespace WindowsFormsApp1
             controller = new AdminController();
 
             //Populate the lists with anything in the model
-            RedrawSSList();
-            RedrawUserList();
+            //RedrawSSList();
+            //RedrawUserList();
             
             //events triggered by network sending
             controller.UpdateInterface += HandleUpdateInterface;
@@ -48,17 +48,26 @@ namespace WindowsFormsApp1
         /// <param name="spreadsheet"></param>
         public void HandleUpdateInterface()
         {
-            // Update the Current Status column with User data
-            this.Invoke(new MethodInvoker(() =>
-           {
-               RedrawUserList();
-           }));
-
-            // Update the Update column with Spreadsheet data
-            this.Invoke(new MethodInvoker(() =>
+            if (this.IsHandleCreated)
             {
-                RedrawSSList();
-            }));
+                // Update the Current Status column with User data
+                this.Invoke(new MethodInvoker(() =>
+                {
+                    RedrawUserList();
+                }));
+
+                // Update the Update column with Spreadsheet data
+                this.Invoke(new MethodInvoker(() =>
+                {
+                    RedrawSSList();
+                }));
+            }
+            else
+            {
+                return;
+            }
+            
+            
         }
 
         private void ShutDown(object sender, EventArgs e)
@@ -202,7 +211,7 @@ namespace WindowsFormsApp1
 
         private void ConnectToServer_buttone(object sender, EventArgs e)
         {
-            string hostname = "lab1-2.eng.utah.edu";
+            string hostname = "garbage";//lab1-5.eng.utah.edu
             if (IP.Text != "")
             {
                 hostname = IP.Text;
@@ -212,11 +221,24 @@ namespace WindowsFormsApp1
             {
                 int.TryParse(Port.Text, out port);
             }
-            button8.Enabled = false;
-            controller.Connect(hostname, port);
+            bool success;
+            controller.Connect(hostname, port, out success);
+            if (success)
+            {
+                button8.Enabled = false;
+            }
+            else
+            {
+                button8.Enabled = true;
+            }
         }
 
         private void currentStatusList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void updateList_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }

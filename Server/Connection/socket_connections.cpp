@@ -9,6 +9,7 @@
 #include <strings.h>
 #include <vector>
 #include <mutex>
+#include <signal.h>
 #include <sys/types.h> 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -74,6 +75,8 @@ void socket_connections::WaitForClientConnections(volatile socks * sock_list, st
 	return;
       }
 
+    // Make sure server doesnt crash but gets error messages instead
+    signal(SIGPIPE, SIG_IGN);
     
     // Infinitely listen for incoming connections
     while(*continue_to_run)
@@ -157,7 +160,7 @@ void socket_connections::WaitForDataTimer(char* buf, std::mutex* lock, int socke
    */
 void socket_connections::SendData(int socket_fd, const char *data, int bytes)
   {
-
+    std::cout << data << std::endl;
     int bytes_written = write(socket_fd, data, bytes);
 
     // On error
