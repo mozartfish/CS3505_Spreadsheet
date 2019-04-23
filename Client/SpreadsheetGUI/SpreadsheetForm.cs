@@ -329,11 +329,6 @@ namespace Display
             // This captures the up arrow key
             if (keyData == Keys.Up)
             {
-                if (contentTextBox.Text != spreadsheet.GetCellContents(cellName).ToString())
-                {
-                    contentTextBox.Text = "";
-                }
-
                 if (row != 0)
                 {
                     spreadsheetPanel1.SetSelection(col, row - 1);
@@ -348,11 +343,6 @@ namespace Display
             //This captures the down arrow key
             if (keyData == Keys.Down)
             {
-                if (contentTextBox.Text != spreadsheet.GetCellContents(cellName).ToString())
-                {
-                    contentTextBox.Text = "";
-                }
-
                 if (row != 98)
                 {
                     spreadsheetPanel1.SetSelection(col, row + 1);
@@ -366,11 +356,6 @@ namespace Display
             //This captures the left arrow key
             if (keyData == Keys.Left)
             {
-                if (contentTextBox.Text != spreadsheet.GetCellContents(cellName).ToString())
-                {
-                    contentTextBox.Text = "";
-                }
-
                 if (col != 0)
                 {
                     spreadsheetPanel1.SetSelection(col - 1, row);
@@ -384,11 +369,6 @@ namespace Display
             //This captures the right arrow key
             if (keyData == Keys.Right)
             {
-                if (contentTextBox.Text != spreadsheet.GetCellContents(cellName).ToString())
-                {
-                    contentTextBox.Text = "";
-                }
-
                 if (col != 25)
                 {
                     spreadsheetPanel1.SetSelection(col + 1, row);
