@@ -321,19 +321,18 @@ namespace Display
             spreadsheetPanel1.GetSelection(out col, out row);
             string cellName = ColRowToCellName(col, row);
             string contents = "";
-
             
 
             // The following ifs are used to capture the users key pressing data.
             // This captures the up arrow key
             if (keyData == Keys.Up)
             {
-                contentTextBox.Text = "";
                 if (row != 0)
                 {
                     spreadsheetPanel1.SetSelection(col, row - 1);
                     row = row - 1;
                 }
+
                 DisplaySelection(this.spreadsheetPanel1);
                 contentTextBox.SelectionStart = contentTextBox.Text.Length;
                 return true;
@@ -342,7 +341,6 @@ namespace Display
             //This captures the down arrow key
             if (keyData == Keys.Down)
             {
-                contentTextBox.Text = "";
                 if (row != 98)
                 {
                     spreadsheetPanel1.SetSelection(col, row + 1);
@@ -356,8 +354,6 @@ namespace Display
             //This captures the left arrow key
             if (keyData == Keys.Left)
             {
-
-                contentTextBox.Text = "";
                 if (col != 0)
                 {
                     spreadsheetPanel1.SetSelection(col - 1, row);
