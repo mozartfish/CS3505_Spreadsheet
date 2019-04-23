@@ -175,9 +175,13 @@ namespace Display
             string spreadsheet = Microsoft.VisualBasic.Interaction.InputBox
                 ("Please Enter Name of Spreadsheet", "New Spreadsheet", "NewSpreadsheet");
 
-            if (spreadsheet != "")
+            if (spreadsheet != "" && spreadsheet != " ")
             {
                 RequestSpreadsheet(spreadsheet);
+            }
+            else
+            {
+                MessageBox.Show("Spreadsheets must have name. Please try again with a valid name.", "Invalid Spreadsheet Name", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
