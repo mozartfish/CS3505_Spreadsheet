@@ -42,6 +42,13 @@ spreadsheet::spreadsheet(std::string name)
  */
 spreadsheet::~spreadsheet()
 {
+  for (int i = 0; i < DEFAULT_CELL_COUNT; i++)
+    {
+      delete (*this->cell_history)[i];
+      delete (*this->revert_history)[i];
+    }
+  this->cell_history->clear();
+  this->revert_history->clear();
   delete this->cell_history;
   delete this->revert_history;
   delete this->spd_history;
@@ -157,6 +164,8 @@ bool spreadsheet::change_cell(std::string cell, std::string contents, std::vecto
  
   this->spd_history->push_back(cell);
   (*(*(this->cell_history))[cell_idx]).push_back(contents);
+
+  delete dep_set;
   
   return true;
 }
@@ -246,6 +255,8 @@ std::string spreadsheet::revert(std::string cell)
   }
 
   dependencies->ReplaceDependents(cell, *dep_set);
+
+  delete dep_set;
   
   // Return the current top contents
   return cell_hist->back();

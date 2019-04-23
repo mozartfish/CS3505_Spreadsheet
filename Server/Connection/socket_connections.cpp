@@ -160,7 +160,6 @@ void socket_connections::WaitForDataTimer(char* buf, std::mutex* lock, int socke
    */
 void socket_connections::SendData(int socket_fd, const char *data, int bytes)
   {
-    std::cout << data << std::endl;
     int bytes_written = write(socket_fd, data, bytes);
 
     // On error

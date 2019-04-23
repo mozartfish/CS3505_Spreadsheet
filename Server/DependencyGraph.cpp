@@ -80,6 +80,8 @@ void DependencyGraph::AddDependency(std::string s, std::string t)
     this->dependents_map[s] =  *dependents_set;
     
     this->num_pairs++;
+
+    delete dependents_set;
     
     return;
   }
