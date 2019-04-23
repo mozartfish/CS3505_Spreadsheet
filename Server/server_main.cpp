@@ -473,6 +473,7 @@ void process_updates(volatile socks * socks_list)
       if (deserialized["type"].asString() == "open")
 	{
 	  send_back["type"] = "full send";
+	  send_back["spreadsheet"] = Json::objectValue;
 	  
 	  // Send the full spreadsheet to the client
 	  if (check_sprd(deserialized["name"].asString(), deserialized["username"].asString(), deserialized["password"].asString(), fd))
@@ -553,15 +554,11 @@ void process_updates(volatile socks * socks_list)
 	      send_back["spreadsheet"][deserialized["cell"].asString()] = deserialized["value"].asString();
 
 	      // Let all admins know of the update
-	      
-	      //A POTENTIAL FIX TO A PROBLEM
-	      std::unordered_map<std::string, std::string> users = std::unordered_map<std::string, std::string>();
-	      users.insert({"gg", "get_rekt"});
 	      if (admins->size() > 0)
 		{
 		  Json::Value admin_mess;
 		  admin_mess["type"] = "SS";
-		  admin_mess["name"] = spread_name;
+		  admin_mess["SSname"] = spread_name;
 		  admin_mess["status"] = 0;
 
 		  string admin_str = admin_mess.toStyledString()  + "\n\n";
@@ -616,7 +613,7 @@ void process_updates(volatile socks * socks_list)
 		{
 		  Json::Value admin_mess;
 		  admin_mess["type"] = "SS";
-		  admin_mess["name"] = spread_name;
+		  admin_mess["SSname"] = spread_name;
 		  admin_mess["status"] = 0;
 
 		  string admin_str = admin_mess.toStyledString()  + "\n\n";
@@ -643,7 +640,7 @@ void process_updates(volatile socks * socks_list)
 		{
 		  Json::Value admin_mess;
 		  admin_mess["type"] = "SS";
-		  admin_mess["name"] = spread_name;
+		  admin_mess["SSname"] = spread_name;
 		  admin_mess["status"] = 0;
 
 		  string admin_str = admin_mess.toStyledString()  + "\n\n";
@@ -719,7 +716,7 @@ void process_updates(volatile socks * socks_list)
       else if (deserialized["type"].asString() == "SS")
 	{
 	 
-	  string sheet_name = deserialized["ssName"].asString();
+	  string sheet_name = deserialized["SSname"].asString();
 	  int status = deserialized["status"].asInt();
 	  
 
