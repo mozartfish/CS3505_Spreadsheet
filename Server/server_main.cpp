@@ -58,6 +58,7 @@ int process_spreadsheets_from_file()
   read_partitions.push_back("Usermap:");
   read_partitions.push_back("Spreadsheet_History:");
   read_partitions.push_back("Cell_Information:");
+  read_partitions.push_back("Cell_Reverts:");
 
   // Read in spreadsheets
   if (file.is_open())
@@ -178,6 +179,60 @@ int process_spreadsheets_from_file()
        /**********************************************************************/
        /*                       CELL HISTORY READ                            */
        /**********************************************************************/
+	  part_idx++;
+
+	  // Never reached next partition (aka Cell history)
+	  if (token == NULL)
+	    return -1;
+
+	  token = strtok(NULL, "\t");
+
+	  // Iterate over each token
+	  while (token)
+	    {
+	      token_str = new string (token);
+	      
+	      // If next partition, break
+	      if (*token_str == read_partitions[part_idx])
+		      break;
+	     
+	      //Parse cell num
+	      int cell_num = stoi(token_str->substr(1, token_str->length() - 1));
+	      vector<string> * cell_hist = new vector<string>();
+
+	      token = strtok(NULL, "\t");
+
+	      // Iterate over full history of the cell
+	      while (token)
+		{
+		  token_str = new string(token);
+
+		  if (*token_str == read_partitions[part_idx])
+		      break;
+
+		  // If found next cell
+		  if ((*token_str)[0] == ':' && (*token_str)[token_str->length() - 1] == ':')
+		    break;
+
+		  if (*token_str == "~@empty~")
+		    token_str->clear();
+
+		  // Add histories to a vector
+		  cell_hist->push_back(*token_str);
+
+		  token = strtok(NULL, "\t");
+		}
+	      
+	      // Add vector of histories to spreadsheet
+	      curr_sheet->add_direct_cell_history(cell_num, cell_hist);
+	      
+	      } 
+
+
+
+       /**********************************************************************/
+       /*                       CELL REVERTS READ                            */
+       /**********************************************************************/
 	  
 	  // Never reached next partition (aka Cell history)
 	  if (token == NULL)
@@ -192,7 +247,7 @@ int process_spreadsheets_from_file()
 	     
 	      //Parse cell num
 	      int cell_num = stoi(token_str->substr(1, token_str->length() - 1));
-	      vector<string> * cell_hist = new vector<string>();
+	      vector<string> * cell_reverts = new vector<string>();
 
 	      token = strtok(NULL, "\t");
 
@@ -205,16 +260,22 @@ int process_spreadsheets_from_file()
 		  if ((*token_str)[0] == ':' && (*token_str)[token_str->length() - 1] == ':')
 		    break;
 
+		  if (*token_str == "~@empty~")
+		    token_str->clear();
+
 		  // Add histories to a vector
-		  cell_hist->push_back(*token_str);
+		  cell_reverts->push_back(*token_str);
 
 		  token = strtok(NULL, "\t");
 		}
 	      
 	      // Add vector of histories to spreadsheet
-	      curr_sheet->add_direct_cell_history(cell_num, cell_hist);
+	      curr_sheet->add_direct_revert_history(cell_num, cell_reverts);
 	      
 	      } 
+
+
+
 
 	  // Add finished sheet 
 	  (*sheets)[curr_sheet->get_name()] = curr_sheet;
@@ -267,7 +328,7 @@ int write_sheets_to_file()
 	    }
 	  
 	  
-	  //Write cells, and their dependencies, and their history
+	  //Write cells, and their history
 	  file << "Cell_Information:" << '\t';
 	  for (int i = 0; i < DEFAULT_CELL_COUNT; i++)
 	    {
@@ -282,12 +343,44 @@ int write_sheets_to_file()
 	      file << cell;
 
 	      for (auto cell_contents : *cell_hist)
-		file  << '\t' << cell_contents;
+		{
+		  if (cell_contents == "")
+		    cell_contents = "~@empty~";
+		  file  << '\t' << cell_contents;
+		}
+	      
+		file << '\t';
+	    }
 
+
+	  //Write cells, and their history
+	  file << "Cell_Reverts:" << '\t';
+	  for (int i = 0; i < DEFAULT_CELL_COUNT; i++)
+	    {
+	      // Write individual cell history
+	      string cell = ":" + to_string(i) + ":";
+	      
+	      vector<string> * revert_hist = sheet_it->second->get_revert_history(i);
+
+	      if (revert_hist->size() == 0)
+		continue;
+
+	      file << cell;
+
+	      for (auto cell_contents : *revert_hist)
+		{
+		  if (cell_contents == "")
+		    cell_contents = "~@empty~";
+		  file  << '\t' << cell_contents;
+		}
+	      
 	      // If not the last cell
 	      if (i < DEFAULT_CELL_COUNT - 1)
 		file << '\t';
 	    }
+
+
+
 
 	  //Separate spreadsheets by newline
 	  file << '\n';
@@ -496,7 +589,12 @@ void process_updates(volatile socks * socks_list)
 
 	  int idx = result.find('\t');
 	  string cell = result.substr(0, idx);
-	  string contents = result.substr(idx + 1);
+
+	  string contents;
+	  if (idx == result.length() - 1)
+	    contents = "";
+	  else
+	    contents = result.substr(idx + 1);
 
 	  send_back["type"] = "full send";
 	  send_back["spreadsheet"][cell] = contents;
@@ -572,6 +670,7 @@ void process_updates(volatile socks * socks_list)
 	      Json::Value ad_mess;
 	      ad_mess["type"] = "SS";
 	      ad_mess["SSname"] = sheet_pair.second->get_name();
+	      ad_mess["users"];
 
 	      for (auto user_pair : sheet_pair.second->get_users())
 		{

@@ -75,11 +75,20 @@ namespace WindowsFormsApp1
 
         public void HandleUpdateInterface()
         {
-            // Update the Update column with Spreadsheet data
-            this.Invoke(new MethodInvoker(() =>
+            if (this.IsHandleCreated)
             {
-                RedrawSSList();
-            }));
+                // Update the Update column with Spreadsheet data
+                this.Invoke(new MethodInvoker(() =>
+                {
+                    RedrawSSList();
+                }));
+            }
+            else
+            {
+                return;
+            }
+        
+            
         }
 
 
