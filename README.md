@@ -18,6 +18,13 @@ NOTES: Do not modify the sheets.txt file in the Settings directory. This will co
 		is notified
 
 CLIENT:
+	The client is expected to be used within Visual Studio. In order to operate the client, follow the following steps
+	1) Select the Spreadsheet Client solution
+	2) Build the solution
+	3) Ensure that WelcomePage.csproj is selected as the Startup project
+	4) Run the program
+
+
 
 
 

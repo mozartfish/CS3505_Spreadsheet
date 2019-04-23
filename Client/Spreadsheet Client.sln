@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadsheetGUI", "Spreadshe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resources", "Resources\Resources.csproj", "{42E8590B-816B-4546-BE50-2369ACBB1F85}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Lab9", "Lab9\Lab9.vdproj", "{6F4862DD-645A-46F9-B9A7-9B2462B6E30D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WelcomePage", "WelcomePage\WelcomePage.csproj", "{20AF869C-7794-4CA4-8C09-D79A95CD8602}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadsheetController", "SpreadsheetController\SpreadsheetController.csproj", "{A2C58484-1CFD-45C8-9E05-65E071EDAFD7}"
@@ -30,8 +28,6 @@ Global
 		{42E8590B-816B-4546-BE50-2369ACBB1F85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{42E8590B-816B-4546-BE50-2369ACBB1F85}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42E8590B-816B-4546-BE50-2369ACBB1F85}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6F4862DD-645A-46F9-B9A7-9B2462B6E30D}.Debug|Any CPU.ActiveCfg = Debug
-		{6F4862DD-645A-46F9-B9A7-9B2462B6E30D}.Release|Any CPU.ActiveCfg = Release
 		{20AF869C-7794-4CA4-8C09-D79A95CD8602}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{20AF869C-7794-4CA4-8C09-D79A95CD8602}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20AF869C-7794-4CA4-8C09-D79A95CD8602}.Release|Any CPU.ActiveCfg = Release|Any CPU
