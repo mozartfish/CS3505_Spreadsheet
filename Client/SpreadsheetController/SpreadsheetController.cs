@@ -294,7 +294,6 @@ namespace Controller
 
                 if (message[0] == '{' && message[message.Length - 3] == '}')
                 {
-                    Debug.WriteLine(message);
                     JObject obj = JObject.Parse(message);
                     JToken messageToken = obj["type"];
 
@@ -378,7 +377,6 @@ namespace Controller
 
                 if (message[0] == '{' && message[message.Length - 3] == '}')
                 {
-                    //Debug.WriteLine(message);
                     JObject obj = JObject.Parse(message);
                     JToken messageToken = obj["type"];
 

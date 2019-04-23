@@ -1,4 +1,11 @@
-﻿using System;
+﻿// Writen by Carina Imburgia
+// Version 1.0
+// 
+//Joanna Lowry && Cole Jacobs
+//Version 1.1
+//04/23/2019
+//Added methods to support server based-spreadsheet
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -87,11 +94,6 @@ namespace SS
                 IEnumerable<string> dependents = new HashSet<string>();
                 contents = Normalize(contents);
                 CheckInput(cellName, contents);
-
-                //if (Dependencies.HasDependents(cellName) && (!Regex.IsMatch(contents, @"^=") || !Double.TryParse(contents, out double val)))
-                //{
-                //    throw new ArgumentException();
-                //}
 
                 if(!Regex.IsMatch(contents, @"^=") && !Double.TryParse(contents, out double val))
                 {
