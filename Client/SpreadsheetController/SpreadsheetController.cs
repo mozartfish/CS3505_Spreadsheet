@@ -442,6 +442,7 @@ namespace Controller
             {
                 throw new ArgumentException();
             }
+
             SendEdit(cellName, contents, dependents);
         }
 

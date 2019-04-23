@@ -322,22 +322,13 @@ namespace Display
             string cellName = ColRowToCellName(col, row);
             string contents = "";
 
-            //TODO: Fix scrolling so that a message is sent when the text box is changed
-            //if (contentTextBox.Text != "")
-            //{
-            //    contents = contentTextBox.Text;
-            //}
-            //else
-            //{
-            //    contents = spreadsheet.GetCellContents(cellName).ToString();
-            //}
-
-            //EnterData(cellName, contents);
+            
 
             // The following ifs are used to capture the users key pressing data.
             // This captures the up arrow key
             if (keyData == Keys.Up)
             {
+                contentTextBox.Text = "";
                 if (row != 0)
                 {
                     spreadsheetPanel1.SetSelection(col, row - 1);
@@ -351,6 +342,7 @@ namespace Display
             //This captures the down arrow key
             if (keyData == Keys.Down)
             {
+                contentTextBox.Text = "";
                 if (row != 98)
                 {
                     spreadsheetPanel1.SetSelection(col, row + 1);
@@ -364,6 +356,8 @@ namespace Display
             //This captures the left arrow key
             if (keyData == Keys.Left)
             {
+
+                contentTextBox.Text = "";
                 if (col != 0)
                 {
                     spreadsheetPanel1.SetSelection(col - 1, row);
@@ -387,6 +381,7 @@ namespace Display
                 return true;
             }
 
+            
             contentTextBox.SelectionStart = contentTextBox.Text.Length;
             return false;
         }
