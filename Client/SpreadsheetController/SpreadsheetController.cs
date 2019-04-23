@@ -330,7 +330,7 @@ namespace Controller
                             }
 
 
-                          //  IEnumerable<string> d = spreadsheet.GetNamesOfAllNonemptyCells();
+                          IEnumerable<string> d = spreadsheet.GetNamesOfAllNonemptyCells();
 
                             initialized = true;
                         }

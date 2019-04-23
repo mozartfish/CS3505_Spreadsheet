@@ -88,12 +88,18 @@ namespace SS
                 contents = Normalize(contents);
                 CheckInput(cellName, contents);
 
+                //if (Dependencies.HasDependents(cellName) && (!Regex.IsMatch(contents, @"^=") || !Double.TryParse(contents, out double val)))
+                //{
+                //    throw new ArgumentException();
+                //}
 
-                if (Dependencies.HasDependents(cellName) && !Regex.IsMatch(contents, @"^="))
+                if(!Regex.IsMatch(contents, @"^=") && !Double.TryParse(contents, out double val))
                 {
-                    throw new ArgumentException();
+                    if(Dependencies.HasDependents(cellName))
+                    {
+                        throw new ArgumentException();
+                    }
                 }
-
 
                 if (Regex.IsMatch(contents, @"^="))
                 {
