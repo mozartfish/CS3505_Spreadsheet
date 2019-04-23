@@ -53,7 +53,10 @@ namespace WindowsFormsApp1
         private void CreateSS_button(object sender, EventArgs e)
         {
             string name = CreateSS_Name.Text;
-            controller.SendSSChange(name, 1);
+            if (name != "")
+            {
+                controller.SendSSChange(name, 1);
+            }
         }
 
         /// <summary>
