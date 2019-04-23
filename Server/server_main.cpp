@@ -231,8 +231,6 @@ int process_spreadsheets_from_file()
 	      
 	      } 
 
-
-
        /**********************************************************************/
        /*                       CELL REVERTS READ                            */
        /**********************************************************************/
@@ -679,7 +677,7 @@ void process_updates(volatile socks * socks_list)
 	      Json::Value ad_mess;
 	      ad_mess["type"] = "SS";
 	      ad_mess["SSname"] = sheet_pair.second->get_name();
-	      ad_mess["users"];
+	      ad_mess["users"] = Json::objectValue;
 
 	      for (auto user_pair : sheet_pair.second->get_users())
 		{
@@ -734,6 +732,9 @@ void process_updates(volatile socks * socks_list)
 	  // Add sheet
 	  else if (status == 1 && sheets->find(sheet_name) == sheets->end())
 	    {
+	      if (sheet_name == "")
+		continue;
+	      
 	      (*sheets)[sheet_name] = new spreadsheet(sheet_name);
 	      
 	    }
@@ -856,6 +857,10 @@ void close(volatile socks & socket_info)
  */
 bool check_sprd(string spread_name, string user, string pass, int fd)
 {
+
+  if (spread_name == "")
+    return false;
+
   //Create new spreadsheet if nonexistant
   if (sheets->find(spread_name) == sheets->end())
     {
@@ -1026,8 +1031,8 @@ int main(int argc, char ** argv)
 		   // Erase the socket from the connections struct
 		   it = connections.sockets->erase(it);
 		   --(connections.size_before_update);
-		   delete (*connections.buffers)[it_idx];
-		   delete (*connections.partial_data)[it_idx];
+		   // delete (*connections.buffers)[it_idx];
+		   // delete (*connections.partial_data)[it_idx];
 		   connections.buffers->erase(connections.buffers->begin() + it_idx);
 		   connections.partial_data->erase(connections.partial_data->begin() + it_idx);
 

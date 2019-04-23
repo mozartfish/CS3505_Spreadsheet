@@ -14,6 +14,7 @@
 #include "spreadsheet.h"
 #include <queue>
 #include <iostream>
+#include <locale>
 
 /*
  *  Constructs a new spreadsheet of the given name, with empty cells
@@ -312,6 +313,7 @@ std::vector<std::string> *  spreadsheet::cells_from_formula(std::string formula)
   // Find any letter occurances
   int idx = formula.find_first_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
+  std::locale local;
   while(idx != -1)
     {
       int num_idx;
@@ -322,6 +324,7 @@ std::vector<std::string> *  spreadsheet::cells_from_formula(std::string formula)
 
       // Get cell as substring
       std::string cell = formula.substr(idx, num_idx);
+      cell.replace(0,  1, 1, std::toupper(cell[0], local));
       
       // Push back cell, find next cell
       dependencies->push_back(cell);
