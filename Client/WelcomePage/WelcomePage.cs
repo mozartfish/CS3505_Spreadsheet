@@ -126,7 +126,7 @@ namespace Display
         private void ConnectToServer(string hostName)
         {
             //Error checking
-            if (ServerAddress.Text == "")
+            if (ServerAddress.Text.Trim() == "")
             {
                 MessageBox.Show("Please enter a server address",
                     "Invalid Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -174,8 +174,9 @@ namespace Display
             // option to name the spreadsheet via dialog box
             string spreadsheet = Microsoft.VisualBasic.Interaction.InputBox
                 ("Please Enter Name of Spreadsheet", "New Spreadsheet", "NewSpreadsheet");
+            spreadsheet = spreadsheet.Trim();
 
-            if (spreadsheet != "" && spreadsheet != " ")
+            if (spreadsheet != "")
             {
                 RequestSpreadsheet(spreadsheet);
             }
