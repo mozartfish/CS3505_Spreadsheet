@@ -199,7 +199,7 @@ namespace WindowsFormsApp1
 
         private void ConnectToServer_buttone(object sender, EventArgs e)
         {
-            string hostname = "lab1-5.eng.utah.edu";//lab1-5.eng.utah.edu
+            string hostname = "lab1-20.eng.utah.edu";//lab1-5.eng.utah.edu
             if (IP.Text != "")
             {
                 hostname = IP.Text;
@@ -211,14 +211,14 @@ namespace WindowsFormsApp1
             }
             bool success;
             controller.Connect(hostname, port, out success);
-            if (success)
-            {
-                button8.Enabled = false;
-            }
-            else
-            {
-                button8.Enabled = true;
-            }
+            //if (success)
+            //{
+            //    button8.Enabled = false;
+            //}
+            //else
+            //{
+            //    button8.Enabled = true;
+            //}
         }
     }
 }

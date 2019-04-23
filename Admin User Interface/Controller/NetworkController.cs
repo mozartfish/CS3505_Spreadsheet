@@ -289,6 +289,14 @@ namespace Controller
         /// <param name="state"></param>
         public static void GetData(SocketState state)
         {
+            //Aaron start buffer delete
+            int index = state.sb.ToString().LastIndexOf("\n\n");
+            if (index != -1)
+            {
+                state.sb.Remove(0,index+2);
+            }
+            //aaron finished
+
             try
             {
                 state.theSocket.BeginReceive(state.messageBuffer, 0, state.messageBuffer.Length, SocketFlags.None, ReceiveCallback, state);

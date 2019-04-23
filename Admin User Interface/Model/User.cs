@@ -26,7 +26,7 @@ namespace Model
         /// Password
         /// </summary>
         [JsonProperty]
-        private string password;
+        private string pass;
 
         /// <summary>
         /// This is an array of strings because a user may be logged onto multiple spreadsheets at once
@@ -75,12 +75,12 @@ namespace Model
 
         public string GetPassword()
         {
-            return password;
+            return pass;
         }
 
         public void SetPassword(string pass)
         {
-            password = pass;
+            this.pass = pass;
         }
 
         public string GetWorkingOn()

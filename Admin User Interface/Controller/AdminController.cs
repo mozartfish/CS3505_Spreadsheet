@@ -126,7 +126,7 @@ namespace Controller
             ProcessMessage(ss);
 
             SendMessage();
-
+            //ss.sb.Clear(); //Aaron tried this
             // Resume receiving server data
             Networking.GetData(ss);
         }
@@ -138,7 +138,7 @@ namespace Controller
         private void ProcessMessage(SocketState ss)
         {
             string totalData = ss.sb.ToString();
-            //Console.WriteLine(totalData);
+            Console.WriteLine("TOTAL DATA:" + totalData);
 
             string[] messages = Regex.Split(totalData, @"(?<=[\n]{2})");
 
@@ -165,8 +165,8 @@ namespace Controller
                     //Console.WriteLine("User: " + model.GetSS("ss1").GetUsers());
                 }
             }
-
-            UpdateInterface?.Invoke();                        
+            UpdateInterface?.Invoke();
+            //ss.sb.Clear();
         }
 
         /// <summary>
@@ -177,10 +177,27 @@ namespace Controller
         private object Deserialize(string jsonString)
         {
             JObject jsonObject = JObject.Parse(jsonString);
-            if ((string)jsonObject["type"] == "SS")
+            if ((string)jsonObject["type"] == "SS" && (object)jsonObject["users"] != null)
             {
                 //deserialize spreadsheet
                 return JsonConvert.DeserializeObject<Spreadsheet>(jsonString);
+            }
+            else if ((string)jsonObject["type"] == "SS" && (string)jsonObject["users"] == null)
+            {
+                Spreadsheet ss = JsonConvert.DeserializeObject<Spreadsheet>(jsonString);
+                ss.SetUsers(new Dictionary<string, string>());
+                return ss;
+
+                //Spreadsheet ss = new Spreadsheet();
+                //ss.SetName((string)jsonObject["name"]);
+                //ss.SetStatus((int)jsonObject["status"]);
+                //ss.SetSSType((string)jsonObject["type"]);
+                //ss.SetUsers(new Dictionary<string, string>());
+                //return ss;
+
+                //jsonObject["users"] = new Dictionary<string, string>();
+                //deserialize spreadsheet
+                ///return JsonConvert.DeserializeObject<Spreadsheet>(jsonString);
             }
             else if ((string)jsonObject["type"] == "User")
             {
@@ -209,7 +226,8 @@ namespace Controller
         {
             if (updateObj is Spreadsheet)
             {
-                Spreadsheet ss = (Spreadsheet)updateObj;
+                //Spreadsheet ss = (Spreadsheet)updateObj;
+                Spreadsheet ss = new Spreadsheet((Spreadsheet)updateObj);
                 string SSname = ss.GetName();
                 if (!ss.HasUsers())
                 {

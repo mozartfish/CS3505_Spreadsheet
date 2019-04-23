@@ -20,7 +20,7 @@ namespace Model
         /// Spreadsheet name
         /// </summary>
         [JsonProperty]
-        private string ssName;
+        private string SSname;
 
         /// <summary>
         /// List of usernames representing all users working on spreadsheet
@@ -49,6 +49,16 @@ namespace Model
             users = new Dictionary<string, string>();
         }
 
+        public Spreadsheet(Spreadsheet ss)
+        {
+            users = ss.GetUsers();
+            SSname = ss.GetName();
+            if (users == null)
+            {
+                users = new Dictionary<string, string>();
+            }
+        }
+
         public string GetSSType()
         {
             return type;
@@ -70,12 +80,12 @@ namespace Model
 
         public string GetName()
         {
-            return ssName;
+            return SSname;
         }
 
         public void SetName(string newName)
         {
-            ssName = newName;
+            SSname = newName;
         }
 
         public Dictionary<string, string> GetUsers()
