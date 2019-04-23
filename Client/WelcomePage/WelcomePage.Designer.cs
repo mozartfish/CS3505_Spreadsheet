@@ -133,7 +133,7 @@
             this.Controls.Add(this.Username);
             this.Controls.Add(this.ConnectButton);
             this.Name = "WelcomePage";
-            this.Text = "Form1";
+            this.Text = "Welcome Page";
             this.ResumeLayout(false);
             this.PerformLayout();
 
