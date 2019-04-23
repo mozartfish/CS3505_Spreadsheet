@@ -111,6 +111,7 @@ int process_spreadsheets_from_file()
 	    return -1;
 	  else
 	    {
+	      delete token_str;
 	      token_str = new string (token);
 
 	      // Bad partition
@@ -161,7 +162,7 @@ int process_spreadsheets_from_file()
 	  token = strtok(NULL, "\t");
 	  while (token != NULL)
 	    {
-	      
+	      delete token_str;
 	      token_str = new string (token);
 
 	      // Make sure we have not reached next partition
@@ -190,6 +191,7 @@ int process_spreadsheets_from_file()
 	  // Iterate over each token
 	  while (token)
 	    {
+	      delete token_str;
 	      token_str = new string (token);
 	      
 	      // If next partition, break
@@ -205,6 +207,7 @@ int process_spreadsheets_from_file()
 	      // Iterate over full history of the cell
 	      while (token)
 		{
+		  delete token_str;
 		  token_str = new string(token);
 
 		  if (*token_str == read_partitions[part_idx])
@@ -243,6 +246,7 @@ int process_spreadsheets_from_file()
 	  // Iterate over each token
 	  while (token)
 	    {
+	      delete token_str;
 	      token_str = new string (token);
 	     
 	      //Parse cell num
@@ -254,6 +258,7 @@ int process_spreadsheets_from_file()
 	      // Iterate over full history of the cell
 	      while (token)
 		{
+		  delete token_str;
 		  token_str = new string(token);
 
 		  // If found next cell
@@ -561,11 +566,14 @@ void process_updates(volatile socks * socks_list)
 		  for (int admin : *admins)
 		    socket_connections::SendData(admin, admin_c, admin_str.size());
 		}
+
+	      delete dependencies;
 	    }
 	  
 	  // If there is a failure
 	  else
 	    {
+	      delete dependencies;
 	      
 	      send_back["type"] = "error";
 	      send_back["code"] = 2;
@@ -831,6 +839,7 @@ void close(volatile socks & socket_info)
   sheets->clear();
   delete sheets;
 
+  delete admins;
   delete socket_usermap;
   delete socket_sprdmap;
   delete updates;
@@ -1016,6 +1025,8 @@ int main(int argc, char ** argv)
 		   // Erase the socket from the connections struct
 		   it = connections.sockets->erase(it);
 		   --(connections.size_before_update);
+		   delete (*connections.buffers)[it_idx];
+		   delete (*connections.partial_data)[it_idx];
 		   connections.buffers->erase(connections.buffers->begin() + it_idx);
 		   connections.partial_data->erase(connections.partial_data->begin() + it_idx);
 
@@ -1069,17 +1080,17 @@ int main(int argc, char ** argv)
 	   (*connections.partial_data)[idx]->erase(0, limit + 2);
 
 	   // Format an update as socket_num, sheet_name, and then the data, separated with \t
-	   string * update = new string();
-	   *update += to_string((*connections.sockets)[idx + 1]) + '\t';
+	   string  update;
+	   update += to_string((*connections.sockets)[idx + 1]) + '\t';
 
 	   if ((*socket_sprdmap).find((*connections.sockets)[idx + 1]) != socket_sprdmap->end())
-	     *update += (*socket_sprdmap)[(*connections.sockets)[idx + 1]];
+	     update += (*socket_sprdmap)[(*connections.sockets)[idx + 1]];
 
-	   *update += '\t';
-	   *update += data;
+	   update += '\t';
+	   update += data;
 	   
 	   // Add data to the queue
-	   updates->push(*update);
+	   updates->push(update);
 	   
 	 }
 
