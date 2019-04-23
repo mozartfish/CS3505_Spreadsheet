@@ -294,7 +294,7 @@ namespace Controller
 
                 if (message[0] == '{' && message[message.Length - 3] == '}')
                 {
-                    //Debug.WriteLine(message);
+                    Debug.WriteLine(message);
                     JObject obj = JObject.Parse(message);
                     JToken messageToken = obj["type"];
 
@@ -315,14 +315,22 @@ namespace Controller
                             SpreadsheetNeedsOpening();
 
                             FullSend fullSend = JsonConvert.DeserializeObject<FullSend>(message);
-                            foreach (string cell in fullSend.spreadsheet.Keys)
+
+                            // If no data is contained in spreadsheet it will be null
+                            // We don't need to set any contents, because they're empty by default
+                            if (fullSend.spreadsheet != null)
                             {
-                                lock (spreadsheet)
+                                foreach (string cell in fullSend.spreadsheet.Keys)
                                 {
-                                    spreadsheet.SetContentsOfCell(cell, fullSend.spreadsheet[cell]);
+                                    lock (spreadsheet)
+                                    {
+                                        spreadsheet.SetContentsOfCell(cell, fullSend.spreadsheet[cell]);
+                                    }
                                 }
                             }
-                            IEnumerable<string> d = spreadsheet.GetNamesOfAllNonemptyCells();
+
+
+                          //  IEnumerable<string> d = spreadsheet.GetNamesOfAllNonemptyCells();
 
                             initialized = true;
                         }
@@ -385,13 +393,16 @@ namespace Controller
                     {
                         FullSend fullSend = JsonConvert.DeserializeObject<FullSend>(message);
 
-                        foreach (string cell in fullSend.spreadsheet.Keys)
+                        if (fullSend.spreadsheet != null)
                         {
-                            lock (spreadsheet)
+                            foreach (string cell in fullSend.spreadsheet.Keys)
                             {
-                                spreadsheet.SetContentsOfCell(cell, fullSend.spreadsheet[cell]);
-                            }
+                                lock (spreadsheet)
+                                {
+                                    spreadsheet.SetContentsOfCell(cell, fullSend.spreadsheet[cell]);
+                                }
 
+                            }
                         }
                     }
                 }
