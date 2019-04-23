@@ -24,8 +24,8 @@ namespace WindowsFormsApp1
             controller = new AdminController();
 
             //Populate the lists with anything in the model
-            RedrawSSList();
-            RedrawUserList();
+            //RedrawSSList();
+            //RedrawUserList();
             
             //events triggered by network sending
             controller.UpdateInterface += HandleUpdateInterface;
