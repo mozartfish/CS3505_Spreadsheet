@@ -21,9 +21,7 @@ namespace Controller
         private AdminModel model;
 
         #endregion Controller Definitions
-
-
-
+        
         #region Gui Definitions
 
         private bool acctManOpen, ssManOpen;
@@ -126,7 +124,7 @@ namespace Controller
             ProcessMessage(ss);
 
             SendMessage();
-            //ss.sb.Clear(); //Aaron tried this
+
             // Resume receiving server data
             Networking.GetData(ss);
         }
@@ -138,13 +136,13 @@ namespace Controller
         private void ProcessMessage(SocketState ss)
         {
             string totalData = ss.sb.ToString();
-            Console.WriteLine("TOTAL DATA:" + totalData);
+            //Console.WriteLine("TOTAL DATA:" + totalData);
 
             string[] messages = Regex.Split(totalData, @"(?<=[\n]{2})");
 
             foreach (string message in messages)
             {
-                Console.WriteLine("Message: " + message);
+                //Console.WriteLine("Message: " + message);
                 if (message.Length < 2)
                 {
                     continue;
@@ -157,7 +155,7 @@ namespace Controller
 
                 if (message[0] == '{' && message[message.Length - 3] == '}')
                 {
-                    Console.WriteLine("Object get updated");
+                    //Console.WriteLine("Object get updated");
                     object updateObj = Deserialize(message);
                     UpdateActivity(updateObj);
 
@@ -166,7 +164,6 @@ namespace Controller
                 }
             }
             UpdateInterface?.Invoke();
-            //ss.sb.Clear();
         }
 
         /// <summary>
@@ -187,17 +184,6 @@ namespace Controller
                 Spreadsheet ss = JsonConvert.DeserializeObject<Spreadsheet>(jsonString);
                 ss.SetUsers(new Dictionary<string, string>());
                 return ss;
-
-                //Spreadsheet ss = new Spreadsheet();
-                //ss.SetName((string)jsonObject["name"]);
-                //ss.SetStatus((int)jsonObject["status"]);
-                //ss.SetSSType((string)jsonObject["type"]);
-                //ss.SetUsers(new Dictionary<string, string>());
-                //return ss;
-
-                //jsonObject["users"] = new Dictionary<string, string>();
-                //deserialize spreadsheet
-                ///return JsonConvert.DeserializeObject<Spreadsheet>(jsonString);
             }
             else if ((string)jsonObject["type"] == "User")
             {
@@ -285,8 +271,6 @@ namespace Controller
 
         private void SendMessage()
         {
-            //TODO: Call method SendUserChange() and SendSSChange()
-            //SendSSChange("ss1");
         }
 
         /// <summary>
@@ -377,7 +361,6 @@ namespace Controller
             {
                 //Send message to the server telling it to shut down 
                 SendShutDownMessage();
-                //CleanModel();
             }
         }
 
@@ -449,17 +432,6 @@ namespace Controller
                 }                
             }
             return list;
-        }
-
-        public void TestAddUse(string user)
-        {
-            //model.TESTAddUser(user);
-        }
-
-
-        public void TestAddSS(string user)
-        {
-            //model.TESTAddSSs(user);
         }
 
 

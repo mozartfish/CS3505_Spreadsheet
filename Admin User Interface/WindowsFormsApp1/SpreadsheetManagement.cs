@@ -13,14 +13,7 @@ namespace WindowsFormsApp1
 {
     public partial class SpreadsheetManagement : Form
     {
-
-        #region definitions
-
         AdminController controller;
-
-        #endregion definitions
-
-
 
         public SpreadsheetManagement(AdminController contr)
         {
@@ -30,18 +23,11 @@ namespace WindowsFormsApp1
             controller.UpdateSSInterface += HandleUpdateInterface;
 
             RedrawSSList();
-
-            //TODO: set up the SSman here! looking at all the data structures and grabbing SS information
         }
 
         private void SpreadsheetManagement_FormClosing(object sender, FormClosingEventArgs e)
         {
             controller.SetSSManPageState(false);
-        }
-
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
 
 
@@ -71,9 +57,8 @@ namespace WindowsFormsApp1
             //only send the message if the ss is in the model, keeps the server lighter
             if (controller.ModelHasSpreadsheet(name))
             {
-               // controller.SendSSChange(name, -1);
+               controller.SendSSChange(name, -1);
             }
-            controller.SendSSChange(name, -1);
         }
 
         public void HandleUpdateInterface()
@@ -90,8 +75,6 @@ namespace WindowsFormsApp1
             {
                 return;
             }
-        
-            
         }
 
 
@@ -107,22 +90,6 @@ namespace WindowsFormsApp1
             foreach (string ss in SSList)
             {
                 listBox1.Items.Add(ss);
-            }
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            RedrawSSList();
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            for (int i = 0; i < 10; i++)
-            {
-                controller.TestAddUse(i.ToString());
-
-                //listBox1.Items.Add("Hi");
-                //listBox1.DataSource += "Hi";
             }
         }
     }

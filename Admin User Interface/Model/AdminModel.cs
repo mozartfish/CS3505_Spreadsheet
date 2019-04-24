@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-//using WindowsFormsApp1;
 
 namespace Model
 {
@@ -53,7 +52,6 @@ namespace Model
 
         public List<string> GetSSUpdateList()
         {
-            //TODO:
             List<string> list = ssUpdateList;
             return list;
         }
@@ -61,7 +59,6 @@ namespace Model
         public void InsertToList(string name, int status)
         {
             ssUpdateList.Insert(0, name);
-            //ssUpdateList.Add(name);
         }
 
         public Dictionary<string, Spreadsheet> GetSSDict()
@@ -159,75 +156,5 @@ namespace Model
         #endregion
 
         
-    }
-
-
-
-
-
-
-
-    public class SSActivePair
-    {
-        public string first;
-        public int second;
-
-        public SSActivePair(string f, int s)
-        {
-            first = f;
-            second = s;
-        }
-
-        //make it so that when user and pass are the same as another pair, they return same code 
-        //The string hash was not doing what we wanted
-        public override int GetHashCode()
-        {
-            string both = first.GetHashCode().ToString() + second.GetHashCode().ToString();
-            return both.GetHashCode();
-        }
-    }
-
-
-
-    public class UserPassPair
-    {
-        public string first;
-        public string second;
-
-        public UserPassPair(string f, string s)
-        {
-            first = f;
-            second = s;
-        }
-
-        //make it so that when user and pass are the same as another pair, they return same code 
-        //The string hash was not doing what we wanted
-        public override int GetHashCode()
-        {
-            string both = first.GetHashCode().ToString() + second.GetHashCode().ToString();
-            return both.GetHashCode();
-        }
-    }
-
-    public class UserPassActive
-    {
-        public string first;
-        public string second;
-        public int active;
-
-        public UserPassActive(string f, string s, int a)
-        {
-            first = f;
-            second = s;
-            active = a;
-        }
-
-        //make it so that when user and pass are the same as another pair, they return same code 
-        //The object hash was not doing what we wanted
-        public override int GetHashCode()
-        {
-            string both = first.GetHashCode().ToString() + second.GetHashCode().ToString();
-            return both.GetHashCode();
-        }
     }
 }

@@ -1,55 +1,16 @@
-TODO:
-
-- When User hits exception, TELL THEM! so that they know to connect again
-- make ss list, for ss display better
-- HELP MENU!!! Last Thing Done!
-  Aaron will do this :) Bruce just needs to do a confirmation near the end that it covers all needed
-- Clean
+Required pre use:
+	To use our admin front end the Json must be up to date, to do this, right click the solution, and select manage Nuget Packages.
+Then instal and update.
 
 
+Useage:
+type in the IP to the top right text box (under IP), optional port specification defaults to 2112. hit connect, and if the specified IP is correct.
+EX: lab1-20.eng.utah.edu
+then the two lists will populate with users (left) and all updates coming into the server (right).
+	To create, delete, change pass words of users, click the account managment button, and a new window will open. Enter the fields next to each 
+button that you want to use, and click the corrisponding button.
+	To Create or remove a Spreadsheet click the spreadsheet managment button from the main form and fill in the correlating feilds, and click the button.
+Note: all 3 forms are able to be opened simultaniously. Closing the main form will disconnect from the server.
 
-PRE PRESENTING TO JENSON:
-- Work on decreasing the time between 
-- resize all the gui windows for the machines in lower cade
-- make sure all connection, sending, and model updating work
-- Final test on concurrent users
-- TEST ALL THE THINGS PETER TESTS ON OTHER PROJECTS
-
-
-
-
-
-TESTING NEEDS DOING ONCE THE SERVER IS UP:
-- make sure model updates correctly when getting information for SS
-- test shut down kills server, and allows user to enter new IP
-- test server rude disconnecting
-- test admin rude disconnectings effect on the server
-
-Testing Done:
-- able to recieve and decode all messages correctly
-
-
-
-
-
-
-
-
-ON USER CLICK THE EXIT BUTTON AT TOP RIGHT:
-- the form must contact the server, and tell it that it is disconnecting then
-  inform the welcome page to show, and kill form1
-
-SHUT DOWN BUTTON CLICKED:
-- notify the server that it must shut down. Once the server echos the shut down message
-  FORM1 informs the welcomePage to show itself, and kill Form1 to allow new server to be selected
-
-
-
-
-
-
-
-
-
-  The NuGet Json must be up to date
-  Start the program from main
+To shut down the server click the bottom right button labeled SHUT DOWN SERVER and click OK, the front end will terminate once the server has aknoledged the shut down request.
+And after a short delay, the server will write all spreadsheets to a file, and terminate all connections.

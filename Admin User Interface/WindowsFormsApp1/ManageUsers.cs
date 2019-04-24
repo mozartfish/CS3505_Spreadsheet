@@ -15,27 +15,10 @@ namespace WindowsFormsApp1
 {
     public partial class ManageUsers : Form
     {
-        //    public delegate void ShutDownServer();
-        //    public event ShutDownServer ShutDownServerEvent;
-
         public delegate void CreateUserEventHandler();
         public event CreateUserEventHandler createUser;
-
-
-        #region definitions
-
+        
         AdminController controller;
-
-        #endregion definitions
-
-
-        /// <summary>
-        /// basic constructor
-        /// </summary>
-        //public ManageUsers()
-        //{
-        //    InitializeComponent();
-        //}
 
         public ManageUsers(AdminController contr)
         {
@@ -45,10 +28,6 @@ namespace WindowsFormsApp1
             controller.UpdateUserInterface += HandleUpdateInterface;
 
             RedrawUsersList();
-
-            //TODO: initialize all the data for the acct man here!!
-
-            //currentStatusList.Items.Add(i.ToString());   //Use this!
         }
 
 
@@ -84,7 +63,6 @@ namespace WindowsFormsApp1
             {
                 controller.SendUserChange(username, password, workingOn, 0);
             }
-            //controller.SendUserChange(username, password, workingOn, 0);
         }
 
         private void DeleteUser_button(object sender, EventArgs e)
@@ -98,7 +76,6 @@ namespace WindowsFormsApp1
             {
                 controller.SendUserChange(username, password, workingOn, -1);
             }
-            //controller.SendUserChange(username, password, workingOn, -1);
         }
 
 
@@ -123,34 +100,7 @@ namespace WindowsFormsApp1
                 listBox1.Items.Add(user);
             }
         }
-
-
-        /// <summary>
-        /// Test redraw for when network sends an update
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button1_Click(object sender, EventArgs e)
-        {
-            RedrawUsersList();
-        }
-
-
-        /// <summary>
-        /// Test to fill the model with stupid values to check the redraw function
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button5_Click(object sender, EventArgs e)
-        {
-            for (int i = 0; i < 10; i++)
-            {
-                controller.TestAddUse(i.ToString());
-
-                //listBox1.Items.Add("Hi");
-                //listBox1.DataSource += "Hi";
-            }
-        }
+        
 
         /// <summary>
         /// Event handler receiving User and Spreadsheet data from Admin Controller
@@ -182,15 +132,6 @@ namespace WindowsFormsApp1
                 listBox1.Items.Clear();
             }
 
-            //List<string> SSList = new List<string>();
-            //SSList = controller.GetAllUsers();
-
-            //foreach (string user in SSList)
-            //{
-            //    currentStatusList.Items.Add(user);
-            //}
-
-            //Dictionary<string, > SSDict = new Dictionary<string, string>();
             List<string> list = new List<string>();
             list = controller.GetAllUsers();
 
@@ -198,11 +139,6 @@ namespace WindowsFormsApp1
             {
                 listBox1.Items.Add(user);
             }
-        }
-
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

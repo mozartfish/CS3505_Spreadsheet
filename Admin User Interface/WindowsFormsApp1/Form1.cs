@@ -10,9 +10,6 @@ namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
-        //public delegate void NameEventHandle();
-        //public event NameEventHandle OpenNewAcctMan;
-
         private SpreadsheetManagement ssMan;
         private ManageUsers userMan;
         private AdminController controller;
@@ -31,13 +28,6 @@ namespace WindowsFormsApp1
             controller.UpdateInterface += HandleUpdateInterface;
             //event triggered by server echoing our shut down message
             controller.ShutdownServer += RecieveShutDownEcho;
-
-            //Testing TODO: remove this
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    controller.TestAddUse(i.ToString());
-            //    controller.TestAddSS(i.ToString());
-            //}
         }
 
         /// <summary>
@@ -66,8 +56,6 @@ namespace WindowsFormsApp1
             {
                 return;
             }
-            
-            
         }
 
         private void ShutDown(object sender, EventArgs e)
@@ -86,9 +74,7 @@ namespace WindowsFormsApp1
                 updateList.Items.Clear();
 
                 this.Close();
-            }));            
-
-            
+            }));
         }
 
         private void AccountManagementButton(object sender, EventArgs e)
@@ -103,8 +89,6 @@ namespace WindowsFormsApp1
 
         private void SpreadsheetManagmentButton(object sender, EventArgs e)
         {
-
-            //Copied from ^ switch to work for spreadhseet
             if (controller.OpenSSManPage())
             {
                 ssMan = new SpreadsheetManagement(controller);
@@ -121,12 +105,11 @@ namespace WindowsFormsApp1
             }
 
             List<string> SSList = new List<string>();
-            //SSList = controller.GetAllSS();
+
             SSList = controller.GetSSList();
 
             foreach (string ss in SSList)
             {
-                //updateList.Items.Add(ss);
                 updateList.Items.Insert(0, ss);
             }
         }
@@ -138,15 +121,6 @@ namespace WindowsFormsApp1
                 currentStatusList.Items.Clear();
             }
 
-            //List<string> SSList = new List<string>();
-            //SSList = controller.GetAllUsers();
-
-            //foreach (string user in SSList)
-            //{
-            //    currentStatusList.Items.Add(user);
-            //}
-
-            //Dictionary<string, > SSDict = new Dictionary<string, string>();
             List<string> list = new List<string>();
             list = controller.GetAllUsers();
 
@@ -156,50 +130,13 @@ namespace WindowsFormsApp1
             }
         }
 
-
-
-        //private void UpdateList(Dictionary<string, User> users)
-        //{
-        //    foreach (string username in users.Keys)
-        //    {
-        //        Console.WriteLine(username);
-        //        currentStatusList.Items.Add(username);
-        //    }
-        //}
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            RedrawSSList();
-            RedrawUserList();
-        }
-
-        private void button6_Click(object sender, EventArgs e)
-        {
-            for (int i = 0; i < 10; i++)
-            {
-                controller.TestAddUse(i.ToString());
-            }
-        }
-
-
-        //private void Form1_FormClosed(object sender, FormClosedEventArgs e)
-        //{
-        //    //Fire an event to the WelcomePage to 
-        //    //KillProgram();
-        //}
-
-
-
-        public static int counter = 0;
-        private void TESTinsertingTopOfList(object sender, EventArgs e)
-        {
-            updateList.Items.Insert(0, "ssname" + counter);
-            counter++;
-        }
-
         private void ConnectToServer_buttone(object sender, EventArgs e)
         {
-            string hostname = "lab1-20.eng.utah.edu";//lab1-5.eng.utah.edu
+            string hostname = IP.Text;
+            if (IP.Text == "")
+            {
+                return;
+            }
             if (IP.Text != "")
             {
                 hostname = IP.Text;
@@ -211,14 +148,6 @@ namespace WindowsFormsApp1
             }
             bool success;
             controller.Connect(hostname, port, out success);
-            //if (success)
-            //{
-            //    button8.Enabled = false;
-            //}
-            //else
-            //{
-            //    button8.Enabled = true;
-            //}
         }
     }
 }
